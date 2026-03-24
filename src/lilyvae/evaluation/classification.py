@@ -1,11 +1,9 @@
-"""Lithology classification evaluation using SVM on embeddings."""
+"""Lithology classification evaluation using per-class SVM on embeddings."""
 
 import numpy as np
 import torch
 from sklearn.svm import LinearSVC
-from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_auc_score
-from sklearn.multiclass import OneVsRestClassifier
 
 
 def evaluate_classification(
@@ -13,7 +11,10 @@ def evaluate_classification(
     labels: torch.Tensor,
     top_n: int = 10,
 ) -> dict:
-    """Train SVM on embeddings and compute per-class ROC AUC.
+    """Train per-class one-vs-rest SVMs on embeddings and compute AUC.
+
+    Each lithology class gets its own binary SVM. Only classes with both
+    positive and negative examples in the data are evaluated.
 
     Args:
         embeddings: (N, latent_dim) tensor
@@ -23,40 +24,45 @@ def evaluate_classification(
     z = embeddings.numpy()
     y = labels.numpy()
     classes = np.unique(y)
-
-    # One-vs-rest SVM
-    svm = OneVsRestClassifier(
-        LinearSVC(max_iter=10000, random_state=42),
-        n_jobs=-1,
-    )
-    y_bin = label_binarize(y, classes=classes)
-    svm.fit(z, y_bin)
-    decision = svm.decision_function(z)
-
-    # Macro AUC
-    try:
-        macro_auc = roc_auc_score(y_bin, decision, average="macro")
-    except ValueError:
-        macro_auc = float("nan")
-
-    # Per-class AUC for top N most common classes
-    class_counts = np.bincount(y, minlength=len(classes))
-    top_classes = np.argsort(class_counts)[::-1][:top_n]
+    class_counts = np.bincount(y, minlength=max(classes) + 1)
 
     per_class_auc = {}
-    for idx in top_classes:
-        cls = classes[idx]
+    per_class_decision = {}
+
+    for cls in classes:
+        y_binary = (y == cls).astype(int)
+        # Need both positive and negative examples
+        if y_binary.sum() < 2 or (1 - y_binary).sum() < 2:
+            continue
+
+        svm = LinearSVC(max_iter=10000, random_state=42, dual="auto")
         try:
-            auc = roc_auc_score(y_bin[:, idx], decision[:, idx])
+            svm.fit(z, y_binary)
+            decision = svm.decision_function(z)
+            auc = roc_auc_score(y_binary, decision)
             per_class_auc[int(cls)] = float(auc)
-        except ValueError:
-            per_class_auc[int(cls)] = float("nan")
+            per_class_decision[int(cls)] = decision
+        except Exception:
+            continue
+
+    # Macro AUC over all evaluated classes
+    if per_class_auc:
+        macro_auc = float(np.mean(list(per_class_auc.values())))
+    else:
+        macro_auc = float("nan")
+
+    # Top N most common classes
+    top_classes = np.argsort(class_counts)[::-1][:top_n]
+    top_class_auc = {
+        int(cls): per_class_auc.get(int(cls), float("nan"))
+        for cls in top_classes
+        if int(cls) in per_class_auc
+    }
 
     return {
-        "auc_macro": float(macro_auc),
+        "auc_macro": macro_auc,
         "per_class_auc": per_class_auc,
-        "svm": svm,
+        "top_class_auc": top_class_auc,
+        "n_classes_evaluated": len(per_class_auc),
         "classes": classes,
-        "decision": decision,
-        "y_bin": y_bin,
     }

@@ -232,11 +232,14 @@ def bootstrap_vae_training(
             arr = np.array(values)
             summary[key] = {
                 "mean": float(np.mean(arr)),
+                "median": float(np.median(arr)),
                 "ci_low": float(np.percentile(arr, 2.5)),
                 "ci_high": float(np.percentile(arr, 97.5)),
+                "iqr_low": float(np.percentile(arr, 25)),
+                "iqr_high": float(np.percentile(arr, 75)),
                 "std": float(np.std(arr)),
             }
-            print(f"  {key}: {summary[key]['mean']:.4f} [{summary[key]['ci_low']:.4f}, {summary[key]['ci_high']:.4f}]")
+            print(f"  {key}: median={summary[key]['median']:.4f} IQR=[{summary[key]['iqr_low']:.4f}, {summary[key]['iqr_high']:.4f}] 95%CI=[{summary[key]['ci_low']:.4f}, {summary[key]['ci_high']:.4f}]")
 
     # Build aggregated predictions array
     agg_indices = sorted(aggregated_true.keys())
