@@ -81,7 +81,8 @@ class PCABaseline:
         for features, _, _ in dataloader:
             all_features.append(features.numpy())
         X = np.concatenate(all_features, axis=0)
-        self.pca = PCA(n_components=self.latent_dim, random_state=SEED)
+        n_components = min(self.latent_dim, X.shape[1])
+        self.pca = PCA(n_components=n_components, random_state=SEED)
         self.pca.fit(X)
 
     # ------------------------------------------------------------------
