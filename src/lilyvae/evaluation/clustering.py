@@ -24,10 +24,15 @@ def evaluate_clustering(
     if n_components is None:
         n_components = 10
 
-    gmm = GaussianMixture(n_components=n_components, random_state=42, n_init=3)
-    cluster_labels = gmm.fit_predict(z)
+    # Cap components at embedding dimensionality to avoid singular covariance
+    n_components = min(n_components, z.shape[1])
 
-    ari = adjusted_rand_score(y, cluster_labels)
+    try:
+        gmm = GaussianMixture(n_components=n_components, random_state=42, n_init=3, reg_covar=1e-4)
+        cluster_labels = gmm.fit_predict(z)
+        ari = adjusted_rand_score(y, cluster_labels)
+    except ValueError:
+        ari = float("nan")
 
     return {
         "ari": float(ari),
