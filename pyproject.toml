@@ -23,6 +23,8 @@ lilyvae-train = "lilyvae.scripts.train:main"
 lilyvae-evaluate = "lilyvae.scripts.evaluate:main"
 lilyvae-zeroshot = "lilyvae.scripts.zeroshot:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
+lilyvae-bootstrap = "lilyvae.scripts.bootstrap_train:main"
+lilyvae-ablation = "lilyvae.scripts.ablation:main"
 
 [build-system]
 requires = ["hatchling"]
