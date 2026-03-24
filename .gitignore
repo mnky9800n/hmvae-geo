@@ -1,0 +1,11 @@
+data/
+*.pt
+*.pkl
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+dist/
+build/
+.DS_Store
+catboost_info/
