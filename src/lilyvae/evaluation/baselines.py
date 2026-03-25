@@ -48,6 +48,7 @@ from lilyvae.config import (
     SEED,
 )
 from lilyvae.training.trainer import get_device
+from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
 from lilyvae.data.dataset import get_dataloader
 from lilyvae.evaluation.reconstruction import evaluate_reconstruction
 from lilyvae.evaluation.clustering import evaluate_clustering
@@ -291,7 +292,22 @@ def evaluate_pca_baseline(
 
     print(f"\n[baseline] PCA  latent_dim={latent_dim}")
     baseline = PCABaseline(latent_dim)
-    return baseline.evaluate(dataloader)
+    metrics = baseline.evaluate(dataloader)
+
+    # Zero-shot evaluation
+    from lilyvae.config import PROCESSED_DIR
+    import os
+    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+    if zs_path.exists():
+        all_z, _ = _extract_all(baseline, dataloader)
+        zeroshot_targets = torch.load(zs_path, weights_only=False)
+        print("  Zero-shot prediction:")
+        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
+        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
+        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
+        metrics["zeroshot_n_variables"] = len(zs_r2s)
+
+    return metrics
 
 
 def evaluate_linear_autoencoder(
@@ -336,13 +352,25 @@ def evaluate_linear_autoencoder(
     clust_metrics = evaluate_clustering(all_z, all_labels)
     cls_metrics = evaluate_classification(all_z, all_labels)
 
-    return {
+    metrics = {
         "model": "linear_autoencoder",
         "latent_dim": latent_dim,
         **recon_metrics,
         "ari": clust_metrics["ari"],
         "auc_macro": cls_metrics["auc_macro"],
     }
+
+    from lilyvae.config import PROCESSED_DIR
+    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+    if zs_path.exists():
+        zeroshot_targets = torch.load(zs_path, weights_only=False)
+        print("  Zero-shot prediction:")
+        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
+        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
+        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
+        metrics["zeroshot_n_variables"] = len(zs_r2s)
+
+    return metrics
 
 
 def evaluate_deterministic_autoencoder(
@@ -387,13 +415,25 @@ def evaluate_deterministic_autoencoder(
     clust_metrics = evaluate_clustering(all_z, all_labels)
     cls_metrics = evaluate_classification(all_z, all_labels)
 
-    return {
+    metrics = {
         "model": "deterministic_autoencoder",
         "latent_dim": latent_dim,
         **recon_metrics,
         "ari": clust_metrics["ari"],
         "auc_macro": cls_metrics["auc_macro"],
     }
+
+    from lilyvae.config import PROCESSED_DIR
+    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+    if zs_path.exists():
+        zeroshot_targets = torch.load(zs_path, weights_only=False)
+        print("  Zero-shot prediction:")
+        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
+        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
+        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
+        metrics["zeroshot_n_variables"] = len(zs_r2s)
+
+    return metrics
 
 
 def run_all_baselines(

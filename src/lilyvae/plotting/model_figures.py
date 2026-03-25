@@ -5,7 +5,7 @@ import pickle
 import torch
 import matplotlib.pyplot as plt
 from pathlib import Path
-from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_curve, roc_auc_score
 from torch.utils.data import DataLoader
 
 from lilyvae.config import (
@@ -97,7 +97,13 @@ def plot_roc_comparison(output_dir: Path | None = None):
     with open(PROCESSED_DIR / "label_encoder.pkl", "rb") as f:
         le = pickle.load(f)
 
+    from sklearn.svm import LinearSVC
+
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    y = labels.numpy()
+    classes = np.unique(y)
+    class_counts = np.bincount(y, minlength=max(classes) + 1)
+    top_classes = np.argsort(class_counts)[::-1][:10]
 
     for col_idx, model_type in enumerate(["unsupervised", "semi-supervised"]):
         prefix = model_type.replace("-", "_")
@@ -106,26 +112,28 @@ def plot_roc_comparison(output_dir: Path | None = None):
         except FileNotFoundError:
             continue
 
-        cls = evaluate_classification(embeddings, labels, top_n=10)
+        z = embeddings.numpy()
         ax = axes[col_idx]
+        aucs = []
 
-        # Plot ROC for top classes
-        y_bin = cls["y_bin"]
-        decision = cls["decision"]
-        classes = cls["classes"]
-        class_counts = np.bincount(labels.numpy(), minlength=len(classes))
-        top_classes = np.argsort(class_counts)[::-1][:10]
-
-        for idx in top_classes:
-            fpr, tpr, _ = roc_curve(y_bin[:, idx], decision[:, idx])
-            class_name = le.inverse_transform([classes[idx]])[0]
-            auc_val = cls["per_class_auc"].get(int(classes[idx]), float("nan"))
+        for cls_id in top_classes:
+            y_binary = (y == cls_id).astype(int)
+            if y_binary.sum() < 2:
+                continue
+            svm = LinearSVC(max_iter=10000, random_state=42, dual="auto")
+            svm.fit(z, y_binary)
+            decision = svm.decision_function(z)
+            fpr, tpr, _ = roc_curve(y_binary, decision)
+            auc_val = float(roc_auc_score(y_binary, decision))
+            aucs.append(auc_val)
+            class_name = le.inverse_transform([cls_id])[0]
             ax.plot(fpr, tpr, label=f"{class_name} ({auc_val:.2f})", linewidth=1)
 
+        macro_auc = np.mean(aucs) if aucs else float("nan")
         ax.plot([0, 1], [0, 1], "k--", linewidth=0.5)
         ax.set_xlabel("False Positive Rate")
         ax.set_ylabel("True Positive Rate")
-        ax.set_title(f"{model_type.title()} (AUC={cls['auc_macro']:.3f})")
+        ax.set_title(f"{model_type.title()} (AUC={macro_auc:.3f})")
         ax.legend(fontsize=6, loc="lower right")
 
     plt.tight_layout()
