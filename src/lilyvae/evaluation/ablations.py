@@ -189,6 +189,7 @@ def _train_ablation_model(
     masking: nn.Module,
     decoder_type: str,
     beta_schedule_type: str,
+    alpha_weight: float,
     num_epochs: int,
     lr: float,
     weight_decay: float,
@@ -197,26 +198,49 @@ def _train_ablation_model(
 ) -> nn.Module:
     """Train vae + masking in-place and return the trained vae.
 
-    Kept private: callers should use run_ablation or run_all_ablations.
+    When alpha_weight > 0, a classification head is added for lithology
+    (semi-supervised training). alpha anneals from 0 to alpha_weight
+    over the first 50 epochs.
     """
+    from lilyvae.model.heads import LithologyClassifier
+    from lilyvae.config import NUM_LITHOLOGY_CLASSES, ALPHA_ANNEAL_EPOCHS
+
     vae = vae.to(device)
     masking = masking.to(device)
     params = list(vae.parameters()) + list(masking.parameters())
-    optimizer = torch.optim.Adam(params, lr=lr, weight_decay=weight_decay)
 
-    fixed_beta = BETA_END  # used when beta_schedule_type == "fixed"
+    classifier = None
+    if alpha_weight > 0:
+        latent_dim = vae.encoder.fc_mu.out_features
+        classifier = LithologyClassifier(latent_dim, NUM_LITHOLOGY_CLASSES).to(device)
+        params += list(classifier.parameters())
+
+    optimizer = torch.optim.Adam(params, lr=lr, weight_decay=weight_decay)
+    fixed_beta = BETA_END
 
     for epoch in range(num_epochs):
         vae.train()
         masking.train()
+        if classifier:
+            classifier.train()
 
         if beta_schedule_type == "annealing":
             beta = beta_schedule(epoch, BETA_START, BETA_END, BETA_ANNEAL_EPOCHS)
         else:
             beta = fixed_beta
 
-        for features, _, _ in dataloader:
+        # Alpha annealing: 0 -> alpha_weight over ALPHA_ANNEAL_EPOCHS
+        if classifier:
+            if epoch >= ALPHA_ANNEAL_EPOCHS:
+                alpha = alpha_weight
+            else:
+                alpha = alpha_weight * (epoch / ALPHA_ANNEAL_EPOCHS)
+        else:
+            alpha = 0.0
+
+        for features, labels, _ in dataloader:
             features = features.to(device)
+            labels = labels.to(device)
             masked = masking(features)
             out = vae(masked)
 
@@ -225,11 +249,15 @@ def _train_ablation_model(
                     features, out["x_mu"], out["x_logvar"]
                 )
             else:
-                # fixed_variance: plain MSE averaged over all elements
                 recon = F.mse_loss(out["x_mu"], features)
 
             kl = kl_divergence(out["z_mu"], out["z_logvar"])
             loss = recon + beta * kl
+
+            if classifier:
+                logits = classifier(out["z"])
+                cls_loss = F.cross_entropy(logits, labels)
+                loss = loss + alpha * cls_loss
 
             optimizer.zero_grad()
             loss.backward()
@@ -237,9 +265,10 @@ def _train_ablation_model(
             optimizer.step()
 
         if (epoch + 1) % 10 == 0 or epoch == 0:
-            print(
-                f"  epoch {epoch+1:3d}/{num_epochs} | beta={beta:.6f}"
-            )
+            msg = f"  epoch {epoch+1:3d}/{num_epochs} | beta={beta:.6f}"
+            if classifier:
+                msg += f" | alpha={alpha:.6f}"
+            print(msg)
 
     return vae
 
@@ -255,6 +284,7 @@ ABLATION_GRID: dict[str, list] = {
     "mask_fraction": [0.0, 0.1, 0.2, 0.3],
     "latent_dim": [2, 5, 10, 20, 50],
     "beta_schedule": ["annealing", "fixed"],
+    "alpha_weight": [0.0, 0.01, 0.1, 0.5, 1.0],
 }
 
 
@@ -304,6 +334,7 @@ def run_ablation(
     mask_fraction = value if ablation_name == "mask_fraction" else MASK_FRACTION
     latent_dim = value if ablation_name == "latent_dim" else LATENT_DIM
     beta_schedule_type = value if ablation_name == "beta_schedule" else "annealing"
+    alpha_weight = value if ablation_name == "alpha_weight" else 0.0
     hidden_dims = list(HIDDEN_DIMS)
 
     # masking_type "none" means mask_fraction is irrelevant; zero still valid
@@ -314,7 +345,7 @@ def run_ablation(
         f"\n[ablation] {ablation_name}={value!r}  "
         f"(decoder={decoder_type}, masking={masking_type}, "
         f"frac={mask_fraction}, latent_dim={latent_dim}, "
-        f"beta_schedule={beta_schedule_type})"
+        f"beta_schedule={beta_schedule_type}, alpha={alpha_weight})"
     )
 
     vae = _train_ablation_model(
@@ -323,6 +354,7 @@ def run_ablation(
         masking=masking,
         decoder_type=decoder_type,
         beta_schedule_type=beta_schedule_type,
+        alpha_weight=alpha_weight,
         num_epochs=num_epochs,
         lr=lr,
         weight_decay=weight_decay,
