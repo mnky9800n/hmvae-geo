@@ -198,22 +198,21 @@ def _bootstrap_pca_with_splits(
             if train_idx.sum() < 20 or test_idx.sum() < 10:
                 continue
 
-            model = CatBoostRegressor(
-                iterations=500,
-                depth=6,
-                learning_rate=0.1,
-                verbose=0,
-                random_seed=iteration_idx,
-                bootstrap_type="Bernoulli",
-                subsample=0.8,
-            )
-            model.fit(embeddings[train_idx], vals[train_idx])
-            pred = model.predict(embeddings[test_idx])
-
             try:
+                model = CatBoostRegressor(
+                    iterations=500,
+                    depth=6,
+                    learning_rate=0.1,
+                    verbose=0,
+                    random_seed=iteration_idx,
+                    bootstrap_type="Bernoulli",
+                    subsample=0.8,
+                )
+                model.fit(embeddings[train_idx], vals[train_idx])
+                pred = model.predict(embeddings[test_idx])
                 r2 = r2_score(vals[test_idx], pred)
                 iter_r2s.append(r2)
-            except ValueError:
+            except (ValueError, Exception):
                 continue
 
         if iter_r2s:
