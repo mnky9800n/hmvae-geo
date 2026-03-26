@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 
 from lilyvae.config import PAPER_DIR
+from lilyvae.plotting.style import apply_style
 
 
 ALL_FIGURES = [
@@ -33,6 +34,7 @@ def main():
     parser.add_argument("--device", default="auto")
     args = parser.parse_args()
 
+    apply_style()
     figures = ALL_FIGURES if args.figure == "all" else [args.figure]
 
     for fig_name in figures:

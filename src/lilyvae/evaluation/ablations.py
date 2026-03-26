@@ -284,7 +284,7 @@ ABLATION_GRID: dict[str, list] = {
     "mask_fraction": [0.0, 0.1, 0.2, 0.3],
     "latent_dim": [2, 5, 10, 20, 50],
     "beta_schedule": ["annealing", "fixed"],
-    "alpha_weight": [0.0, 0.01, 0.1, 0.5, 1.0],
+    "alpha_weight": [0.0, 0.01, 0.1, 0.5, 1.0, 5.0, 10.0, 50.0],
 }
 
 
