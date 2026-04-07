@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from lilyvae.config import (
     PROCESSED_DIR,
     CHECKPOINT_DIR,
+    RESULTS_DIR,
     PAPER_DIR,
     TRAINING_VARIABLES,
     INPUT_DIM,
@@ -185,3 +186,52 @@ def plot_generated_variables_grid(output_dir: Path | None = None, device: str = 
     plt.savefig(output_dir / "fig_generated_variables_grid.png", dpi=300, bbox_inches="tight")
     plt.close()
     print("  Saved fig_generated_variables_grid.png")
+
+
+def plot_alpha_sweep(output_dir: Path | None = None):
+    """R² and AUC vs supervision weight alpha (fig_alpha_sweep.png)."""
+    import json
+
+    output_dir = output_dir or PAPER_DIR
+
+    ablations_path = RESULTS_DIR / "ablations.json"
+    if ablations_path.exists():
+        with open(ablations_path) as f:
+            data = json.load(f)
+        if "alpha_weight" in data.get("ablations", {}):
+            entries = data["ablations"]["alpha_weight"]
+            alphas = [e["value"] for e in entries]
+            r2s = [e["r2_avg"] for e in entries]
+            aucs = [e["auc_macro"] for e in entries]
+        else:
+            alphas, r2s, aucs = None, None, None
+    else:
+        alphas, r2s, aucs = None, None, None
+
+    # Fallback to hardcoded values from the paper table
+    if alphas is None:
+        alphas = [0.0, 0.01, 0.1, 0.5, 1.0, 5.0, 10.0, 20.0, 30.0, 50.0, 100.0, 500.0, 1000.0]
+        r2s = [0.992, 0.992, 0.990, 0.968, 0.984, 0.898, 0.862, 0.831, 0.846, 0.759, 0.770, 0.667, 0.664]
+        aucs = [0.950, 0.948, 0.952, 0.953, 0.953, 0.949, 0.949, 0.947, 0.943, 0.949, 0.944, 0.945, 0.942]
+
+    # Use small positive value for log scale at alpha=0
+    plot_alphas = [a if a > 0 else 1e-3 for a in alphas]
+
+    fig, ax1 = plt.subplots(figsize=(8, 5))
+
+    ax1.plot(plot_alphas, r2s, "o-", color="forestgreen", linewidth=2, markersize=5)
+    ax1.set_xscale("log")
+    ax1.set_xlabel("Supervision weight $\\alpha$")
+    ax1.set_ylabel("$R^2$ (avg)", color="forestgreen")
+    ax1.tick_params(axis="y", labelcolor="forestgreen")
+
+    ax2 = ax1.twinx()
+    ax2.plot(plot_alphas, aucs, "s-", color="indigo", linewidth=2, markersize=5)
+    ax2.set_ylabel("AUC (macro)", color="indigo")
+    ax2.set_ylim(0.8, 1.0)
+    ax2.tick_params(axis="y", labelcolor="indigo")
+
+    plt.tight_layout()
+    plt.savefig(output_dir / "fig_alpha_sweep.png", dpi=300, bbox_inches="tight")
+    plt.close()
+    print("  Saved fig_alpha_sweep.png")

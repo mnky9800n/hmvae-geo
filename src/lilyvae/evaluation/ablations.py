@@ -1,8 +1,9 @@
 """Ablation study framework for LilyVAE.
 
 Each ablation trains a fresh model variant with one hyperparameter or
-architectural choice changed, then evaluates the same three metrics used
-throughout the project: reconstruction R², ARI (k=10 GMM), and macro AUC.
+architectural choice changed, then evaluates the same four metrics used
+throughout the project: reconstruction R², ARI (k=10 GMM), macro AUC, and
+zero-shot R².
 
 Design notes
 ------------
@@ -20,6 +21,7 @@ Design notes
 
 from __future__ import annotations
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -53,6 +55,7 @@ from lilyvae.data.dataset import get_dataloader
 from lilyvae.evaluation.reconstruction import evaluate_reconstruction
 from lilyvae.evaluation.clustering import evaluate_clustering
 from lilyvae.evaluation.classification import evaluate_classification
+from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
 
 
 # ---------------------------------------------------------------------------
@@ -314,7 +317,8 @@ def run_ablation(
 
     Returns:
         Dict with keys: ablation_name, value, r2_avg, ari, auc_macro,
-        and the full per-variable r2 breakdown.
+        zeroshot_r2_avg, zeroshot_n_variables, the full per-variable r2
+        breakdown, and the full per-variable zeroshot results.
     """
     if ablation_name not in ABLATION_GRID:
         raise ValueError(
@@ -372,12 +376,27 @@ def run_ablation(
     clust_metrics = evaluate_clustering(embeddings, labels)
     cls_metrics = evaluate_classification(embeddings, labels)
 
+    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+    if zs_path.exists():
+        zeroshot_targets = torch.load(zs_path, weights_only=False)
+        zs_results = evaluate_all_zeroshot(embeddings, zeroshot_targets)
+        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
+        zeroshot_r2_avg = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
+        zeroshot_n_variables = len(zs_r2s)
+    else:
+        zs_results = {}
+        zeroshot_r2_avg = float("nan")
+        zeroshot_n_variables = 0
+
     return {
         "ablation_name": ablation_name,
         "value": value,
         **recon_metrics,
         "ari": clust_metrics["ari"],
         "auc_macro": cls_metrics["auc_macro"],
+        "zeroshot_r2_avg": zeroshot_r2_avg,
+        "zeroshot_n_variables": zeroshot_n_variables,
+        "zeroshot": zs_results,
     }
 
 

@@ -94,7 +94,8 @@ def _run_single_ablation(
         print(
             f"  -> r2_avg={result.get('r2_avg', float('nan')):.4f}  "
             f"ari={result.get('ari', float('nan')):.4f}  "
-            f"auc_macro={result.get('auc_macro', float('nan')):.4f}"
+            f"auc_macro={result.get('auc_macro', float('nan')):.4f}  "
+            f"zeroshot_r2_avg={result.get('zeroshot_r2_avg', float('nan')):.4f}"
         )
 
     results.setdefault("ablations", {})[ablation_name] = ablation_results

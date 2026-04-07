@@ -211,6 +211,9 @@ def preprocess(raw_dir: Path | None = None, output_dir: Path | None = None) -> N
                 "depth", "timestamp", "instrument", "text id", "test no", "comment",
                 "prefix", "principal", "suffix", "lithology", "consolidation",
                 "subtype", "expanded", "latitude", "longitude", "water depth",
+                # Procedural metadata, not geological properties
+                "container number", "adapter foot", "measurements (no)",
+                "sample length", "sample volume",
             ]
             numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
             meas_cols = [
