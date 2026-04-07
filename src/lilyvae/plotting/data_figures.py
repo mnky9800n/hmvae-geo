@@ -42,7 +42,7 @@ def plot_expedition_map(output_dir: Path | None = None):
     lons = metadata["longitude"]
 
     fig = plt.figure(figsize=(12, 6))
-    ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson())
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson(central_longitude=104))
     ax.set_global()
     ax.add_feature(cfeature.LAND, facecolor="lightgray")
     ax.add_feature(cfeature.OCEAN, facecolor="lightblue")
@@ -57,7 +57,10 @@ def plot_expedition_map(output_dir: Path | None = None):
 
 
 def plot_dataset_summary(output_dir: Path | None = None):
-    """3-panel dataset summary (fig_lily_dataset.png)."""
+    """Composite figure: map background with histogram insets (left) and ship photo (right)."""
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+
     output_dir = output_dir or PAPER_DIR
     metadata = load_metadata()
 
@@ -65,56 +68,131 @@ def plot_dataset_summary(output_dir: Path | None = None):
     borehole_ids = metadata["borehole_ids"]
     depths_m = depth_bins * (BIN_SIZE_CM / 100.0)
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+    # Load ship image
+    ship_img = plt.imread(Path(__file__).resolve().parents[3] / "Joides.jpg")
+
+    fig = plt.figure(figsize=(16, 9))
+
+    # --- Full-figure map as background ---
+    ax_map = fig.add_axes([0, 0, 1, 1], projection=ccrs.Robinson(central_longitude=104))
+    ax_map.set_global()
+    from cartopy.io.img_tiles import GoogleTiles
+    satellite_tiles = GoogleTiles(style="satellite")
+    ax_map.add_image(satellite_tiles, 4)
+    lats = metadata.get("latitude")
+    lons = metadata.get("longitude")
+    if lats is not None and lons is not None:
+        ax_map.scatter(lons, lats, transform=ccrs.PlateCarree(), s=10, c="red", alpha=0.7, zorder=5)
+
+    # --- Left insets: 3 histograms in a white box ---
+    # Inset axes are placed with generous margins inside the box
+    inset_w, inset_h = 0.23, 0.14
+    inset_x = -0.06  # left margin inside box (shifted 10% left)
+    gap = 0.08  # vertical space between axes (for xlabel + next title)
+
+    # Positions top-down
+    y_a = 0.78
+    y_b = y_a - inset_h - gap
+    y_c = y_b - inset_h - gap
+
+    # White box covers everything including titles above and labels below
+    from matplotlib.patches import FancyBboxPatch
+    box_x = -0.095
+    box_y = y_c - 0.05  # room below bottom axis for xlabel + ticks
+    box_w = inset_w + 0.07
+    box_h = (y_a + inset_h + 0.04) - box_y  # room above top axis for title
+    bg_box = FancyBboxPatch(
+        (box_x, box_y), box_w, box_h,
+        boxstyle="round,pad=0.01",
+        facecolor="white", edgecolor="black", linewidth=1.5, alpha=0.92,
+        transform=fig.transFigure, zorder=2,
+    )
+    fig.patches.append(bg_box)
+
+    hist_kw = dict(facecolor="white", zorder=3)
 
     # (a) Depth distribution
-    axes[0].hist(depths_m, bins=50, color="steelblue", edgecolor="black", linewidth=0.3)
-    axes[0].set_xlabel("Depth (m)")
-    axes[0].set_ylabel("Count")
-    axes[0].set_title("(a) Sample depth distribution")
+    ax_a = fig.add_axes([inset_x, y_a, inset_w, inset_h], **hist_kw)
+    ax_a.hist(depths_m, bins=50, color="steelblue", edgecolor="black", linewidth=0.3)
+    ax_a.set_xlabel("Depth (m)", fontsize=9, labelpad=2)
+    ax_a.set_ylabel("Count", fontsize=9, labelpad=2)
+    ax_a.set_title("(a) Depth distribution", fontsize=10, pad=3)
+    ax_a.tick_params(labelsize=7, pad=1)
+    ax_a.patch.set_alpha(0)
 
     # (b) Samples per borehole
+    ax_b = fig.add_axes([inset_x, y_b, inset_w, inset_h], **hist_kw)
     bh_counts = pd.Series(borehole_ids).value_counts().values
-    axes[1].hist(bh_counts, bins=30, color="coral", edgecolor="black", linewidth=0.3)
-    axes[1].set_xlabel("Samples per borehole")
-    axes[1].set_ylabel("Number of boreholes")
-    axes[1].set_title(f"(b) Samples per borehole (n={len(bh_counts)})")
+    ax_b.hist(bh_counts, bins=30, color="coral", edgecolor="black", linewidth=0.3)
+    ax_b.set_xlabel("Samples per borehole", fontsize=9, labelpad=2)
+    ax_b.set_ylabel("Boreholes", fontsize=9, labelpad=2)
+    ax_b.set_title(f"(b) Samples/borehole (n={len(bh_counts)})", fontsize=10, pad=3)
+    ax_b.tick_params(labelsize=7, pad=1)
+    ax_b.patch.set_alpha(0)
 
     # (c) Samples per expedition
-    # Extract expedition from borehole_id (first part before "-")
+    ax_c = fig.add_axes([inset_x, y_c, inset_w, inset_h], **hist_kw)
     expeditions = pd.Series(borehole_ids).str.split("-").str[0]
     exp_counts = expeditions.value_counts().sort_index()
-    axes[2].bar(range(len(exp_counts)), exp_counts.values, color="seagreen", edgecolor="black", linewidth=0.3)
-    axes[2].set_xlabel("Expedition")
-    axes[2].set_ylabel("Sample count")
-    axes[2].set_title(f"(c) Samples per expedition (n={len(exp_counts)})")
-    axes[2].set_xticks(range(len(exp_counts)))
-    axes[2].set_xticklabels(exp_counts.index, rotation=90, fontsize=6)
+    ax_c.bar(range(len(exp_counts)), exp_counts.values, color="seagreen", edgecolor="black", linewidth=0.3)
+    ax_c.set_xlabel("Expedition", fontsize=9, labelpad=2)
+    ax_c.set_ylabel("Samples", fontsize=9, labelpad=2)
+    ax_c.set_title(f"(c) Samples/expedition (n={len(exp_counts)})", fontsize=10, pad=3)
+    ax_c.set_xticks(range(0, len(exp_counts), 2))
+    ax_c.set_xticklabels(exp_counts.index[::2], rotation=90, fontsize=4)
+    ax_c.tick_params(labelsize=7, pad=1)
+    ax_c.patch.set_alpha(0)
 
-    plt.tight_layout()
+    # --- Right upper inset: ship photo with black border ---
+    ship_h_over_w = ship_img.shape[0] / ship_img.shape[1]
+    ship_w = 0.33
+    ship_h = ship_w * ship_h_over_w * (16 / 9)
+    ship_x = min(0.74, 0.99 - ship_w)  # clamp so it stays in bounds
+    ship_y = 0.90 - ship_h
+
+    ax_ship = fig.add_axes([ship_x, ship_y, ship_w, ship_h], zorder=3)
+    ax_ship.imshow(ship_img)
+    ax_ship.set_xticks([])
+    ax_ship.set_yticks([])
+    # Black border via rectangle patch in figure coords
+    from matplotlib.patches import Rectangle
+    border = Rectangle(
+        (ship_x, ship_y), ship_w, ship_h,
+        transform=fig.transFigure, linewidth=1.5,
+        edgecolor="black", facecolor="none", zorder=4,
+    )
+    fig.patches.append(border)
+
+    # Caption below the photo -- wrap to exact ship image width
+    caption_text = "The drilling ship JOIDES Resolution on Expedition 321"
+    wrap_width_px = ship_w * fig.get_size_inches()[0] * fig.dpi
+    caption_obj = fig.text(
+        ship_x + ship_w / 2, ship_y - 0.01,
+        caption_text,
+        ha="center", va="top", fontsize=14, fontstyle="italic",
+        wrap=True,
+        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="black", linewidth=1, alpha=0.92),
+    )
+    caption_obj._get_wrap_line_width = lambda: wrap_width_px
+
     plt.savefig(output_dir / "fig_lily_dataset.png", dpi=300, bbox_inches="tight")
     plt.close()
     print("  Saved fig_lily_dataset.png")
 
 
 def plot_lithology_counts(output_dir: Path | None = None):
-    """Bar chart of lithology class counts (fig_lily_lithology_counts.png)."""
+    """Histogram of lithology class sizes on log scale (fig_lily_lithology_counts.png)."""
     output_dir = output_dir or PAPER_DIR
     labels, le = load_labels()
     label_names = le.inverse_transform(labels.numpy())
-
     counts = pd.Series(label_names).value_counts()
 
-    fig, ax = plt.subplots(figsize=(14, 6))
-    ax.bar(range(len(counts)), counts.values, color="steelblue", edgecolor="none")
-    ax.set_xlabel("Lithology class")
-    ax.set_ylabel("Count")
-    ax.set_title(f"Lithology class distribution ({len(counts)} classes)")
-    ax.set_xticks(range(0, len(counts), max(1, len(counts) // 20)))
-    ax.set_xticklabels(
-        [counts.index[i] for i in range(0, len(counts), max(1, len(counts) // 20))],
-        rotation=90, fontsize=5,
-    )
+    fig, ax = plt.subplots(figsize=(8, 5))
+    log_bins = np.logspace(0, np.log10(counts.max()), 30)
+    ax.hist(counts.values, bins=log_bins, color="steelblue", edgecolor="none", alpha=0.8)
+    ax.set_xscale("log")
+    ax.set_xlabel("Samples per class")
+    ax.set_ylabel("Number of classes")
 
     plt.tight_layout()
     plt.savefig(output_dir / "fig_lily_lithology_counts.png", dpi=300, bbox_inches="tight")
@@ -123,10 +201,7 @@ def plot_lithology_counts(output_dir: Path | None = None):
 
 
 def plot_variables_distribution(output_dir: Path | None = None):
-    """Histograms of 6 training variables (fig_lily_variables_dist.png).
-
-    Uses raw (unscaled) data loaded from the scaler inverse transform.
-    """
+    """Histograms of 6 training variables (fig_lily_variables_dist.png)."""
     import pickle
 
     output_dir = output_dir or PAPER_DIR
@@ -139,14 +214,28 @@ def plot_variables_distribution(output_dir: Path | None = None):
     metadata = load_metadata()
     var_names = metadata.get("feature_columns", TRAINING_VARIABLES)
 
+    colors = {
+        "bulk_density": "#FF6F00",
+        "magnetic_susceptibility": "#AB47BC",
+        "NGR": "#00BFA5",
+        "R": "#E53935",
+        "G": "#43A047",
+        "B": "#1E88E5",
+    }
+    xlims = {
+        "bulk_density": (0, 4),
+        "NGR": (0, 100),
+    }
+
     fig, axes = plt.subplots(2, 3, figsize=(14, 8))
     axes = axes.flatten()
 
     for i, (ax, name) in enumerate(zip(axes, var_names)):
-        ax.hist(raw[:, i], bins=80, color="steelblue", edgecolor="none", alpha=0.8)
+        ax.hist(raw[:, i], bins=80, color=colors.get(name, "steelblue"), edgecolor="none", alpha=0.8)
         ax.set_xlabel(name)
         ax.set_ylabel("Count")
-        ax.set_title(name)
+        if name in xlims:
+            ax.set_xlim(xlims[name])
 
     plt.tight_layout()
     plt.savefig(output_dir / "fig_lily_variables_dist.png", dpi=300, bbox_inches="tight")
