@@ -16,9 +16,12 @@ ALL_FIGURES = [
     "roc_comparison",
     "generated_variables_grid",
     "umap_lithology",
+    "umap_comparison",
     "umap_expeditions",
+    "alpha_sweep",
     "r2_vs_observations",
     "zeroshot_scatter",
+    "variable_correlations",
 ]
 
 
@@ -64,15 +67,24 @@ def main():
             elif fig_name == "umap_lithology":
                 from lilyvae.plotting.latent_figures import plot_umap_lithology
                 plot_umap_lithology(args.output_dir)
+            elif fig_name == "umap_comparison":
+                from lilyvae.plotting.latent_figures import plot_umap_comparison
+                plot_umap_comparison(args.output_dir)
             elif fig_name == "umap_expeditions":
                 from lilyvae.plotting.latent_figures import plot_umap_expeditions
                 plot_umap_expeditions(args.output_dir)
+            elif fig_name == "alpha_sweep":
+                from lilyvae.plotting.model_figures import plot_alpha_sweep
+                plot_alpha_sweep(args.output_dir)
             elif fig_name == "r2_vs_observations":
                 from lilyvae.plotting.zeroshot_figures import plot_r2_vs_observations
                 plot_r2_vs_observations(args.output_dir)
             elif fig_name == "zeroshot_scatter":
                 from lilyvae.plotting.zeroshot_figures import plot_zeroshot_scatter
                 plot_zeroshot_scatter(args.output_dir)
+            elif fig_name == "variable_correlations":
+                from lilyvae.plotting.data_figures import plot_variable_correlations
+                plot_variable_correlations(args.output_dir)
         except Exception as e:
             print(f"  ERROR: {e}")
 

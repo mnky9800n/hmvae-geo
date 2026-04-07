@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import torch
 from pathlib import Path
 
@@ -241,3 +242,166 @@ def plot_variables_distribution(output_dir: Path | None = None):
     plt.savefig(output_dir / "fig_lily_variables_dist.png", dpi=300, bbox_inches="tight")
     plt.close()
     print("  Saved fig_lily_variables_dist.png")
+
+
+def plot_variable_correlations(output_dir: Path | None = None):
+    """Pairwise correlation matrix with histograms on diagonal (fig_lily_correlations.png).
+
+    All training + zero-shot variables. Lower triangle shows Spearman rho as
+    colored cells, diagonal shows histograms, upper triangle is blank.
+    A box is drawn around the held-out variable block in the bottom-right.
+    """
+    import pickle
+    from matplotlib.patches import Rectangle
+
+    output_dir = output_dir or PAPER_DIR
+    features = load_features()
+    metadata = load_metadata()
+
+    # Inverse-scale training features to original units
+    with open(PROCESSED_DIR / "scaler.pkl", "rb") as f:
+        scaler = pickle.load(f)
+    raw_train = scaler.inverse_transform(features.numpy())
+    train_names = list(metadata.get("feature_columns", TRAINING_VARIABLES))
+
+    # Load all zero-shot targets
+    zeroshot = torch.load(PROCESSED_DIR / "zeroshot_targets.pt", weights_only=False)
+
+    # Build DataFrame: training vars first, then all held-out
+    df = pd.DataFrame(raw_train, columns=train_names)
+
+    held_out_names = []
+    for key in sorted(zeroshot.keys()):
+        if "raw" in key.lower():
+            continue
+        if "[manual]" in key:
+            continue
+        if key == "MAD_Bulk density (g/cm^3)":
+            continue
+        if "Caliper separation" in key:
+            continue
+        target = zeroshot[key]
+        values = target["values"].numpy().copy()
+        mask = target["valid_mask"].numpy().astype(bool)
+        values[~mask] = np.nan
+        # Shorten display name
+        short = key.replace("_DataLITH", "")
+        df[short] = values
+        held_out_names.append(short)
+
+    n_train = len(train_names)
+    n_held = len(held_out_names)
+    all_names = train_names + held_out_names
+    n_vars = len(all_names)
+
+    # Display names: training vars replace _ with space, held-out strip prefix before first _
+    def _display_name(name, is_training):
+        if is_training:
+            return name.replace("_", " ")
+        if "_" in name:
+            return name.split("_", 1)[1]
+        return name
+    display_names = [_display_name(n, i < n_train) for i, n in enumerate(all_names)]
+
+    # Compute Spearman correlation matrix
+    corr = df[all_names].corr(method="spearman")
+
+    # Create figure with grid of axes
+    fig, axes = plt.subplots(n_vars, n_vars, figsize=(28, 28))
+
+    cmap = plt.cm.PRGn
+    norm = plt.Normalize(vmin=-1, vmax=1)
+
+    for i in range(n_vars):
+        for j in range(n_vars):
+            ax = axes[i, j]
+            ax.set_xticks([])
+            ax.set_yticks([])
+
+            if i == j:
+                # Diagonal: histogram
+                vals = df[all_names[i]].dropna().values
+                color = "#1f77b4" if i < n_train else "#ff7f0e"
+                lo, hi = np.nanpercentile(vals, [1, 99])
+                if not np.isfinite(lo) or not np.isfinite(hi) or lo == hi:
+                    ax.text(0.5, 0.5, "?", ha="center", va="center", transform=ax.transAxes)
+                else:
+                    vals_clipped = vals[(vals >= lo) & (vals <= hi)]
+                    ax.hist(vals_clipped, bins=30, color=color, edgecolor="none", alpha=0.8)
+            elif i > j:
+                # Lower triangle: colored correlation cell
+                r = corr.iloc[i, j]
+                if np.isnan(r):
+                    ax.set_facecolor("lightgray")
+                else:
+                    ax.set_facecolor(cmap(norm(r)))
+            else:
+                # Upper triangle: blank
+                ax.axis("off")
+
+        # Row labels on left
+        if True:
+            axes[i, 0].set_ylabel(display_names[i], fontsize=10, rotation=0, ha="right", va="center", labelpad=3)
+
+    # Column labels on bottom
+    for j in range(n_vars):
+        axes[-1, j].set_xlabel(display_names[j], fontsize=10, rotation=90, ha="center", va="top", labelpad=3)
+
+    # Draw box around held-out block (bottom-right of lower triangle)
+    # In axes coordinates, the held-out block spans rows/cols [n_train:n_vars]
+    # Get positions of the corner axes to draw a rectangle in figure coords
+    ax_top_left = axes[n_train, n_train]
+    ax_bot_right = axes[n_vars - 1, n_vars - 1]
+    fig.canvas.draw()
+
+    pos_tl = ax_top_left.get_position()
+    pos_br = ax_bot_right.get_position()
+
+    rect = Rectangle(
+        (pos_tl.x0, pos_br.y0),
+        pos_br.x1 - pos_tl.x0,
+        pos_tl.y1 - pos_br.y0,
+        transform=fig.transFigure,
+        linewidth=3, edgecolor="red", facecolor="none",
+        clip_on=False, zorder=10,
+    )
+    fig.patches.append(rect)
+
+    # Label
+    fig.text(
+        (pos_tl.x0 + pos_br.x1) / 2, pos_tl.y1 + 0.005,
+        "held-out (zero-shot) variables",
+        ha="center", va="bottom", fontsize=36, fontweight="bold", color="red",
+    )
+
+    # Box around training variables (top-left block)
+    ax_train_tl = axes[0, 0]
+    ax_train_br = axes[n_train - 1, n_train - 1]
+    pos_train_tl = ax_train_tl.get_position()
+    pos_train_br = ax_train_br.get_position()
+    rect_train = Rectangle(
+        (pos_train_tl.x0, pos_train_br.y0),
+        pos_train_br.x1 - pos_train_tl.x0,
+        pos_train_tl.y1 - pos_train_br.y0,
+        transform=fig.transFigure,
+        linewidth=3, edgecolor="blue", facecolor="none",
+        clip_on=False, zorder=10,
+    )
+    fig.patches.append(rect_train)
+    fig.text(
+        pos_train_br.x1 + 0.005, (pos_train_tl.y1 + pos_train_br.y0) / 2,
+        "training variables",
+        ha="left", va="center", fontsize=36, fontweight="bold", color="blue",
+    )
+
+    # Colorbar
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=axes, shrink=0.6, pad=0.01, aspect=30)
+    cbar.set_label("Spearman $\\rho$", fontsize=18)
+    cbar.ax.tick_params(labelsize=14)
+
+    plt.subplots_adjust(wspace=0.05, hspace=0.05)
+    plt.savefig(output_dir / "fig_lily_correlations.png", dpi=200, bbox_inches="tight")
+    plt.close()
+    print("  Saved fig_lily_correlations.png")

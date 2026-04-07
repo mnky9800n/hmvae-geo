@@ -15,6 +15,7 @@ dependencies = [
     "requests",
     "tqdm",
     "joblib",
+    "seaborn>=0.13.2",
 ]
 
 [project.scripts]
