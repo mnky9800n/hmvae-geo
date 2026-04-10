@@ -296,12 +296,19 @@ class TabNetBaseline:
         )
 
     def get_embeddings(self, x: torch.Tensor) -> torch.Tensor:
+        # TabNetPretrainer places its network on whatever device its internal
+        # `device_name="auto"` picked (typically cuda:0 when CUDA is available).
+        # The caller passes x on CPU, so we mirror the network's device before
+        # the forward pass and return embeddings on CPU for downstream eval
+        # which uses sklearn/numpy.
         net = self.model.network
         net.eval()
+        net_device = next(net.parameters()).device
         with torch.no_grad():
+            x = x.to(net_device)
             steps_output, _ = net.encoder(x)
             emb = sum(steps_output)
-        return emb
+        return emb.cpu()
 
     def eval(self) -> "TabNetBaseline":
         if self.model is not None:
