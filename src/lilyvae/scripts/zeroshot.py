@@ -12,7 +12,7 @@ from lilyvae.config import (
     BOOTSTRAP_ITERATIONS,
     BOOTSTRAP_TEST_FRACTION,
 )
-from lilyvae.evaluation.bootstrap import bootstrap_zeroshot
+from lilyvae.evaluation.bootstrap_zeroshot import bootstrap_zeroshot
 from lilyvae.evaluation.monte_carlo import monte_carlo_explore
 
 
