@@ -21,9 +21,10 @@ dependencies = [
 
 [project.scripts]
 lilyvae-download = "lilyvae.scripts.download:main"
+lilyvae-pipeline = "lilyvae.scripts.pipeline:main"
 lilyvae-train = "lilyvae.scripts.train:main"
-lilyvae-evaluate = "lilyvae.scripts.evaluate:main"
 lilyvae-bootstrap = "lilyvae.scripts.bootstrap:main"
+lilyvae-evaluate = "lilyvae.scripts.evaluate:main"
 lilyvae-zeroshot = "lilyvae.scripts.zeroshot:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
