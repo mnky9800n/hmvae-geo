@@ -1,14 +1,27 @@
-"""Canonical bootstrap evaluation across all models.
+"""Canonical bootstrap evaluation across all models -- training-stability metrics.
 
-This module is the single source of truth for every number in the paper's
-main results table. For each bootstrap iteration:
+This module measures how reconstruction R^2, clustering ARI, and
+classification AUC vary across different train/test borehole splits. It
+does NOT compute zero-shot R^2. Zero-shot evaluation is a property of a
+single fully-trained model's embedding space and is measured separately
+on the full-data VAE checkpoints (see scripts/evaluate.py and
+evaluate_all_zeroshot in evaluation/zeroshot.py), not inside this loop.
+
+Rationale: in-fold CatBoost on only the 10% held-out samples makes
+CatBoost's regressor massively under-sampled and encourages it to
+memorize the fold, inflating R^2 for whichever baseline passes raw
+features through (e.g., PCA on 6 features is the identity). The right
+question for zero-shot is "can an embedding trained once on all
+boreholes predict unseen variables?", which requires the full-data
+training setting, not per-fold subsets.
+
+For each bootstrap iteration:
 
 1. Split 296 boreholes into 90% train / 10% held-out (seeded so all models
    within an iteration see the exact same split).
 2. Train every registered model from scratch on the train boreholes.
-3. Evaluate every model on the held-out boreholes using the same four
-   metrics: reconstruction R^2, clustering ARI, classification AUC, and
-   zero-shot R^2 (CatBoost over held-out samples).
+3. Evaluate every model on the held-out boreholes on three metrics:
+   reconstruction R^2, clustering ARI, classification AUC.
 4. Record per-iteration metrics.
 
 After N iterations, aggregate median / IQR / 95% CI for every metric per
@@ -345,16 +358,10 @@ def _compute_metrics(
     trained: TrainedModel,
     test_features: torch.Tensor,
     test_labels: torch.Tensor,
-    zeroshot_targets: dict | None,
-    test_sample_indices: np.ndarray,
 ) -> dict:
-    """Compute reconstruction R^2, ARI, AUC, zero-shot R^2 for one trained model.
+    """Compute reconstruction R^2, ARI, and AUC for one trained model.
 
-    Zero-shot R^2 is computed on test-borehole samples only: both the
-    embeddings used as features and the target values are drawn from the
-    held-out 10%. CatBoost is trained and evaluated on this same subset
-    (in-sample within the fold) -- this matches the bootstrap philosophy
-    that every fold is a self-contained generalization test.
+    Zero-shot R^2 is deliberately NOT computed here; see module docstring.
     """
     metrics: dict = {"model": trained.name}
 
@@ -386,63 +393,7 @@ def _compute_metrics(
         metrics["auc_macro"] = float("nan")
         metrics["auc_error"] = str(e)
 
-    # Zero-shot R^2 (in-fold CatBoost on held-out samples)
-    if zeroshot_targets is not None:
-        zs_r2s = _evaluate_zeroshot_fold(
-            trained.embeddings, zeroshot_targets, test_sample_indices,
-        )
-        if zs_r2s:
-            metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s))
-            metrics["zeroshot_n_variables"] = len(zs_r2s)
-        else:
-            metrics["zeroshot_r2_avg"] = float("nan")
-            metrics["zeroshot_n_variables"] = 0
-
     return metrics
-
-
-def _evaluate_zeroshot_fold(
-    embeddings: torch.Tensor,
-    zeroshot_targets: dict,
-    test_sample_indices: np.ndarray,
-) -> list[float]:
-    """Run CatBoost zero-shot prediction on held-out fold samples only."""
-    from catboost import CatBoostRegressor
-
-    z = embeddings.numpy()
-    results: list[float] = []
-
-    for name, target in zeroshot_targets.items():
-        target_values = target["values"].numpy()
-        valid_mask = target["valid_mask"].numpy().astype(bool)
-
-        # Subset to samples that are both (a) in this test fold and (b) valid
-        fold_valid_mask = valid_mask[test_sample_indices]
-        if fold_valid_mask.sum() < 50:
-            continue
-
-        z_valid = z[fold_valid_mask]
-        y_valid = target_values[test_sample_indices][fold_valid_mask]
-
-        try:
-            model = CatBoostRegressor(
-                iterations=500,
-                depth=6,
-                learning_rate=0.1,
-                verbose=0,
-                random_seed=42,
-                bootstrap_type="Bernoulli",
-                subsample=0.8,
-            )
-            model.fit(z_valid, y_valid)
-            y_pred = model.predict(z_valid)
-            r2 = r2_score(y_valid, y_pred)
-            if not np.isnan(r2) and np.isfinite(r2):
-                results.append(float(r2))
-        except Exception:
-            continue
-
-    return results
 
 
 # ===========================================================================
@@ -455,16 +406,17 @@ def run_bootstrap(
     test_fraction: float = 0.1,
     device: str = "auto",
     models: list[str] | None = None,
-    include_zeroshot: bool = True,
 ) -> dict:
-    """Run the canonical bootstrap evaluation.
+    """Run the canonical bootstrap evaluation for training-stability metrics.
+
+    Zero-shot R^2 is not computed here; it should be measured on a
+    full-data trained model via `lilyvae-evaluate`.
 
     Args:
         n_iterations: Number of bootstrap iterations.
         test_fraction: Fraction of boreholes held out per iteration.
         device: "auto", "cpu", "cuda", or "mps".
         models: Optional subset of model names from MODEL_REGISTRY.
-        include_zeroshot: Whether to run zero-shot CatBoost per fold (slow).
 
     Returns:
         dict with keys: config, per_iteration, summary, elapsed_seconds.
@@ -475,12 +427,6 @@ def run_bootstrap(
     labels = torch.load(PROCESSED_DIR / "train_labels.pt", weights_only=True)
     metadata = torch.load(PROCESSED_DIR / "metadata.pt", weights_only=False)
     borehole_ids = np.asarray(metadata["borehole_ids"])
-
-    zeroshot_targets = None
-    if include_zeroshot:
-        zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
-        if zs_path.exists():
-            zeroshot_targets = torch.load(zs_path, weights_only=False)
 
     registry = MODEL_REGISTRY
     if models is not None:
@@ -512,10 +458,9 @@ def run_bootstrap(
         train_labels = labels[train_mask]
         test_features = features[test_mask]
         test_labels = labels[test_mask]
-        test_sample_indices = np.where(test_mask)[0]
 
         print(
-            f"  train: {train_mask.sum()} samples ({(~test_mask.astype(bool)).sum()} rows)"
+            f"  train: {train_mask.sum()} samples ({len(unique_boreholes)-len(test_boreholes)} boreholes)"
             f" | test: {test_mask.sum()} samples ({len(test_boreholes)} boreholes)"
         )
 
@@ -532,15 +477,10 @@ def run_bootstrap(
             print(f"\n  [{model_name}]")
             try:
                 trained = trainer(train_features, train_labels, test_features, dev)
-                metrics = _compute_metrics(
-                    trained, test_features, test_labels,
-                    zeroshot_targets, test_sample_indices,
-                )
-                zs = metrics.get("zeroshot_r2_avg", float("nan"))
+                metrics = _compute_metrics(trained, test_features, test_labels)
                 print(
                     f"    R2={metrics['r2_avg']:.4f}  ARI={metrics['ari']:.4f}  "
-                    f"AUC={metrics['auc_macro']:.4f}  ZS={zs:.4f}  "
-                    f"({time.time()-t0:.1f}s)"
+                    f"AUC={metrics['auc_macro']:.4f}  ({time.time()-t0:.1f}s)"
                 )
             except Exception as e:
                 print(f"    ERROR: {e}")
@@ -565,7 +505,6 @@ def run_bootstrap(
             "n_iterations": n_iterations,
             "test_fraction": test_fraction,
             "models": [n for n, _ in registry],
-            "include_zeroshot": include_zeroshot,
             "seed": SEED,
         },
         "per_iteration": per_iteration,
@@ -582,7 +521,7 @@ def run_bootstrap(
 def _aggregate_summary(per_iteration: list[dict]) -> dict:
     """Compute median, IQR, 95% CI, mean, std for every (model, metric) pair."""
     metric_keys = [
-        "r2_avg", "ari", "auc_macro", "zeroshot_r2_avg",
+        "r2_avg", "ari", "auc_macro",
     ] + [f"r2_{v}" for v in TRAINING_VARIABLES]
 
     model_names = set()
@@ -624,7 +563,7 @@ def _aggregate_summary(per_iteration: list[dict]) -> dict:
 def _print_summary(summary: dict) -> None:
     for name, metrics in summary.items():
         print(f"\n  {name}")
-        for metric in ("r2_avg", "ari", "auc_macro", "zeroshot_r2_avg"):
+        for metric in ("r2_avg", "ari", "auc_macro"):
             if metric not in metrics:
                 continue
             s = metrics[metric]

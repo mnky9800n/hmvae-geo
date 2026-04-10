@@ -4,13 +4,16 @@ One command that runs every step needed to reproduce the paper's results:
 
 1. Preprocess the LILY database (skipped if processed tensors already exist).
 2. Train full-data VAE checkpoints (skipped if already on disk). These are
-   used by downstream figure generation and as "the model" when someone
-   wants a single deployable artifact.
+   "the" deployable models and provide embeddings for the zero-shot eval.
 3. Run the canonical bootstrap evaluation across every registered model
-   (11 total: baselines, ablations, full models). Writes
-   data/results/bootstrap_results.json, which is the single source of
-   truth for every paper number.
-4. Generate paper figures.
+   (11 total: baselines, ablations, full models) to produce training-
+   stability confidence intervals for reconstruction R^2, ARI, AUC. Writes
+   data/results/bootstrap_results.json.
+4. Run zero-shot evaluation on the full-data VAE embeddings via CatBoost.
+   Writes data/results/zeroshot_fulldata.json. (Zero-shot is measured once
+   on the full-data model, not inside the bootstrap loop -- see
+   evaluation/bootstrap.py's module docstring for the rationale.)
+5. Generate paper figures.
 
 Each step is idempotent: if its expected output already exists, it is
 skipped with a message. Use `--force` to re-run everything.
@@ -94,7 +97,6 @@ def _step_bootstrap(
     force: bool,
     device: str,
     iterations: int,
-    include_zeroshot: bool,
 ) -> None:
     out_path = RESULTS_DIR / "bootstrap_results.json"
     if _exists(out_path) and not force:
@@ -108,11 +110,53 @@ def _step_bootstrap(
     result = run_bootstrap(
         n_iterations=iterations,
         device=device,
-        include_zeroshot=include_zeroshot,
     )
     with open(out_path, "w") as f:
         json.dump(_make_serializable(result), f, indent=2)
     print(f"[done] bootstrap written to {out_path}")
+
+
+def _step_zeroshot(force: bool) -> None:
+    """Zero-shot evaluation on full-data VAE embeddings.
+
+    Reuses the embeddings extracted in _step_train. For each zero-shot
+    target variable, trains a CatBoost regressor on the embeddings of
+    samples where that variable is observed and reports R^2. Matches the
+    paper's original zero-shot methodology (in-sample CatBoost on the
+    full 238k-sample dataset).
+    """
+    out_path = RESULTS_DIR / "zeroshot_fulldata.json"
+    if _exists(out_path) and not force:
+        print(f"[skip] zeroshot_fulldata.json already at {out_path}")
+        return
+
+    from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
+
+    print(f"\n[run]  zero-shot evaluation on full-data VAE embeddings")
+    zeroshot_targets = torch.load(PROCESSED_DIR / "zeroshot_targets.pt", weights_only=False)
+    all_results = {}
+    for model_type in ("unsupervised", "semi_supervised"):
+        embeddings_path = CHECKPOINT_DIR / f"{model_type}_embeddings.pt"
+        if not _exists(embeddings_path):
+            print(f"  [skip] {model_type}: {embeddings_path} not found")
+            continue
+        print(f"\n  {model_type}:")
+        embeddings = torch.load(embeddings_path, weights_only=True)
+        per_variable = evaluate_all_zeroshot(embeddings, zeroshot_targets)
+        r2s = [v["r2"] for v in per_variable.values()
+               if isinstance(v.get("r2"), float) and not (v["r2"] != v["r2"])]
+        avg = float(sum(r2s) / len(r2s)) if r2s else float("nan")
+        all_results[model_type] = {
+            "r2_avg": avg,
+            "n_variables": len(r2s),
+            "per_variable": per_variable,
+        }
+        print(f"    average R^2 across {len(r2s)} variables: {avg:.4f}")
+
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w") as f:
+        json.dump(_make_serializable(all_results), f, indent=2)
+    print(f"[done] zero-shot written to {out_path}")
 
 
 def _step_plot(force: bool) -> None:
@@ -147,9 +191,9 @@ def main():
         help="Bootstrap iterations (default: 30, matches paper).",
     )
     parser.add_argument(
-        "--no-zeroshot",
+        "--skip-zeroshot",
         action="store_true",
-        help="Skip per-fold zero-shot CatBoost (much faster; for quick iteration).",
+        help="Skip the post-training zero-shot evaluation step.",
     )
     parser.add_argument(
         "--skip-plot",
@@ -169,8 +213,9 @@ def main():
         force=args.force,
         device=args.device,
         iterations=args.iterations,
-        include_zeroshot=not args.no_zeroshot,
     )
+    if not args.skip_zeroshot:
+        _step_zeroshot(force=args.force)
     if not args.skip_plot:
         _step_plot(force=args.force)
 

@@ -1,20 +1,24 @@
 """CLI entry point for the canonical bootstrap evaluation.
 
-Runs the unified bootstrap loop defined in
-`lilyvae.evaluation.bootstrap.run_bootstrap` and writes a single results
-file (`data/results/bootstrap_results.json`) that is the source of truth
-for every number in the paper's main results table.
+Runs the bootstrap loop defined in `lilyvae.evaluation.bootstrap.run_bootstrap`
+and writes a single results file (`data/results/bootstrap_results.json`)
+that is the source of truth for the bootstrap training-stability metrics
+(reconstruction R^2, ARI, AUC) reported in the paper.
+
+Zero-shot R^2 is intentionally NOT computed here. It is a property of a
+full-data trained model's embedding space and is measured separately via
+`lilyvae-evaluate` on the full-data VAE checkpoints. Running CatBoost per
+fold on 18k held-out samples makes CatBoost undersampled and inflates
+R^2 for trivial "embeddings" (e.g., PCA as identity), which is not what
+the paper is claiming.
 
 Usage
 -----
-Full run (every model x 30 folds, with zero-shot):
+Full run (every model x 30 folds):
     uv run lilyvae-bootstrap
 
 Quick sanity check (2 folds, small model set):
     uv run lilyvae-bootstrap --iterations 2 --models pca unsupervised_vae
-
-Skip zero-shot (faster):
-    uv run lilyvae-bootstrap --no-zeroshot
 """
 
 from __future__ import annotations
@@ -57,11 +61,6 @@ def main():
         ),
     )
     parser.add_argument(
-        "--no-zeroshot",
-        action="store_true",
-        help="Skip the per-fold CatBoost zero-shot evaluation (much faster).",
-    )
-    parser.add_argument(
         "--output",
         default=None,
         help="Output JSON path (default: data/results/bootstrap_results.json).",
@@ -80,7 +79,6 @@ def main():
         test_fraction=args.test_fraction,
         device=args.device,
         models=args.models,
-        include_zeroshot=not args.no_zeroshot,
     )
 
     with open(output_path, "w") as f:
