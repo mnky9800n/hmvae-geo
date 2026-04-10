@@ -1,6 +1,6 @@
 """Non-VAE baseline models for comparison against LilyVAE.
 
-Three baselines are implemented:
+Five baselines are implemented:
 
 PCA
     Fits PCA on the 6 training features and uses the top `latent_dim`
@@ -10,7 +10,7 @@ PCA
 LinearAutoencoder
     Same hidden-layer widths as LilyVAE but with no activation functions
     and no KL term. Trained with MSE loss only. The bottleneck IS the
-    embedding — this is a classical linear autoencoder and collapses to a
+    embedding -- this is a classical linear autoencoder and collapses to a
     subspace equivalent to PCA given sufficient training, making it a useful
     sanity-check for the nonlinear models.
 
@@ -20,9 +20,20 @@ DeterministicAutoencoder
     the embedding rather than a distribution. Trained with MSE loss only.
     Isolates the effect of the variational objective.
 
-All three implement get_embeddings(x) -> Tensor and a forward method that
-returns a dict with key "x_mu", matching the interface that
-evaluate_reconstruction expects (duck typing — no shared base class needed).
+TabNetBaseline
+    TabNet (Arik & Pfister, 2021) with unsupervised mask-reconstruct
+    pretraining. No labels required. Embeddings are the summed decision
+    step outputs from the TabNet encoder.
+
+SCARFBaseline
+    SCARF (Bahri et al., ICML 2022) contrastive self-supervised learning.
+    No labels required. Corrupts random features with marginal samples and
+    learns embeddings via NT-Xent contrastive loss. Does not reconstruct
+    inputs, so reconstruction R^2 is not applicable.
+
+All implement get_embeddings(x) -> Tensor. Reconstruction-based models also
+return a dict with key "x_mu" from forward/call, matching the interface that
+evaluate_reconstruction expects.
 """
 
 from __future__ import annotations
@@ -230,6 +241,171 @@ class DeterministicAutoencoder(nn.Module):
 
 
 # ---------------------------------------------------------------------------
+# TabNet unsupervised baseline
+# ---------------------------------------------------------------------------
+
+
+class TabNetBaseline:
+    """TabNet with unsupervised mask-reconstruct pretraining (no labels).
+
+    Uses pytorch_tabnet.pretraining.TabNetPretrainer. Embeddings are the
+    summed decision-step outputs from the TabNet encoder, giving a vector
+    of dimensionality n_d per sample.
+
+    Note: TabNet's pretraining objective is masked-feature reconstruction
+    (predict masked values from unmasked ones), not full autoencoder
+    reconstruction. The predict() output collapses toward feature means
+    for unmasked positions, so reconstruction R^2 is not a meaningful
+    metric for this baseline and is reported as NaN.
+    """
+
+    def __init__(
+        self,
+        latent_dim: int = LATENT_DIM,
+        n_steps: int = 3,
+        pretraining_ratio: float = 0.5,
+    ):
+        self.latent_dim = latent_dim
+        self.n_steps = n_steps
+        self.pretraining_ratio = pretraining_ratio
+        self.model = None
+
+    def fit(self, dataloader: DataLoader, max_epochs: int = NUM_EPOCHS) -> None:
+        from pytorch_tabnet.pretraining import TabNetPretrainer
+
+        all_features = []
+        for features, _, _ in dataloader:
+            all_features.append(features.numpy())
+        X = np.concatenate(all_features, axis=0)
+
+        self.model = TabNetPretrainer(
+            n_d=self.latent_dim,
+            n_a=self.latent_dim,
+            n_steps=self.n_steps,
+            momentum=0.3,
+            mask_type="entmax",
+            verbose=0,
+            seed=SEED,
+        )
+        self.model.fit(
+            X,
+            max_epochs=max_epochs,
+            batch_size=1024,
+            virtual_batch_size=128,
+            pretraining_ratio=self.pretraining_ratio,
+        )
+
+    def get_embeddings(self, x: torch.Tensor) -> torch.Tensor:
+        net = self.model.network
+        net.eval()
+        with torch.no_grad():
+            steps_output, _ = net.encoder(x)
+            emb = sum(steps_output)
+        return emb
+
+    def eval(self) -> "TabNetBaseline":
+        if self.model is not None:
+            self.model.network.eval()
+        return self
+
+
+# ---------------------------------------------------------------------------
+# SCARF contrastive baseline
+# ---------------------------------------------------------------------------
+
+
+class _SCARFEncoder(nn.Module):
+    """MLP encoder for SCARF."""
+
+    def __init__(self, input_dim: int, hidden_dim: int, emb_dim: int, depth: int = 3):
+        super().__init__()
+        layers = [nn.Linear(input_dim, hidden_dim), nn.ReLU(), nn.BatchNorm1d(hidden_dim)]
+        for _ in range(depth - 1):
+            layers.extend([nn.Linear(hidden_dim, hidden_dim), nn.ReLU(), nn.BatchNorm1d(hidden_dim)])
+        layers.append(nn.Linear(hidden_dim, emb_dim))
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
+
+
+class _SCARFProjector(nn.Module):
+    """Projection head for SCARF (discarded after training)."""
+
+    def __init__(self, emb_dim: int, proj_dim: int = 64):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(emb_dim, proj_dim),
+            nn.ReLU(),
+            nn.Linear(proj_dim, proj_dim),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
+
+
+def _nt_xent_loss(z_anchor: torch.Tensor, z_positive: torch.Tensor, temperature: float = 0.5) -> torch.Tensor:
+    """NT-Xent contrastive loss (SimCLR-style)."""
+    batch_size = z_anchor.shape[0]
+    z = torch.cat([z_anchor, z_positive], dim=0)
+    z = F.normalize(z, dim=1)
+    sim = z @ z.T / temperature
+    # Mask out self-similarity
+    mask = ~torch.eye(2 * batch_size, dtype=torch.bool, device=z.device)
+    sim = sim.masked_fill(~mask, -1e9)
+    # Positive pairs: (i, i+B) and (i+B, i)
+    labels = torch.cat([
+        torch.arange(batch_size, 2 * batch_size),
+        torch.arange(batch_size),
+    ]).to(z.device)
+    return F.cross_entropy(sim, labels)
+
+
+class SCARFBaseline(nn.Module):
+    """SCARF: contrastive self-supervised learning for tabular data (no labels).
+
+    Corrupts random features with values drawn from per-feature marginal
+    distributions and trains with NT-Xent contrastive loss. The projection
+    head is discarded after training; the encoder output is the embedding.
+    """
+
+    def __init__(
+        self,
+        input_dim: int = INPUT_DIM,
+        latent_dim: int = LATENT_DIM,
+        hidden_dim: int = 128,
+        encoder_depth: int = 3,
+        corruption_rate: float = 0.6,
+        temperature: float = 0.5,
+    ):
+        super().__init__()
+        self.encoder = _SCARFEncoder(input_dim, hidden_dim, latent_dim, encoder_depth)
+        self.projector = _SCARFProjector(latent_dim)
+        self.corruption_rate = corruption_rate
+        self.temperature = temperature
+        self.marginals: torch.Tensor | None = None
+
+    def _corrupt(self, x: torch.Tensor) -> torch.Tensor:
+        B, D = x.shape
+        mask = torch.rand(B, D, device=x.device) < self.corruption_rate
+        indices = torch.randint(0, len(self.marginals), (B, D))
+        marginal_samples = torch.stack(
+            [self.marginals[indices[:, d], d] for d in range(D)], dim=1
+        ).to(x.device)
+        return torch.where(mask, marginal_samples, x)
+
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        x_corrupted = self._corrupt(x)
+        z_anchor = self.projector(self.encoder(x))
+        z_positive = self.projector(self.encoder(x_corrupted))
+        return z_anchor, z_positive
+
+    @torch.no_grad()
+    def get_embeddings(self, x: torch.Tensor) -> torch.Tensor:
+        return self.encoder(x)
+
+
+# ---------------------------------------------------------------------------
 # Neural baseline training
 # ---------------------------------------------------------------------------
 
@@ -255,6 +431,48 @@ def _train_autoencoder(
             features = features.to(device)
             out = model(features)
             loss = F.mse_loss(out["x_mu"], features)
+
+            optimizer.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(
+                model.parameters(), max_grad_norm
+            )
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0 or epoch == 0:
+            print(f"  epoch {epoch+1:3d}/{num_epochs}")
+
+    return model
+
+
+def _train_scarf(
+    model: SCARFBaseline,
+    dataloader: DataLoader,
+    num_epochs: int,
+    lr: float,
+    weight_decay: float,
+    max_grad_norm: float,
+    device: torch.device,
+) -> SCARFBaseline:
+    """Train a SCARFBaseline with NT-Xent contrastive loss."""
+    # Store marginal distributions from all training data
+    all_features = []
+    for features, _, _ in dataloader:
+        all_features.append(features)
+    all_X = torch.cat(all_features, dim=0)
+    model.marginals = all_X
+
+    model = model.to(device)
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=lr, weight_decay=weight_decay
+    )
+
+    for epoch in range(num_epochs):
+        model.train()
+        for features, _, _ in dataloader:
+            features = features.to(device)
+            z_anchor, z_positive = model(features)
+            loss = _nt_xent_loss(z_anchor, z_positive, model.temperature)
 
             optimizer.zero_grad()
             loss.backward()
@@ -436,12 +654,127 @@ def evaluate_deterministic_autoencoder(
     return metrics
 
 
+def evaluate_tabnet_baseline(
+    latent_dim: int = LATENT_DIM,
+    dataloader: DataLoader | None = None,
+    num_epochs: int = NUM_EPOCHS,
+) -> dict:
+    """Train TabNet unsupervised pretrainer and compute evaluation metrics.
+
+    TabNet uses mask-reconstruct pretraining (no labels required).
+    Reconstruction R^2 is not reported because TabNet's objective is
+    masked-feature prediction, not full autoencoder reconstruction.
+
+    Args:
+        latent_dim: Embedding dimensionality (TabNet n_d parameter).
+        dataloader: Optional pre-built DataLoader.
+        num_epochs: Training epochs.
+
+    Returns:
+        Metrics dict with model name, ari, auc_macro, and zero-shot R^2.
+    """
+    if dataloader is None:
+        dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
+
+    print(f"\n[baseline] TabNet (unsupervised)  latent_dim={latent_dim}")
+    baseline = TabNetBaseline(latent_dim)
+    baseline.fit(dataloader, max_epochs=num_epochs)
+
+    # Embeddings for clustering/classification/zeroshot
+    all_z, all_labels = _extract_all(baseline, dataloader)
+    clust_metrics = evaluate_clustering(all_z, all_labels)
+    cls_metrics = evaluate_classification(all_z, all_labels)
+
+    metrics = {
+        "model": "tabnet_unsupervised",
+        "latent_dim": latent_dim,
+        "r2_avg": float("nan"),  # TabNet does masked prediction, not full reconstruction
+        "ari": clust_metrics["ari"],
+        "auc_macro": cls_metrics["auc_macro"],
+    }
+
+    from lilyvae.config import PROCESSED_DIR
+    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+    if zs_path.exists():
+        zeroshot_targets = torch.load(zs_path, weights_only=False)
+        print("  Zero-shot prediction:")
+        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
+        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
+        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
+        metrics["zeroshot_n_variables"] = len(zs_r2s)
+
+    return metrics
+
+
+def evaluate_scarf_baseline(
+    latent_dim: int = LATENT_DIM,
+    dataloader: DataLoader | None = None,
+    num_epochs: int = NUM_EPOCHS,
+    lr: float = LEARNING_RATE,
+    weight_decay: float = WEIGHT_DECAY,
+    max_grad_norm: float = MAX_GRAD_NORM,
+    device: str = "auto",
+) -> dict:
+    """Train SCARF contrastive baseline and compute evaluation metrics.
+
+    SCARF uses contrastive self-supervised learning (no labels required).
+    Reconstruction R^2 is not applicable since SCARF does not reconstruct.
+
+    Args:
+        latent_dim: Embedding dimensionality.
+        dataloader: Optional pre-built DataLoader.
+        num_epochs: Training epochs.
+        lr: Learning rate.
+        weight_decay: Adam weight decay.
+        max_grad_norm: Gradient clipping threshold.
+        device: Compute device string.
+
+    Returns:
+        Metrics dict with model name, ari, auc_macro, and zero-shot R^2.
+    """
+    torch.manual_seed(SEED)
+    dev = get_device(device)
+
+    if dataloader is None:
+        dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
+
+    print(f"\n[baseline] SCARF (contrastive)  latent_dim={latent_dim}")
+    model = SCARFBaseline(INPUT_DIM, latent_dim)
+    model = _train_scarf(
+        model, dataloader, num_epochs, lr, weight_decay, max_grad_norm, dev
+    )
+
+    all_z, all_labels = _extract_all_nn(model, dataloader, dev)
+    clust_metrics = evaluate_clustering(all_z, all_labels)
+    cls_metrics = evaluate_classification(all_z, all_labels)
+
+    metrics = {
+        "model": "scarf_contrastive",
+        "latent_dim": latent_dim,
+        "r2_avg": float("nan"),  # SCARF does not reconstruct
+        "ari": clust_metrics["ari"],
+        "auc_macro": cls_metrics["auc_macro"],
+    }
+
+    from lilyvae.config import PROCESSED_DIR
+    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+    if zs_path.exists():
+        zeroshot_targets = torch.load(zs_path, weights_only=False)
+        print("  Zero-shot prediction:")
+        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
+        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
+        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
+        metrics["zeroshot_n_variables"] = len(zs_r2s)
+
+    return metrics
+
+
 def run_all_baselines(
     latent_dim: int = LATENT_DIM,
     num_epochs: int = NUM_EPOCHS,
     device: str = "auto",
 ) -> list[dict]:
-    """Evaluate all three baselines and return a list of result dicts.
+    """Evaluate all five baselines and return a list of result dicts.
 
     Args:
         latent_dim: Embedding dimensionality for all baselines.
@@ -450,7 +783,8 @@ def run_all_baselines(
 
     Returns:
         List of metrics dicts, one per baseline, in order:
-        [pca, linear_autoencoder, deterministic_autoencoder].
+        [pca, linear_autoencoder, deterministic_autoencoder,
+         tabnet_unsupervised, scarf_contrastive].
     """
     dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
 
@@ -463,6 +797,17 @@ def run_all_baselines(
             device=device,
         ),
         evaluate_deterministic_autoencoder(
+            latent_dim=latent_dim,
+            dataloader=dataloader,
+            num_epochs=num_epochs,
+            device=device,
+        ),
+        evaluate_tabnet_baseline(
+            latent_dim=latent_dim,
+            dataloader=dataloader,
+            num_epochs=num_epochs,
+        ),
+        evaluate_scarf_baseline(
             latent_dim=latent_dim,
             dataloader=dataloader,
             num_epochs=num_epochs,

@@ -16,6 +16,7 @@ dependencies = [
     "tqdm",
     "joblib",
     "seaborn>=0.13.2",
+    "pytorch-tabnet>=4.0",
 ]
 
 [project.scripts]
