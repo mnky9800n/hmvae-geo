@@ -10,3 +10,5 @@ build/
 .DS_Store
 catboost_info/
 an-unsupervised-embeddings-model-for-ocean-crust-lithology/
+coauthor_feedback.pdf
+.claude/

@@ -27,7 +27,6 @@ lilyvae-zeroshot = "lilyvae.scripts.zeroshot:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 lilyvae-bootstrap = "lilyvae.scripts.bootstrap_train:main"
 lilyvae-ablation = "lilyvae.scripts.ablation:main"
-lilyvae-compare-zeroshot = "lilyvae.scripts.compare_zeroshot:main"
 
 [build-system]
 requires = ["hatchling"]
