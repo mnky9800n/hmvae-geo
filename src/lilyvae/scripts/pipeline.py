@@ -5,15 +5,17 @@ One command that runs every step needed to reproduce the paper's results:
 1. Preprocess the LILY database (skipped if processed tensors already exist).
 2. Train full-data VAE checkpoints (skipped if already on disk). These are
    "the" deployable models and provide embeddings for the zero-shot eval.
-3. Run the canonical bootstrap evaluation across every registered model
-   (11 total: baselines, ablations, full models) to produce training-
-   stability confidence intervals for reconstruction R^2, ARI, AUC. Writes
-   data/results/bootstrap_results.json.
-4. Run zero-shot evaluation on the full-data VAE embeddings via CatBoost.
-   Writes data/results/zeroshot_fulldata.json. (Zero-shot is measured once
-   on the full-data model, not inside the bootstrap loop -- see
-   evaluation/bootstrap.py's module docstring for the rationale.)
-5. Generate paper figures.
+3. Bootstrap ONLY the two full VAE variants across 30 borehole splits to
+   get training-stability confidence intervals for reconstruction R^2,
+   ARI, AUC. Writes data/results/bootstrap_results.json. Baselines and
+   ablations are NOT bootstrapped -- see step 4.
+4. Single-point full-data evaluation of the 5 baselines (PCA, linear AE,
+   deterministic AE, TabNet, SCARF) and 4 ablation variants (fixed-variance
+   decoder, zero masking, no masking, fixed beta), plus their zero-shot R^2.
+   Writes data/results/single_point_results.json.
+5. Zero-shot evaluation on the full-data VAE embeddings via CatBoost.
+   Writes data/results/zeroshot_fulldata.json.
+6. Generate paper figures.
 
 Each step is idempotent: if its expected output already exists, it is
 skipped with a message. Use `--force` to re-run everything.
@@ -116,6 +118,22 @@ def _step_bootstrap(
     print(f"[done] bootstrap written to {out_path}")
 
 
+def _step_single_point(force: bool, device: str) -> None:
+    out_path = RESULTS_DIR / "single_point_results.json"
+    if _exists(out_path) and not force:
+        print(f"[skip] single_point_results.json already at {out_path}")
+        return
+
+    from lilyvae.evaluation.single_point import run_single_point_eval
+
+    print(f"\n[run]  single-point full-data evaluation (baselines + ablations)")
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    result = run_single_point_eval(device=device, include_zeroshot=True)
+    with open(out_path, "w") as f:
+        json.dump(_make_serializable(result), f, indent=2)
+    print(f"[done] single-point written to {out_path}")
+
+
 def _step_zeroshot(force: bool) -> None:
     """Zero-shot evaluation on full-data VAE embeddings.
 
@@ -214,6 +232,7 @@ def main():
         device=args.device,
         iterations=args.iterations,
     )
+    _step_single_point(force=args.force, device=args.device)
     if not args.skip_zeroshot:
         _step_zeroshot(force=args.force)
     if not args.skip_plot:

@@ -1,24 +1,26 @@
-"""CLI entry point for the canonical bootstrap evaluation.
+"""CLI entry point for the VAE training-stability bootstrap.
 
 Runs the bootstrap loop defined in `lilyvae.evaluation.bootstrap.run_bootstrap`
-and writes a single results file (`data/results/bootstrap_results.json`)
-that is the source of truth for the bootstrap training-stability metrics
-(reconstruction R^2, ARI, AUC) reported in the paper.
+for the two full VAE variants (unsupervised + semi-supervised) across 30
+borehole-level splits. Writes `data/results/bootstrap_results.json`,
+which is the source of truth for the VAE rows' CIs in the paper's main
+results table.
 
-Zero-shot R^2 is intentionally NOT computed here. It is a property of a
-full-data trained model's embedding space and is measured separately via
-`lilyvae-evaluate` on the full-data VAE checkpoints. Running CatBoost per
-fold on 18k held-out samples makes CatBoost undersampled and inflates
-R^2 for trivial "embeddings" (e.g., PCA as identity), which is not what
-the paper is claiming.
+Only the VAE variants are bootstrapped -- see the module docstring in
+`lilyvae.evaluation.bootstrap` for the rationale. Baselines and ablation
+variants get single-point full-data evaluation from `lilyvae-single-point`.
+
+Zero-shot R^2 is not computed here. It is a property of the full-data
+trained VAE's embedding space and is measured separately via the
+pipeline's zero-shot step.
 
 Usage
 -----
-Full run (every model x 30 folds):
+Full run (2 VAE variants x 30 folds, matches the paper):
     uv run lilyvae-bootstrap
 
-Quick sanity check (2 folds, small model set):
-    uv run lilyvae-bootstrap --iterations 2 --models pca unsupervised_vae
+Quick sanity check (2 folds):
+    uv run lilyvae-bootstrap --iterations 2
 """
 
 from __future__ import annotations

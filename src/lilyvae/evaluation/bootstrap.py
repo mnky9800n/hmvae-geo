@@ -1,39 +1,42 @@
-"""Canonical bootstrap evaluation across all models -- training-stability metrics.
+"""Bootstrap training-stability evaluation for the VAE variants.
 
-This module measures how reconstruction R^2, clustering ARI, and
-classification AUC vary across different train/test borehole splits. It
-does NOT compute zero-shot R^2. Zero-shot evaluation is a property of a
-single fully-trained model's embedding space and is measured separately
-on the full-data VAE checkpoints (see scripts/evaluate.py and
-evaluate_all_zeroshot in evaluation/zeroshot.py), not inside this loop.
+This module measures how the VAE's reconstruction R^2, clustering ARI,
+and classification AUC vary across different train/test borehole splits.
+Borehole-level splits are the right granularity because individual
+boreholes are geologically non-exchangeable (they sample distinct
+ocean basins, depths, and sediment histories), so a random sample-level
+split would leak information across splits.
 
-Rationale: in-fold CatBoost on only the 10% held-out samples makes
-CatBoost's regressor massively under-sampled and encourages it to
-memorize the fold, inflating R^2 for whichever baseline passes raw
-features through (e.g., PCA on 6 features is the identity). The right
-question for zero-shot is "can an embedding trained once on all
-boreholes predict unseen variables?", which requires the full-data
-training setting, not per-fold subsets.
+What is and isn't in the registry
+---------------------------------
+Only the two full VAE variants (unsupervised, semi-supervised) are
+bootstrapped, because the paper's quantitative claim is about *those*
+models' stability under retraining. Baselines (PCA, linear AE,
+deterministic AE, TabNet, SCARF) and ablation variants (fixed-variance
+decoder, zero masking, no masking, fixed beta) are evaluated as
+single-point full-data runs in a separate codepath
+(`evaluation/single_point.py`). Bootstrapping them was folly -- PCA is
+deterministic, the autoencoders vary trivially, and TabNet/SCARF's CIs
+aren't part of the story the paper is telling.
 
-For each bootstrap iteration:
+Zero-shot R^2 is also NOT in this module. It is a property of the
+full-data trained model's embedding space and is computed once via
+`evaluate_all_zeroshot` on the embeddings saved by training.
 
-1. Split 296 boreholes into 90% train / 10% held-out (seeded so all models
-   within an iteration see the exact same split).
-2. Train every registered model from scratch on the train boreholes.
-3. Evaluate every model on the held-out boreholes on three metrics:
-   reconstruction R^2, clustering ARI, classification AUC.
-4. Record per-iteration metrics.
+For each bootstrap iteration this module:
 
-After N iterations, aggregate median / IQR / 95% CI for every metric per
-model and write the full result set to a single JSON file.
+1. Splits the 296 boreholes into 90% train / 10% held-out (seeded).
+2. Trains the unsupervised VAE AND the semi-supervised VAE from scratch
+   on the 90% training boreholes.
+3. Evaluates both on the held-out boreholes: reconstruction R^2, ARI,
+   AUC.
+4. Records per-iteration metrics.
 
-The registry covers:
-- Two full VAE variants (unsupervised, semi-supervised)
-- Four ablation variants (fixed-variance decoder, zero masking, no
-  masking, fixed beta schedule)
-- Five baselines (PCA, linear AE, deterministic AE, TabNet, SCARF)
-
-Adding a new model is one entry in MODEL_REGISTRY.
+After N iterations we report median / IQR / 95% CI per model per metric.
+The trainer and metric-computation helpers for the non-bootstrapped
+models (baselines, ablations) live in this file because they are reused
+by the single-point evaluator, but they are not referenced from
+MODEL_REGISTRY.
 """
 
 from __future__ import annotations
@@ -331,7 +334,19 @@ def _trainer_scarf(train_f, train_l, test_f, device):
 # ---------------------------------------------------------------------------
 
 
+#: The bootstrap only touches the two full VAE variants. See the module
+#: docstring for the rationale. Baselines and ablations are evaluated
+#: single-point in evaluation/single_point.py, but their trainer functions
+#: live in this file so both evaluators share one source of truth.
 MODEL_REGISTRY: list[tuple[str, Trainer]] = [
+    ("semi_supervised_vae", _trainer_semi_supervised_vae),
+    ("unsupervised_vae", _trainer_unsupervised_vae),
+]
+
+
+#: Full list of trainers (including baselines + ablations) for the
+#: single-point evaluator to reuse.
+ALL_TRAINERS: list[tuple[str, Trainer]] = [
     # Baselines
     ("pca", _trainer_pca),
     ("linear_autoencoder", _trainer_linear_ae),
@@ -519,9 +534,14 @@ def run_bootstrap(
 
 
 def _aggregate_summary(per_iteration: list[dict]) -> dict:
-    """Compute median, IQR, 95% CI, mean, std for every (model, metric) pair."""
+    """Compute median, IQR, 95% CI, mean, std for every (model, metric) pair.
+
+    Also aggregates ``zeroshot_r2_avg`` if the single-point evaluator added
+    that key to a model's metrics dict; the key is simply skipped for
+    bootstrap outputs that never compute zero-shot.
+    """
     metric_keys = [
-        "r2_avg", "ari", "auc_macro",
+        "r2_avg", "ari", "auc_macro", "zeroshot_r2_avg",
     ] + [f"r2_{v}" for v in TRAINING_VARIABLES]
 
     model_names = set()
@@ -563,7 +583,7 @@ def _aggregate_summary(per_iteration: list[dict]) -> dict:
 def _print_summary(summary: dict) -> None:
     for name, metrics in summary.items():
         print(f"\n  {name}")
-        for metric in ("r2_avg", "ari", "auc_macro"):
+        for metric in ("r2_avg", "ari", "auc_macro", "zeroshot_r2_avg"):
             if metric not in metrics:
                 continue
             s = metrics[metric]
