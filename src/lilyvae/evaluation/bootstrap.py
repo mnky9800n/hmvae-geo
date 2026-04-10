@@ -1,0 +1,634 @@
+"""Canonical bootstrap evaluation across all models.
+
+This module is the single source of truth for every number in the paper's
+main results table. For each bootstrap iteration:
+
+1. Split 296 boreholes into 90% train / 10% held-out (seeded so all models
+   within an iteration see the exact same split).
+2. Train every registered model from scratch on the train boreholes.
+3. Evaluate every model on the held-out boreholes using the same four
+   metrics: reconstruction R^2, clustering ARI, classification AUC, and
+   zero-shot R^2 (CatBoost over held-out samples).
+4. Record per-iteration metrics.
+
+After N iterations, aggregate median / IQR / 95% CI for every metric per
+model and write the full result set to a single JSON file.
+
+The registry covers:
+- Two full VAE variants (unsupervised, semi-supervised)
+- Four ablation variants (fixed-variance decoder, zero masking, no
+  masking, fixed beta schedule)
+- Five baselines (PCA, linear AE, deterministic AE, TabNet, SCARF)
+
+Adding a new model is one entry in MODEL_REGISTRY.
+"""
+
+from __future__ import annotations
+
+import time
+from dataclasses import dataclass
+from typing import Callable
+
+import numpy as np
+import torch
+import torch.nn as nn
+from sklearn.metrics import r2_score
+from torch.utils.data import DataLoader, TensorDataset
+
+from lilyvae.config import (
+    ALPHA_END,
+    BATCH_SIZE,
+    HIDDEN_DIMS,
+    INPUT_DIM,
+    LATENT_DIM,
+    LEARNING_RATE,
+    MASK_FRACTION,
+    MAX_GRAD_NORM,
+    NUM_EPOCHS,
+    PROCESSED_DIR,
+    SEED,
+    TRAINING_VARIABLES,
+    WEIGHT_DECAY,
+)
+from lilyvae.evaluation.ablations import (
+    FixedVarianceVAE,
+    NoMasking,
+    ZeroMasking,
+    _train_ablation_model,
+)
+from lilyvae.evaluation.baselines import (
+    DeterministicAutoencoder,
+    LinearAutoencoder,
+    PCABaseline,
+    SCARFBaseline,
+    TabNetBaseline,
+    _train_autoencoder,
+    _train_scarf,
+)
+from lilyvae.evaluation.classification import evaluate_classification
+from lilyvae.evaluation.clustering import evaluate_clustering
+from lilyvae.model.vae import LilyVAE
+from lilyvae.training.masking import LearnableMasking
+from lilyvae.training.trainer import get_device
+
+
+# ===========================================================================
+# Model adapter: common fit / get_embeddings / reconstruction interface
+# ===========================================================================
+
+
+@dataclass
+class TrainedModel:
+    """Uniform wrapper over heterogeneous trained models.
+
+    Every bootstrap slot produces one of these. Downstream evaluation code
+    only needs: embeddings on test set, optional reconstruction on test set.
+    """
+
+    name: str
+    embeddings: torch.Tensor  # (N_test, latent_dim)
+    reconstruction: np.ndarray | None = None  # (N_test, 6) or None if N/A
+
+
+# A Trainer takes (train_features, train_labels, test_features, device) and
+# returns a TrainedModel with embeddings + reconstruction evaluated on
+# test_features.
+Trainer = Callable[[torch.Tensor, torch.Tensor, torch.Tensor, torch.device], TrainedModel]
+
+
+def _make_vae_dataloader(features: torch.Tensor, labels: torch.Tensor) -> DataLoader:
+    dataset = TensorDataset(features, labels, torch.arange(len(features)))
+    return DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
+
+
+# ---------------------------------------------------------------------------
+# VAE + ablation trainers (delegated to ablations.py's _train_ablation_model)
+# ---------------------------------------------------------------------------
+
+
+def _run_vae(
+    train_features: torch.Tensor,
+    train_labels: torch.Tensor,
+    test_features: torch.Tensor,
+    device: torch.device,
+    *,
+    name: str,
+    vae_factory: Callable[[], nn.Module],
+    masking_factory: Callable[[], nn.Module],
+    decoder_type: str,
+    beta_type: str,  # "annealing" or "fixed"
+    alpha_weight: float,  # 0.0 for unsupervised
+) -> TrainedModel:
+    torch.manual_seed(SEED)
+
+    vae = vae_factory()
+    masking = masking_factory()
+    dataloader = _make_vae_dataloader(train_features, train_labels)
+
+    vae = _train_ablation_model(
+        dataloader=dataloader,
+        vae=vae,
+        masking=masking,
+        decoder_type=decoder_type,
+        beta_schedule_type=beta_type,
+        alpha_weight=alpha_weight,
+        num_epochs=NUM_EPOCHS,
+        lr=LEARNING_RATE,
+        weight_decay=WEIGHT_DECAY,
+        max_grad_norm=MAX_GRAD_NORM,
+        device=device,
+    )
+
+    vae.eval()
+    with torch.no_grad():
+        x = test_features.to(device)
+        out = vae(x)
+        embeddings = vae.get_embeddings(x).cpu()
+        reconstruction = out["x_mu"].cpu().numpy()
+
+    return TrainedModel(name=name, embeddings=embeddings, reconstruction=reconstruction)
+
+
+def _trainer_unsupervised_vae(train_f, train_l, test_f, device):
+    return _run_vae(
+        train_f, train_l, test_f, device,
+        name="unsupervised_vae",
+        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
+        decoder_type="heteroscedastic",
+        beta_type="annealing",
+        alpha_weight=0.0,
+    )
+
+
+def _trainer_semi_supervised_vae(train_f, train_l, test_f, device):
+    return _run_vae(
+        train_f, train_l, test_f, device,
+        name="semi_supervised_vae",
+        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
+        decoder_type="heteroscedastic",
+        beta_type="annealing",
+        alpha_weight=ALPHA_END,
+    )
+
+
+def _trainer_ablation_fixed_variance(train_f, train_l, test_f, device):
+    return _run_vae(
+        train_f, train_l, test_f, device,
+        name="ablation_fixed_variance",
+        vae_factory=lambda: FixedVarianceVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
+        decoder_type="fixed_variance",
+        beta_type="annealing",
+        alpha_weight=0.0,
+    )
+
+
+def _trainer_ablation_zero_masking(train_f, train_l, test_f, device):
+    return _run_vae(
+        train_f, train_l, test_f, device,
+        name="ablation_zero_masking",
+        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        masking_factory=lambda: ZeroMasking(MASK_FRACTION),
+        decoder_type="heteroscedastic",
+        beta_type="annealing",
+        alpha_weight=0.0,
+    )
+
+
+def _trainer_ablation_no_masking(train_f, train_l, test_f, device):
+    return _run_vae(
+        train_f, train_l, test_f, device,
+        name="ablation_no_masking",
+        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        masking_factory=lambda: NoMasking(),
+        decoder_type="heteroscedastic",
+        beta_type="annealing",
+        alpha_weight=0.0,
+    )
+
+
+def _trainer_ablation_fixed_beta(train_f, train_l, test_f, device):
+    return _run_vae(
+        train_f, train_l, test_f, device,
+        name="ablation_fixed_beta",
+        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
+        decoder_type="heteroscedastic",
+        beta_type="fixed",
+        alpha_weight=0.0,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Baseline trainers
+# ---------------------------------------------------------------------------
+
+
+def _trainer_pca(train_f, train_l, test_f, device):
+    torch.manual_seed(SEED)
+    baseline = PCABaseline(LATENT_DIM)
+    dataloader = _make_vae_dataloader(train_f, train_l)
+    baseline.fit(dataloader)
+    embeddings = baseline.get_embeddings(test_f)
+    out = baseline(test_f)
+    return TrainedModel(
+        name="pca",
+        embeddings=embeddings,
+        reconstruction=out["x_mu"].numpy(),
+    )
+
+
+def _trainer_linear_ae(train_f, train_l, test_f, device):
+    torch.manual_seed(SEED)
+    model = LinearAutoencoder(INPUT_DIM, LATENT_DIM)
+    dataloader = _make_vae_dataloader(train_f, train_l)
+    model = _train_autoencoder(
+        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
+        WEIGHT_DECAY, MAX_GRAD_NORM, device,
+    )
+    model.eval()
+    with torch.no_grad():
+        x = test_f.to(device)
+        out = model(x)
+        embeddings = model.get_embeddings(x).cpu()
+        reconstruction = out["x_mu"].cpu().numpy()
+    return TrainedModel(
+        name="linear_autoencoder",
+        embeddings=embeddings,
+        reconstruction=reconstruction,
+    )
+
+
+def _trainer_det_ae(train_f, train_l, test_f, device):
+    torch.manual_seed(SEED)
+    model = DeterministicAutoencoder(INPUT_DIM, LATENT_DIM)
+    dataloader = _make_vae_dataloader(train_f, train_l)
+    model = _train_autoencoder(
+        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
+        WEIGHT_DECAY, MAX_GRAD_NORM, device,
+    )
+    model.eval()
+    with torch.no_grad():
+        x = test_f.to(device)
+        out = model(x)
+        embeddings = model.get_embeddings(x).cpu()
+        reconstruction = out["x_mu"].cpu().numpy()
+    return TrainedModel(
+        name="deterministic_autoencoder",
+        embeddings=embeddings,
+        reconstruction=reconstruction,
+    )
+
+
+def _trainer_tabnet(train_f, train_l, test_f, device):
+    torch.manual_seed(SEED)
+    baseline = TabNetBaseline(LATENT_DIM)
+    dataloader = _make_vae_dataloader(train_f, train_l)
+    baseline.fit(dataloader, max_epochs=NUM_EPOCHS)
+    embeddings = baseline.get_embeddings(test_f)
+    return TrainedModel(
+        name="tabnet_unsupervised",
+        embeddings=embeddings,
+        reconstruction=None,  # masked-prediction, not full reconstruction
+    )
+
+
+def _trainer_scarf(train_f, train_l, test_f, device):
+    torch.manual_seed(SEED)
+    model = SCARFBaseline(INPUT_DIM, LATENT_DIM)
+    dataloader = _make_vae_dataloader(train_f, train_l)
+    model = _train_scarf(
+        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
+        WEIGHT_DECAY, MAX_GRAD_NORM, device,
+    )
+    model.eval()
+    with torch.no_grad():
+        embeddings = model.get_embeddings(test_f.to(device)).cpu()
+    return TrainedModel(
+        name="scarf_contrastive",
+        embeddings=embeddings,
+        reconstruction=None,  # contrastive, no decoder
+    )
+
+
+# ---------------------------------------------------------------------------
+# Model registry (order = reporting order in the output file)
+# ---------------------------------------------------------------------------
+
+
+MODEL_REGISTRY: list[tuple[str, Trainer]] = [
+    # Baselines
+    ("pca", _trainer_pca),
+    ("linear_autoencoder", _trainer_linear_ae),
+    ("deterministic_autoencoder", _trainer_det_ae),
+    ("tabnet_unsupervised", _trainer_tabnet),
+    ("scarf_contrastive", _trainer_scarf),
+    # Ablations (VAE with one component changed from default)
+    ("ablation_fixed_variance", _trainer_ablation_fixed_variance),
+    ("ablation_zero_masking", _trainer_ablation_zero_masking),
+    ("ablation_no_masking", _trainer_ablation_no_masking),
+    ("ablation_fixed_beta", _trainer_ablation_fixed_beta),
+    # Full models
+    ("semi_supervised_vae", _trainer_semi_supervised_vae),
+    ("unsupervised_vae", _trainer_unsupervised_vae),
+]
+
+
+# ===========================================================================
+# Per-model metric computation
+# ===========================================================================
+
+
+def _compute_metrics(
+    trained: TrainedModel,
+    test_features: torch.Tensor,
+    test_labels: torch.Tensor,
+    zeroshot_targets: dict | None,
+    test_sample_indices: np.ndarray,
+) -> dict:
+    """Compute reconstruction R^2, ARI, AUC, zero-shot R^2 for one trained model.
+
+    Zero-shot R^2 is computed on test-borehole samples only: both the
+    embeddings used as features and the target values are drawn from the
+    held-out 10%. CatBoost is trained and evaluated on this same subset
+    (in-sample within the fold) -- this matches the bootstrap philosophy
+    that every fold is a self-contained generalization test.
+    """
+    metrics: dict = {"model": trained.name}
+
+    # Reconstruction R^2 (only if the model reconstructs inputs)
+    if trained.reconstruction is not None:
+        true = test_features.numpy()
+        pred = trained.reconstruction
+        for i, var in enumerate(TRAINING_VARIABLES):
+            metrics[f"r2_{var}"] = float(r2_score(true[:, i], pred[:, i]))
+        metrics["r2_avg"] = float(
+            np.mean([metrics[f"r2_{v}"] for v in TRAINING_VARIABLES])
+        )
+    else:
+        metrics["r2_avg"] = float("nan")
+
+    # Clustering ARI
+    try:
+        clust = evaluate_clustering(trained.embeddings, test_labels)
+        metrics["ari"] = float(clust["ari"])
+    except Exception as e:
+        metrics["ari"] = float("nan")
+        metrics["ari_error"] = str(e)
+
+    # Classification AUC
+    try:
+        cls = evaluate_classification(trained.embeddings, test_labels, top_n=10)
+        metrics["auc_macro"] = float(cls["auc_macro"])
+    except Exception as e:
+        metrics["auc_macro"] = float("nan")
+        metrics["auc_error"] = str(e)
+
+    # Zero-shot R^2 (in-fold CatBoost on held-out samples)
+    if zeroshot_targets is not None:
+        zs_r2s = _evaluate_zeroshot_fold(
+            trained.embeddings, zeroshot_targets, test_sample_indices,
+        )
+        if zs_r2s:
+            metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s))
+            metrics["zeroshot_n_variables"] = len(zs_r2s)
+        else:
+            metrics["zeroshot_r2_avg"] = float("nan")
+            metrics["zeroshot_n_variables"] = 0
+
+    return metrics
+
+
+def _evaluate_zeroshot_fold(
+    embeddings: torch.Tensor,
+    zeroshot_targets: dict,
+    test_sample_indices: np.ndarray,
+) -> list[float]:
+    """Run CatBoost zero-shot prediction on held-out fold samples only."""
+    from catboost import CatBoostRegressor
+
+    z = embeddings.numpy()
+    results: list[float] = []
+
+    for name, target in zeroshot_targets.items():
+        target_values = target["values"].numpy()
+        valid_mask = target["valid_mask"].numpy().astype(bool)
+
+        # Subset to samples that are both (a) in this test fold and (b) valid
+        fold_valid_mask = valid_mask[test_sample_indices]
+        if fold_valid_mask.sum() < 50:
+            continue
+
+        z_valid = z[fold_valid_mask]
+        y_valid = target_values[test_sample_indices][fold_valid_mask]
+
+        try:
+            model = CatBoostRegressor(
+                iterations=500,
+                depth=6,
+                learning_rate=0.1,
+                verbose=0,
+                random_seed=42,
+                bootstrap_type="Bernoulli",
+                subsample=0.8,
+            )
+            model.fit(z_valid, y_valid)
+            y_pred = model.predict(z_valid)
+            r2 = r2_score(y_valid, y_pred)
+            if not np.isnan(r2) and np.isfinite(r2):
+                results.append(float(r2))
+        except Exception:
+            continue
+
+    return results
+
+
+# ===========================================================================
+# Main bootstrap loop
+# ===========================================================================
+
+
+def run_bootstrap(
+    n_iterations: int = 30,
+    test_fraction: float = 0.1,
+    device: str = "auto",
+    models: list[str] | None = None,
+    include_zeroshot: bool = True,
+) -> dict:
+    """Run the canonical bootstrap evaluation.
+
+    Args:
+        n_iterations: Number of bootstrap iterations.
+        test_fraction: Fraction of boreholes held out per iteration.
+        device: "auto", "cpu", "cuda", or "mps".
+        models: Optional subset of model names from MODEL_REGISTRY.
+        include_zeroshot: Whether to run zero-shot CatBoost per fold (slow).
+
+    Returns:
+        dict with keys: config, per_iteration, summary, elapsed_seconds.
+    """
+    dev = get_device(device)
+
+    features = torch.load(PROCESSED_DIR / "train_features.pt", weights_only=True)
+    labels = torch.load(PROCESSED_DIR / "train_labels.pt", weights_only=True)
+    metadata = torch.load(PROCESSED_DIR / "metadata.pt", weights_only=False)
+    borehole_ids = np.asarray(metadata["borehole_ids"])
+
+    zeroshot_targets = None
+    if include_zeroshot:
+        zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
+        if zs_path.exists():
+            zeroshot_targets = torch.load(zs_path, weights_only=False)
+
+    registry = MODEL_REGISTRY
+    if models is not None:
+        wanted = set(models)
+        registry = [(n, fn) for (n, fn) in MODEL_REGISTRY if n in wanted]
+        if not registry:
+            raise ValueError(f"No models in MODEL_REGISTRY match {models}")
+
+    unique_boreholes = np.unique(borehole_ids)
+    n_test = max(1, int(len(unique_boreholes) * test_fraction))
+    rng = np.random.RandomState(SEED)
+
+    per_iteration: list[dict] = []
+    start_time = time.time()
+
+    for iteration in range(n_iterations):
+        iter_start = time.time()
+        print(f"\n{'='*70}")
+        print(f"Bootstrap iteration {iteration+1}/{n_iterations}")
+        print(f"{'='*70}")
+
+        # Same split seen by every model in this iteration
+        perm = rng.permutation(unique_boreholes)
+        test_boreholes = set(perm[:n_test])
+        test_mask = np.array([bh in test_boreholes for bh in borehole_ids])
+        train_mask = ~test_mask
+
+        train_features = features[train_mask]
+        train_labels = labels[train_mask]
+        test_features = features[test_mask]
+        test_labels = labels[test_mask]
+        test_sample_indices = np.where(test_mask)[0]
+
+        print(
+            f"  train: {train_mask.sum()} samples ({(~test_mask.astype(bool)).sum()} rows)"
+            f" | test: {test_mask.sum()} samples ({len(test_boreholes)} boreholes)"
+        )
+
+        iter_result = {
+            "iteration": iteration,
+            "n_train_samples": int(train_mask.sum()),
+            "n_test_samples": int(test_mask.sum()),
+            "n_test_boreholes": len(test_boreholes),
+            "models": [],
+        }
+
+        for model_name, trainer in registry:
+            t0 = time.time()
+            print(f"\n  [{model_name}]")
+            try:
+                trained = trainer(train_features, train_labels, test_features, dev)
+                metrics = _compute_metrics(
+                    trained, test_features, test_labels,
+                    zeroshot_targets, test_sample_indices,
+                )
+                zs = metrics.get("zeroshot_r2_avg", float("nan"))
+                print(
+                    f"    R2={metrics['r2_avg']:.4f}  ARI={metrics['ari']:.4f}  "
+                    f"AUC={metrics['auc_macro']:.4f}  ZS={zs:.4f}  "
+                    f"({time.time()-t0:.1f}s)"
+                )
+            except Exception as e:
+                print(f"    ERROR: {e}")
+                metrics = {"model": model_name, "error": str(e)}
+            iter_result["models"].append(metrics)
+
+        iter_result["elapsed_seconds"] = time.time() - iter_start
+        per_iteration.append(iter_result)
+        print(f"\n  iteration {iteration+1} took {iter_result['elapsed_seconds']:.1f}s")
+
+    elapsed = time.time() - start_time
+
+    summary = _aggregate_summary(per_iteration)
+
+    print(f"\n{'='*70}")
+    print(f"Bootstrap complete: {n_iterations} iterations in {elapsed/60:.1f} min")
+    print(f"{'='*70}")
+    _print_summary(summary)
+
+    return {
+        "config": {
+            "n_iterations": n_iterations,
+            "test_fraction": test_fraction,
+            "models": [n for n, _ in registry],
+            "include_zeroshot": include_zeroshot,
+            "seed": SEED,
+        },
+        "per_iteration": per_iteration,
+        "summary": summary,
+        "elapsed_seconds": elapsed,
+    }
+
+
+# ===========================================================================
+# Aggregation helpers
+# ===========================================================================
+
+
+def _aggregate_summary(per_iteration: list[dict]) -> dict:
+    """Compute median, IQR, 95% CI, mean, std for every (model, metric) pair."""
+    metric_keys = [
+        "r2_avg", "ari", "auc_macro", "zeroshot_r2_avg",
+    ] + [f"r2_{v}" for v in TRAINING_VARIABLES]
+
+    model_names = set()
+    for it in per_iteration:
+        for m in it["models"]:
+            model_names.add(m["model"])
+
+    summary: dict[str, dict] = {}
+    for name in sorted(model_names):
+        summary[name] = {}
+        for key in metric_keys:
+            values = []
+            for it in per_iteration:
+                for m in it["models"]:
+                    if m["model"] != name:
+                        continue
+                    v = m.get(key)
+                    if v is None:
+                        continue
+                    if isinstance(v, float) and (np.isnan(v) or not np.isfinite(v)):
+                        continue
+                    values.append(float(v))
+            if not values:
+                continue
+            arr = np.array(values)
+            summary[name][key] = {
+                "mean": float(np.mean(arr)),
+                "median": float(np.median(arr)),
+                "std": float(np.std(arr)),
+                "iqr_low": float(np.percentile(arr, 25)),
+                "iqr_high": float(np.percentile(arr, 75)),
+                "ci_low": float(np.percentile(arr, 2.5)),
+                "ci_high": float(np.percentile(arr, 97.5)),
+                "n": int(arr.size),
+            }
+    return summary
+
+
+def _print_summary(summary: dict) -> None:
+    for name, metrics in summary.items():
+        print(f"\n  {name}")
+        for metric in ("r2_avg", "ari", "auc_macro", "zeroshot_r2_avg"):
+            if metric not in metrics:
+                continue
+            s = metrics[metric]
+            print(
+                f"    {metric:20s} median={s['median']:.4f} "
+                f"IQR=[{s['iqr_low']:.4f}, {s['iqr_high']:.4f}]"
+            )

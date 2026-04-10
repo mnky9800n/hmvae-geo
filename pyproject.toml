@@ -23,10 +23,9 @@ dependencies = [
 lilyvae-download = "lilyvae.scripts.download:main"
 lilyvae-train = "lilyvae.scripts.train:main"
 lilyvae-evaluate = "lilyvae.scripts.evaluate:main"
+lilyvae-bootstrap = "lilyvae.scripts.bootstrap:main"
 lilyvae-zeroshot = "lilyvae.scripts.zeroshot:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
-lilyvae-bootstrap = "lilyvae.scripts.bootstrap_train:main"
-lilyvae-ablation = "lilyvae.scripts.ablation:main"
 
 [build-system]
 requires = ["hatchling"]
