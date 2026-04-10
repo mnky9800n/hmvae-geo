@@ -32,7 +32,16 @@ def load_model(model_type: str, device: torch.device) -> LilyVAE:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Evaluate trained LilyVAE models")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Quick single-run evaluation of trained LilyVAE checkpoints. "
+            "NOTE: these numbers are NOT what the paper reports. The paper "
+            "uses the canonical bootstrap evaluation (`lilyvae-bootstrap` / "
+            "`lilyvae-pipeline`) which trains on 90%% borehole splits and "
+            "reports median/IQR across 30 folds. Use this script only for "
+            "debugging or sanity-checking a single saved checkpoint."
+        )
+    )
     parser.add_argument("--model", choices=["unsupervised", "semi-supervised", "both"], default="both")
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     parser.add_argument("--device", default="auto")
