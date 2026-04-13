@@ -143,16 +143,4 @@ present.
 
 ## Paper
 
-*Heteroscedastic Masked Variational Autoencoders for Sparse Geophysical
-Data*, NeurIPS 2026 AI for Science track (submission in preparation).
-
-## Citation
-
-```bibtex
-@inproceedings{aiken2026lilyvae,
-  title={Heteroscedastic Masked Variational Autoencoders for Sparse Geophysical Data},
-  author={Aiken, John M. and others},
-  booktitle={Advances in Neural Information Processing Systems},
-  year={2026}
-}
-```
+Paper in preparation.
