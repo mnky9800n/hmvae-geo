@@ -60,8 +60,6 @@ from lilyvae.training.trainer import get_device
 #: the row used for zero-shot.)
 SINGLE_POINT_MODELS: list[str] = [
     "pca",
-    "linear_autoencoder",
-    "deterministic_autoencoder",
     "tabnet_unsupervised",
     "scarf_contrastive",
     "ablation_fixed_variance",

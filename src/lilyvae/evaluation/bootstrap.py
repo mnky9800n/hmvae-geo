@@ -73,12 +73,9 @@ from lilyvae.evaluation.ablations import (
     _train_ablation_model,
 )
 from lilyvae.evaluation.baselines import (
-    DeterministicAutoencoder,
-    LinearAutoencoder,
     PCABaseline,
     SCARFBaseline,
     TabNetBaseline,
-    _train_autoencoder,
     _train_scarf,
 )
 from lilyvae.evaluation.classification import evaluate_classification
@@ -256,47 +253,6 @@ def _trainer_pca(train_f, train_l, test_f, device):
     )
 
 
-def _trainer_linear_ae(train_f, train_l, test_f, device):
-    torch.manual_seed(SEED)
-    model = LinearAutoencoder(INPUT_DIM, LATENT_DIM)
-    dataloader = _make_vae_dataloader(train_f, train_l)
-    model = _train_autoencoder(
-        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
-        WEIGHT_DECAY, MAX_GRAD_NORM, device,
-    )
-    model.eval()
-    with torch.no_grad():
-        x = test_f.to(device)
-        out = model(x)
-        embeddings = model.get_embeddings(x).cpu()
-        reconstruction = out["x_mu"].cpu().numpy()
-    return TrainedModel(
-        name="linear_autoencoder",
-        embeddings=embeddings,
-        reconstruction=reconstruction,
-    )
-
-
-def _trainer_det_ae(train_f, train_l, test_f, device):
-    torch.manual_seed(SEED)
-    model = DeterministicAutoencoder(INPUT_DIM, LATENT_DIM)
-    dataloader = _make_vae_dataloader(train_f, train_l)
-    model = _train_autoencoder(
-        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
-        WEIGHT_DECAY, MAX_GRAD_NORM, device,
-    )
-    model.eval()
-    with torch.no_grad():
-        x = test_f.to(device)
-        out = model(x)
-        embeddings = model.get_embeddings(x).cpu()
-        reconstruction = out["x_mu"].cpu().numpy()
-    return TrainedModel(
-        name="deterministic_autoencoder",
-        embeddings=embeddings,
-        reconstruction=reconstruction,
-    )
-
 
 def _trainer_tabnet(train_f, train_l, test_f, device):
     torch.manual_seed(SEED)
@@ -349,8 +305,6 @@ MODEL_REGISTRY: list[tuple[str, Trainer]] = [
 ALL_TRAINERS: list[tuple[str, Trainer]] = [
     # Baselines
     ("pca", _trainer_pca),
-    ("linear_autoencoder", _trainer_linear_ae),
-    ("deterministic_autoencoder", _trainer_det_ae),
     ("tabnet_unsupervised", _trainer_tabnet),
     ("scarf_contrastive", _trainer_scarf),
     # Ablations (VAE with one component changed from default)
