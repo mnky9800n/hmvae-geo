@@ -143,7 +143,7 @@ def preprocess(raw_dir: Path | None = None, output_dir: Path | None = None) -> N
         merged = merged.merge(latlon_data, on=group_cols, how="left")
 
     # Step 3: Filter to rows with all 6 training variables
-    feature_cols = ["bulk_density", "magnetic_susceptibility", "NGR", "R", "G", "B"]
+    feature_cols = TRAINING_VARIABLES
     missing_cols = [c for c in feature_cols if c not in merged.columns]
     if missing_cols:
         raise RuntimeError(f"Missing feature columns after merge: {missing_cols}")
