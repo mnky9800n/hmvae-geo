@@ -9,8 +9,6 @@ from lilyvae.config import (
     CHECKPOINT_DIR,
     PROCESSED_DIR,
     RESULTS_DIR,
-    BOOTSTRAP_ITERATIONS,
-    BOOTSTRAP_TEST_FRACTION,
 )
 from lilyvae.evaluation.bootstrap_zeroshot import bootstrap_zeroshot
 from lilyvae.evaluation.monte_carlo import monte_carlo_explore
@@ -21,7 +19,7 @@ def main():
     parser.add_argument("--model", choices=["unsupervised", "semi-supervised"], default="unsupervised")
     parser.add_argument("--monte-carlo", action="store_true", help="Run Monte Carlo exploration")
     parser.add_argument("--mc-trials", type=int, default=500)
-    parser.add_argument("--bootstrap-iterations", type=int, default=BOOTSTRAP_ITERATIONS)
+    parser.add_argument("--bootstrap-iterations", type=int, default=100)
     args = parser.parse_args()
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)

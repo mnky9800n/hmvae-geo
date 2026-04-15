@@ -5,7 +5,7 @@ import torch
 from catboost import CatBoostRegressor
 from sklearn.metrics import r2_score
 
-from lilyvae.config import BOOTSTRAP_ITERATIONS, BOOTSTRAP_TEST_FRACTION, SEED
+from lilyvae.config import SEED
 
 
 def bootstrap_zeroshot(
@@ -13,8 +13,8 @@ def bootstrap_zeroshot(
     target_values: torch.Tensor,
     valid_mask: torch.Tensor,
     borehole_ids: np.ndarray,
-    n_iterations: int = BOOTSTRAP_ITERATIONS,
-    test_fraction: float = BOOTSTRAP_TEST_FRACTION,
+    n_iterations: int = 100,
+    test_fraction: float = 0.2,
 ) -> dict:
     """Bootstrap evaluation of zero-shot prediction, splitting by borehole.
 
