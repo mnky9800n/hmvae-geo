@@ -29,9 +29,18 @@ lilyvae-evaluate = "lilyvae.scripts.evaluate:main"
 lilyvae-zeroshot = "lilyvae.scripts.zeroshot:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
+[project.optional-dependencies]
+test = ["pytest"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+markers = [
+    "requires_data: tests that need preprocessed data and checkpoints",
+    "slow: tests that take a long time to run (e.g. zero-shot with CatBoost)",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/lilyvae"]
