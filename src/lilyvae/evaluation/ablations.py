@@ -1,27 +1,16 @@
-"""Ablation study framework for LilyVAE.
+"""Ablation model components for LilyVAE.
 
-Each ablation trains a fresh model variant with one hyperparameter or
-architectural choice changed, then evaluates the same four metrics used
-throughout the project: reconstruction R², ARI (k=10 GMM), macro AUC, and
-zero-shot R².
+Provides variant model classes and a training loop used by the bootstrap
+evaluator to train ablation models (one architectural change at a time).
 
-Design notes
-------------
-- Existing classes (LilyVAE, LearnableMasking) are never modified.
-- Variants are expressed through factory functions that produce objects
-  compatible with the training loop's expectations.
-- "fixed_variance" decoder: a thin FixedVarianceVAE wrapper that outputs
-  x_mu only, paired with MSE reconstruction loss. The output dict shape
-  matches what evaluate_reconstruction reads (it only uses "x_mu").
-- Masking variants: ZeroMasking and NoMasking are minimal classes that
-  match the LearnableMasking interface (nn.Module, training-aware forward).
-- Each ablation is a named configuration; run_ablation compiles that
-  configuration into a trained model and returns metrics.
+- FixedVarianceVAE: MSE decoder instead of heteroscedastic Gaussian.
+- ZeroMasking: replaces masked features with zero instead of learned tokens.
+- NoMasking: no masking at all.
+- _train_ablation_model: training loop that handles all variant configs.
 """
 
 from __future__ import annotations
 
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -31,19 +20,13 @@ from lilyvae.config import (
     INPUT_DIM,
     LATENT_DIM,
     HIDDEN_DIMS,
-    NUM_EPOCHS,
-    LEARNING_RATE,
-    WEIGHT_DECAY,
-    MAX_GRAD_NORM,
     MASK_FRACTION,
     BETA_START,
     BETA_END,
     BETA_ANNEAL_EPOCHS,
-    PROCESSED_DIR,
-    BATCH_SIZE,
     SEED,
 )
-from lilyvae.model.vae import LilyVAE, Encoder, Decoder
+from lilyvae.model.vae import LilyVAE, Encoder
 from lilyvae.training.masking import LearnableMasking
 from lilyvae.training.loss import (
     heteroscedastic_reconstruction_loss,
@@ -51,11 +34,6 @@ from lilyvae.training.loss import (
     beta_schedule,
 )
 from lilyvae.training.trainer import get_device
-from lilyvae.data.dataset import get_dataloader
-from lilyvae.evaluation.reconstruction import evaluate_reconstruction
-from lilyvae.evaluation.clustering import evaluate_clustering
-from lilyvae.evaluation.classification import evaluate_classification
-from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
 
 
 # ---------------------------------------------------------------------------
@@ -276,182 +254,3 @@ def _train_ablation_model(
     return vae
 
 
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
-
-#: All supported ablation names and their candidate values.
-ABLATION_GRID: dict[str, list] = {
-    "decoder_type": ["heteroscedastic", "fixed_variance"],
-    "masking_type": ["learnable", "zero", "none"],
-    "mask_fraction": [0.0, 0.1, 0.2, 0.3],
-    "latent_dim": [2, 5, 10, 20, 50],
-    "beta_schedule": ["annealing", "fixed"],
-    "alpha_weight": [0.0, 0.01, 0.1, 0.5, 1.0, 5.0, 10.0, 20.0, 30.0, 50.0],
-}
-
-
-def run_ablation(
-    ablation_name: str,
-    value,
-    *,
-    dataloader: DataLoader | None = None,
-    num_epochs: int = NUM_EPOCHS,
-    lr: float = LEARNING_RATE,
-    weight_decay: float = WEIGHT_DECAY,
-    max_grad_norm: float = MAX_GRAD_NORM,
-    device: str = "auto",
-) -> dict:
-    """Train and evaluate one ablation variant.
-
-    Args:
-        ablation_name: One of the keys in ABLATION_GRID.
-        value: The value for that ablation (must be in ABLATION_GRID[ablation_name]).
-        dataloader: Optional pre-built DataLoader. If None, builds one from
-            PROCESSED_DIR (shuffle=False so embeddings stay aligned with labels).
-        num_epochs: Training epochs for this run.
-        lr: Learning rate.
-        weight_decay: Adam weight decay.
-        max_grad_norm: Gradient clipping threshold.
-        device: "auto", "cuda", "mps", or "cpu".
-
-    Returns:
-        Dict with keys: ablation_name, value, r2_avg, ari, auc_macro,
-        zeroshot_r2_avg, zeroshot_n_variables, the full per-variable r2
-        breakdown, and the full per-variable zeroshot results.
-    """
-    if ablation_name not in ABLATION_GRID:
-        raise ValueError(
-            f"Unknown ablation {ablation_name!r}. "
-            f"Choose from: {list(ABLATION_GRID)}"
-        )
-
-    torch.manual_seed(SEED)
-    dev = get_device(device)
-
-    if dataloader is None:
-        dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-
-    # Resolve configuration, filling in defaults for everything not ablated.
-    decoder_type = value if ablation_name == "decoder_type" else "heteroscedastic"
-    masking_type = value if ablation_name == "masking_type" else "learnable"
-    mask_fraction = value if ablation_name == "mask_fraction" else MASK_FRACTION
-    latent_dim = value if ablation_name == "latent_dim" else LATENT_DIM
-    beta_schedule_type = value if ablation_name == "beta_schedule" else "annealing"
-    alpha_weight = value if ablation_name == "alpha_weight" else 0.0
-    hidden_dims = list(HIDDEN_DIMS)
-
-    # masking_type "none" means mask_fraction is irrelevant; zero still valid
-    vae = _make_vae(decoder_type, latent_dim, hidden_dims)
-    masking = _make_masking(masking_type, mask_fraction)
-
-    print(
-        f"\n[ablation] {ablation_name}={value!r}  "
-        f"(decoder={decoder_type}, masking={masking_type}, "
-        f"frac={mask_fraction}, latent_dim={latent_dim}, "
-        f"beta_schedule={beta_schedule_type}, alpha={alpha_weight})"
-    )
-
-    vae = _train_ablation_model(
-        dataloader=dataloader,
-        vae=vae,
-        masking=masking,
-        decoder_type=decoder_type,
-        beta_schedule_type=beta_schedule_type,
-        alpha_weight=alpha_weight,
-        num_epochs=num_epochs,
-        lr=lr,
-        weight_decay=weight_decay,
-        max_grad_norm=max_grad_norm,
-        device=dev,
-    )
-
-    # Evaluation — use a non-shuffled loader so embeddings align with labels.
-    eval_loader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-    labels = _collect_labels(eval_loader)
-
-    recon_metrics = evaluate_reconstruction(vae, eval_loader, dev)
-
-    embeddings = _extract_embeddings(vae, eval_loader, dev)
-    clust_metrics = evaluate_clustering(embeddings, labels)
-    cls_metrics = evaluate_classification(embeddings, labels)
-
-    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
-    if zs_path.exists():
-        zeroshot_targets = torch.load(zs_path, weights_only=False)
-        zs_results = evaluate_all_zeroshot(embeddings, zeroshot_targets)
-        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
-        zeroshot_r2_avg = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
-        zeroshot_n_variables = len(zs_r2s)
-    else:
-        zs_results = {}
-        zeroshot_r2_avg = float("nan")
-        zeroshot_n_variables = 0
-
-    return {
-        "ablation_name": ablation_name,
-        "value": value,
-        **recon_metrics,
-        "ari": clust_metrics["ari"],
-        "auc_macro": cls_metrics["auc_macro"],
-        "zeroshot_r2_avg": zeroshot_r2_avg,
-        "zeroshot_n_variables": zeroshot_n_variables,
-        "zeroshot": zs_results,
-    }
-
-
-def run_all_ablations(
-    *,
-    num_epochs: int = NUM_EPOCHS,
-    device: str = "auto",
-) -> dict[str, list[dict]]:
-    """Run every value for every ablation and return all results.
-
-    Results are keyed by ablation_name, each value being a list of per-value
-    result dicts (as returned by run_ablation).
-
-    Builds a single DataLoader upfront and reuses it across all runs to avoid
-    redundant disk I/O on large datasets.
-    """
-    # shuffle=False: embeddings and labels stay aligned during evaluation
-    dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-    all_results: dict[str, list[dict]] = {}
-
-    for ablation_name, values in ABLATION_GRID.items():
-        all_results[ablation_name] = []
-        for value in values:
-            result = run_ablation(
-                ablation_name,
-                value,
-                dataloader=dataloader,
-                num_epochs=num_epochs,
-                device=device,
-            )
-            all_results[ablation_name].append(result)
-
-    return all_results
-
-
-# ---------------------------------------------------------------------------
-# Helpers (module-private)
-# ---------------------------------------------------------------------------
-
-
-def _collect_labels(dataloader: DataLoader) -> torch.Tensor:
-    all_labels = []
-    for _, labels, _ in dataloader:
-        all_labels.append(labels)
-    return torch.cat(all_labels, dim=0)
-
-
-def _extract_embeddings(
-    vae: nn.Module, dataloader: DataLoader, device: torch.device
-) -> torch.Tensor:
-    vae.eval()
-    all_z = []
-    with torch.no_grad():
-        for features, _, _ in dataloader:
-            features = features.to(device)
-            z_mu = vae.get_embeddings(features)
-            all_z.append(z_mu.cpu())
-    return torch.cat(all_z, dim=0)
