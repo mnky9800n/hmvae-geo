@@ -10,13 +10,8 @@ def evaluate_zeroshot_variable(
     embeddings: torch.Tensor,
     target_values: torch.Tensor,
     valid_mask: torch.Tensor,
-    borehole_ids: np.ndarray | None = None,
 ) -> dict[str, float]:
-    """Predict a single unseen variable from embeddings using CatBoost.
-
-    If borehole_ids are provided, does a simple train/test split by borehole.
-    Otherwise, evaluates on all valid samples (in-sample).
-    """
+    """Predict a single unseen variable from embeddings using CatBoost (in-sample)."""
     z = embeddings.numpy()
     vals = target_values.numpy()
     mask = valid_mask.numpy().astype(bool)
