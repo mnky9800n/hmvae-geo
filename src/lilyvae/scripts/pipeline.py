@@ -9,10 +9,10 @@ One command that runs every step needed to reproduce the paper's results:
    get training-stability confidence intervals for reconstruction R^2,
    ARI, AUC. Writes data/results/bootstrap_results.json. Baselines and
    ablations are NOT bootstrapped -- see step 4.
-4. Single-point full-data evaluation of the 5 baselines (PCA, linear AE,
-   deterministic AE, TabNet, SCARF) and 4 ablation variants (fixed-variance
-   decoder, zero masking, no masking, fixed beta), plus their zero-shot R^2.
-   Writes data/results/single_point_results.json.
+4. Single-point full-data evaluation of the 3 baselines (PCA, TabNet,
+   SCARF) and 4 ablation variants (fixed-variance decoder, zero masking,
+   no masking, fixed beta), plus their zero-shot R^2. Writes
+   data/results/single_point_results.json.
 5. Zero-shot evaluation on the full-data VAE embeddings via CatBoost.
    Writes data/results/zeroshot_fulldata.json.
 6. Generate paper figures.
@@ -34,7 +34,6 @@ import json
 import time
 from pathlib import Path
 
-import numpy as np
 import torch
 
 from lilyvae.config import (
@@ -42,22 +41,11 @@ from lilyvae.config import (
     PROCESSED_DIR,
     RESULTS_DIR,
 )
+from lilyvae.scripts import make_serializable
 
 
 def _exists(path: Path) -> bool:
     return path.exists() and path.stat().st_size > 0
-
-
-def _make_serializable(obj):
-    if isinstance(obj, (np.floating, np.integer)):
-        return float(obj)
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    if isinstance(obj, dict):
-        return {k: _make_serializable(v) for k, v in obj.items()}
-    if isinstance(obj, list):
-        return [_make_serializable(v) for v in obj]
-    return obj
 
 
 def _step_preprocess(force: bool) -> None:
@@ -66,8 +54,8 @@ def _step_preprocess(force: bool) -> None:
         print(f"[skip] preprocessed tensors already present at {PROCESSED_DIR}")
         return
     print(f"[run]  preprocessing raw LILY data -> {PROCESSED_DIR}")
-    from lilyvae.data.preprocessing import preprocess_and_save
-    preprocess_and_save()
+    from lilyvae.data.preprocessing import preprocess
+    preprocess()
 
 
 def _step_train(force: bool, device: str) -> None:
@@ -114,7 +102,7 @@ def _step_bootstrap(
         device=device,
     )
     with open(out_path, "w") as f:
-        json.dump(_make_serializable(result), f, indent=2)
+        json.dump(make_serializable(result), f, indent=2)
     print(f"[done] bootstrap written to {out_path}")
 
 
@@ -130,7 +118,7 @@ def _step_single_point(force: bool, device: str) -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     result = run_single_point_eval(device=device, include_zeroshot=True)
     with open(out_path, "w") as f:
-        json.dump(_make_serializable(result), f, indent=2)
+        json.dump(make_serializable(result), f, indent=2)
     print(f"[done] single-point written to {out_path}")
 
 
@@ -173,7 +161,7 @@ def _step_zeroshot(force: bool) -> None:
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w") as f:
-        json.dump(_make_serializable(all_results), f, indent=2)
+        json.dump(make_serializable(all_results), f, indent=2)
     print(f"[done] zero-shot written to {out_path}")
 
 
