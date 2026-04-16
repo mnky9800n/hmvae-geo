@@ -25,7 +25,6 @@ lilyvae-pipeline = "lilyvae.scripts.pipeline:main"
 lilyvae-train = "lilyvae.scripts.train:main"
 lilyvae-bootstrap = "lilyvae.scripts.bootstrap:main"
 lilyvae-single-point = "lilyvae.scripts.single_point:main"
-lilyvae-evaluate = "lilyvae.scripts.evaluate:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
 [project.optional-dependencies]

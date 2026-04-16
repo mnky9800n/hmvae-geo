@@ -377,8 +377,8 @@ def run_bootstrap(
 ) -> dict:
     """Run the canonical bootstrap evaluation for training-stability metrics.
 
-    Zero-shot R^2 is not computed here; it should be measured on a
-    full-data trained model via `lilyvae-evaluate`.
+    Zero-shot R^2 is not computed here; it is measured on the full-data
+    trained model by `lilyvae-pipeline` (the zeroshot step).
 
     Args:
         n_iterations: Number of bootstrap iterations.

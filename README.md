@@ -87,8 +87,7 @@ src/lilyvae/
     ├── pipeline.py              # lilyvae-pipeline (the main one)
     ├── train.py                 # lilyvae-train
     ├── bootstrap.py             # lilyvae-bootstrap
-    ├── evaluate.py              # lilyvae-evaluate (quick debug, single run)
-    ├── zeroshot.py              # lilyvae-zeroshot (Monte Carlo exploration)
+    ├── single_point.py          # lilyvae-single-point (baselines + ablations)
     └── plot.py                  # lilyvae-plot
 
 data/                            # All generated artifacts (gitignored)
@@ -107,19 +106,15 @@ data/                            # All generated artifacts (gitignored)
 | `lilyvae-pipeline` | Run everything end-to-end (the main command) |
 | `lilyvae-train` | Train just the full-data VAE checkpoints |
 | `lilyvae-bootstrap` | Run just the bootstrap evaluation |
-| `lilyvae-evaluate` | Quick debug: evaluate a checkpoint on full data (NOT what paper reports) |
-| `lilyvae-zeroshot` | Zero-shot with Monte Carlo hyperparameter search (exploration) |
+| `lilyvae-single-point` | Baselines + ablations on full data (complements bootstrap) |
 | `lilyvae-plot` | Regenerate paper figures |
 
-### `lilyvae-evaluate` vs `lilyvae-bootstrap`
-
-`lilyvae-evaluate` runs a single-shot evaluation of the saved checkpoints on
-the full dataset. It's useful for quick debugging but its numbers are
-**not** what the paper reports.
+### Paper numbers
 
 `lilyvae-bootstrap` runs the canonical 30-fold borehole-level bootstrap
-used in the paper. Every number in the main results table comes from
-`data/results/bootstrap_results.json`.
+used in the paper. Every VAE row in the main results table comes from
+`data/results/bootstrap_results.json`. Baseline and ablation rows come
+from `data/results/single_point_results.json` via `lilyvae-single-point`.
 
 ## Runtime
 

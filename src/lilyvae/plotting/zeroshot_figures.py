@@ -2,11 +2,10 @@
 
 import json
 import numpy as np
-import torch
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from lilyvae.config import PROCESSED_DIR, CHECKPOINT_DIR, RESULTS_DIR, PAPER_DIR
+from lilyvae.config import RESULTS_DIR, PAPER_DIR
 from lilyvae.plotting.style import apply_style
 
 
@@ -15,16 +14,16 @@ def plot_r2_unsup_vs_semi(output_dir: Path | None = None):
     apply_style()
     output_dir = output_dir or PAPER_DIR
 
-    results_path = RESULTS_DIR / "metrics.json"
+    results_path = RESULTS_DIR / "zeroshot_fulldata.json"
     if not results_path.exists():
-        print("  WARNING: metrics.json not found, skipping")
+        print("  WARNING: zeroshot_fulldata.json not found, skipping")
         return
 
     with open(results_path) as f:
-        all_metrics = json.load(f)
+        all_results = json.load(f)
 
-    unsup_zs = all_metrics.get("unsupervised", {}).get("zeroshot", {})
-    semi_zs = all_metrics.get("semi-supervised", {}).get("zeroshot", {})
+    unsup_zs = all_results.get("unsupervised", {}).get("per_variable", {})
+    semi_zs = all_results.get("semi_supervised", {}).get("per_variable", {})
 
     if not unsup_zs or not semi_zs:
         print("  WARNING: missing zero-shot results for one or both models")
