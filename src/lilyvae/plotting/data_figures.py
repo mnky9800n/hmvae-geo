@@ -26,37 +26,6 @@ def load_labels():
     return labels, le
 
 
-def plot_expedition_map(output_dir: Path | None = None):
-    """World map with borehole locations (fig_lily_expedition_map.png)."""
-    import cartopy.crs as ccrs
-    import cartopy.feature as cfeature
-
-    output_dir = output_dir or PAPER_DIR
-    metadata = load_metadata()
-
-    # We need lat/lon from the metadata. If not available, skip.
-    if "latitude" not in metadata or "longitude" not in metadata:
-        print("  WARNING: lat/lon not in metadata, skipping expedition map")
-        return
-
-    lats = metadata["latitude"]
-    lons = metadata["longitude"]
-
-    fig = plt.figure(figsize=(12, 6))
-    ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson(central_longitude=104))
-    ax.set_global()
-    ax.add_feature(cfeature.LAND, facecolor="lightgray")
-    ax.add_feature(cfeature.OCEAN, facecolor="lightblue")
-    ax.add_feature(cfeature.COASTLINE, linewidth=0.5)
-
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), s=10, c="red", alpha=0.7, zorder=5)
-
-    plt.tight_layout()
-    plt.savefig(output_dir / "fig_lily_expedition_map.png", dpi=300, bbox_inches="tight")
-    plt.close()
-    print("  Saved fig_lily_expedition_map.png")
-
-
 def plot_dataset_summary(output_dir: Path | None = None):
     """Composite figure: map background with histogram insets (left) and ship photo (right)."""
     import cartopy.crs as ccrs
@@ -179,26 +148,6 @@ def plot_dataset_summary(output_dir: Path | None = None):
     plt.savefig(output_dir / "fig_lily_dataset.png", dpi=300, bbox_inches="tight")
     plt.close()
     print("  Saved fig_lily_dataset.png")
-
-
-def plot_lithology_counts(output_dir: Path | None = None):
-    """Histogram of lithology class sizes on log scale (fig_lily_lithology_counts.png)."""
-    output_dir = output_dir or PAPER_DIR
-    labels, le = load_labels()
-    label_names = le.inverse_transform(labels.numpy())
-    counts = pd.Series(label_names).value_counts()
-
-    fig, ax = plt.subplots(figsize=(8, 5))
-    log_bins = np.logspace(0, np.log10(counts.max()), 30)
-    ax.hist(counts.values, bins=log_bins, color="steelblue", edgecolor="none", alpha=0.8)
-    ax.set_xscale("log")
-    ax.set_xlabel("Samples per class")
-    ax.set_ylabel("Number of classes")
-
-    plt.tight_layout()
-    plt.savefig(output_dir / "fig_lily_lithology_counts.png", dpi=300, bbox_inches="tight")
-    plt.close()
-    print("  Saved fig_lily_lithology_counts.png")
 
 
 def plot_variables_distribution(output_dir: Path | None = None):

@@ -8,9 +8,7 @@ from lilyvae.plotting.style import apply_style
 
 
 ALL_FIGURES = [
-    "expedition_map",
     "dataset_summary",
-    "lithology_counts",
     "variables_dist",
     "reconstruction_scatter",
     "roc_comparison",
@@ -43,15 +41,9 @@ def main():
     for fig_name in figures:
         print(f"\nGenerating {fig_name}...")
         try:
-            if fig_name == "expedition_map":
-                from lilyvae.plotting.data_figures import plot_expedition_map
-                plot_expedition_map(args.output_dir)
-            elif fig_name == "dataset_summary":
+            if fig_name == "dataset_summary":
                 from lilyvae.plotting.data_figures import plot_dataset_summary
                 plot_dataset_summary(args.output_dir)
-            elif fig_name == "lithology_counts":
-                from lilyvae.plotting.data_figures import plot_lithology_counts
-                plot_lithology_counts(args.output_dir)
             elif fig_name == "variables_dist":
                 from lilyvae.plotting.data_figures import plot_variables_distribution
                 plot_variables_distribution(args.output_dir)
