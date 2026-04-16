@@ -11,13 +11,12 @@ What is and isn't in the registry
 ---------------------------------
 Only the two full VAE variants (unsupervised, semi-supervised) are
 bootstrapped, because the paper's quantitative claim is about *those*
-models' stability under retraining. Baselines (PCA, linear AE,
-deterministic AE, TabNet, SCARF) and ablation variants (fixed-variance
-decoder, zero masking, no masking, fixed beta) are evaluated as
-single-point full-data runs in a separate codepath
-(`evaluation/single_point.py`). Bootstrapping them was folly -- PCA is
-deterministic, the autoencoders vary trivially, and TabNet/SCARF's CIs
-aren't part of the story the paper is telling.
+models' stability under retraining. Baselines (PCA, TabNet, SCARF) and
+ablation variants (fixed-variance decoder, zero masking, no masking,
+fixed beta) are evaluated as single-point full-data runs in a separate
+codepath (`evaluation/single_point.py`). Bootstrapping them was folly
+-- PCA is deterministic and TabNet/SCARF's CIs aren't part of the
+story the paper is telling.
 
 Zero-shot R^2 is also NOT in this module. It is a property of the
 full-data trained model's embedding space and is computed once via

@@ -1,10 +1,10 @@
 """Single-point full-data evaluation for baselines and ablation variants.
 
 Complements evaluation/bootstrap.py, which bootstraps only the two full
-VAE variants. Everything else (PCA, linear AE, deterministic AE, TabNet,
-SCARF, and the four architectural ablation variants) is trained once on
-all 238K samples and evaluated once on the same 238K samples. No folds,
-no iterations, no CIs.
+VAE variants. Everything else (PCA, TabNet, SCARF, and the four
+architectural ablation variants) is trained once on all 238K samples
+and evaluated once on the same 238K samples. No folds, no iterations,
+no CIs.
 
 Zero-shot R^2 is added to each row by running CatBoost on the model's
 embeddings for every held-out geophysical variable in the same
@@ -35,12 +35,9 @@ from typing import Iterable
 
 import numpy as np
 import torch
-from sklearn.metrics import r2_score
-
 from lilyvae.config import (
     PROCESSED_DIR,
     SEED,
-    TRAINING_VARIABLES,
 )
 from lilyvae.evaluation.bootstrap import (
     ALL_TRAINERS,
