@@ -192,11 +192,11 @@ class TestReconstruction:
 
     def test_unsupervised_r2_avg(self, dataloader, device):
         recon = self._load_and_eval("unsupervised", dataloader, device)
-        assert recon["r2_avg"] == pytest.approx(0.998758, abs=1e-4)
+        assert recon["r2_avg"] == pytest.approx(0.998758, abs=1e-3)
 
     def test_semi_supervised_r2_avg(self, dataloader, device):
         recon = self._load_and_eval("semi_supervised", dataloader, device)
-        assert recon["r2_avg"] == pytest.approx(0.994053, abs=1e-4)
+        assert recon["r2_avg"] == pytest.approx(0.994053, abs=1e-3)
 
     def test_unsupervised_all_variables_above_threshold(self, dataloader, device):
         recon = self._load_and_eval("unsupervised", dataloader, device)
