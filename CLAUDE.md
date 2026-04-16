@@ -17,15 +17,14 @@ Uses `uv` for project management. Full reproducible pipeline:
 ```bash
 uv sync                      # install dependencies
 uv run lilyvae-download      # download LILY data from Zenodo (~10.8 GB)
-uv run lilyvae-train         # train both unsupervised + semi-supervised VAEs
-uv run lilyvae-evaluate      # run all evaluation metrics
-uv run lilyvae-zeroshot      # bootstrap zero-shot evaluation
-uv run lilyvae-zeroshot --monte-carlo  # Monte Carlo exploration
+uv run lilyvae-pipeline      # end-to-end: train + bootstrap + single-point + zeroshot + plot
+uv run lilyvae-bootstrap     # canonical VAE bootstrap evaluation (paper numbers)
+uv run lilyvae-single-point  # baselines + ablations on full data
 uv run lilyvae-plot          # generate all paper figures
 ```
 
 Train a single model variant: `uv run lilyvae-train --model unsupervised`
-Generate a single figure: `uv run lilyvae-plot --figure umap_lithology`
+Generate a single figure: `uv run lilyvae-plot --figure umap_comparison`
 
 ## Architecture
 

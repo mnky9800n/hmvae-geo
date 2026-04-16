@@ -54,9 +54,5 @@ LOGVAR_CLAMP_MAX = 6.0
 # Data preprocessing
 BIN_SIZE_CM = 20
 
-# Bootstrap evaluation
-BOOTSTRAP_ITERATIONS = 100
-BOOTSTRAP_TEST_FRACTION = 0.2
-
 # Random seed
 SEED = 42

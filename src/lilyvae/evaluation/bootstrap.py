@@ -11,13 +11,12 @@ What is and isn't in the registry
 ---------------------------------
 Only the two full VAE variants (unsupervised, semi-supervised) are
 bootstrapped, because the paper's quantitative claim is about *those*
-models' stability under retraining. Baselines (PCA, linear AE,
-deterministic AE, TabNet, SCARF) and ablation variants (fixed-variance
-decoder, zero masking, no masking, fixed beta) are evaluated as
-single-point full-data runs in a separate codepath
-(`evaluation/single_point.py`). Bootstrapping them was folly -- PCA is
-deterministic, the autoencoders vary trivially, and TabNet/SCARF's CIs
-aren't part of the story the paper is telling.
+models' stability under retraining. Baselines (PCA, TabNet, SCARF) and
+ablation variants (fixed-variance decoder, zero masking, no masking,
+fixed beta) are evaluated as single-point full-data runs in a separate
+codepath (`evaluation/single_point.py`). Bootstrapping them was folly
+-- PCA is deterministic and TabNet/SCARF's CIs aren't part of the
+story the paper is telling.
 
 Zero-shot R^2 is also NOT in this module. It is a property of the
 full-data trained model's embedding space and is computed once via
@@ -73,12 +72,9 @@ from lilyvae.evaluation.ablations import (
     _train_ablation_model,
 )
 from lilyvae.evaluation.baselines import (
-    DeterministicAutoencoder,
-    LinearAutoencoder,
     PCABaseline,
     SCARFBaseline,
     TabNetBaseline,
-    _train_autoencoder,
     _train_scarf,
 )
 from lilyvae.evaluation.classification import evaluate_classification
@@ -256,47 +252,6 @@ def _trainer_pca(train_f, train_l, test_f, device):
     )
 
 
-def _trainer_linear_ae(train_f, train_l, test_f, device):
-    torch.manual_seed(SEED)
-    model = LinearAutoencoder(INPUT_DIM, LATENT_DIM)
-    dataloader = _make_vae_dataloader(train_f, train_l)
-    model = _train_autoencoder(
-        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
-        WEIGHT_DECAY, MAX_GRAD_NORM, device,
-    )
-    model.eval()
-    with torch.no_grad():
-        x = test_f.to(device)
-        out = model(x)
-        embeddings = model.get_embeddings(x).cpu()
-        reconstruction = out["x_mu"].cpu().numpy()
-    return TrainedModel(
-        name="linear_autoencoder",
-        embeddings=embeddings,
-        reconstruction=reconstruction,
-    )
-
-
-def _trainer_det_ae(train_f, train_l, test_f, device):
-    torch.manual_seed(SEED)
-    model = DeterministicAutoencoder(INPUT_DIM, LATENT_DIM)
-    dataloader = _make_vae_dataloader(train_f, train_l)
-    model = _train_autoencoder(
-        model, dataloader, NUM_EPOCHS, LEARNING_RATE,
-        WEIGHT_DECAY, MAX_GRAD_NORM, device,
-    )
-    model.eval()
-    with torch.no_grad():
-        x = test_f.to(device)
-        out = model(x)
-        embeddings = model.get_embeddings(x).cpu()
-        reconstruction = out["x_mu"].cpu().numpy()
-    return TrainedModel(
-        name="deterministic_autoencoder",
-        embeddings=embeddings,
-        reconstruction=reconstruction,
-    )
-
 
 def _trainer_tabnet(train_f, train_l, test_f, device):
     torch.manual_seed(SEED)
@@ -349,8 +304,6 @@ MODEL_REGISTRY: list[tuple[str, Trainer]] = [
 ALL_TRAINERS: list[tuple[str, Trainer]] = [
     # Baselines
     ("pca", _trainer_pca),
-    ("linear_autoencoder", _trainer_linear_ae),
-    ("deterministic_autoencoder", _trainer_det_ae),
     ("tabnet_unsupervised", _trainer_tabnet),
     ("scarf_contrastive", _trainer_scarf),
     # Ablations (VAE with one component changed from default)
@@ -424,8 +377,8 @@ def run_bootstrap(
 ) -> dict:
     """Run the canonical bootstrap evaluation for training-stability metrics.
 
-    Zero-shot R^2 is not computed here; it should be measured on a
-    full-data trained model via `lilyvae-evaluate`.
+    Zero-shot R^2 is not computed here; it is measured on the full-data
+    trained model by `lilyvae-pipeline` (the zeroshot step).
 
     Args:
         n_iterations: Number of bootstrap iterations.

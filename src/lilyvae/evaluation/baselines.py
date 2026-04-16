@@ -1,24 +1,11 @@
 """Non-VAE baseline models for comparison against LilyVAE.
 
-Five baselines are implemented:
+Three baselines are implemented:
 
 PCA
     Fits PCA on the 6 training features and uses the top `latent_dim`
     principal components as embeddings. Reconstruction uses
     inverse_transform. No neural network training required.
-
-LinearAutoencoder
-    Same hidden-layer widths as LilyVAE but with no activation functions
-    and no KL term. Trained with MSE loss only. The bottleneck IS the
-    embedding -- this is a classical linear autoencoder and collapses to a
-    subspace equivalent to PCA given sufficient training, making it a useful
-    sanity-check for the nonlinear models.
-
-DeterministicAutoencoder
-    Same architecture as LilyVAE (with ReLU activations) but no
-    reparameterization trick and no KL term. The encoder directly outputs
-    the embedding rather than a distribution. Trained with MSE loss only.
-    Isolates the effect of the variational objective.
 
 TabNetBaseline
     TabNet (Arik & Pfister, 2021) with unsupervised mask-reconstruct
@@ -49,7 +36,6 @@ from sklearn.metrics import r2_score
 from lilyvae.config import (
     INPUT_DIM,
     LATENT_DIM,
-    HIDDEN_DIMS,
     TRAINING_VARIABLES,
     NUM_EPOCHS,
     LEARNING_RATE,
@@ -61,7 +47,6 @@ from lilyvae.config import (
 from lilyvae.training.trainer import get_device
 from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
 from lilyvae.data.dataset import get_dataloader
-from lilyvae.evaluation.reconstruction import evaluate_reconstruction
 from lilyvae.evaluation.clustering import evaluate_clustering
 from lilyvae.evaluation.classification import evaluate_classification
 
@@ -140,104 +125,6 @@ class PCABaseline:
             "ari": clust_metrics["ari"],
             "auc_macro": cls_metrics["auc_macro"],
         }
-
-
-# ---------------------------------------------------------------------------
-# Neural network baselines
-# ---------------------------------------------------------------------------
-
-
-class LinearAutoencoder(nn.Module):
-    """Linear autoencoder: same widths as LilyVAE, no activations, no KL.
-
-    The encoder maps input -> hidden layers (linear only) -> bottleneck.
-    The decoder mirrors that path back to input dimension.
-    Trained with MSE loss.
-    """
-
-    def __init__(
-        self,
-        input_dim: int = INPUT_DIM,
-        latent_dim: int = LATENT_DIM,
-        hidden_dims: list[int] | None = None,
-    ):
-        super().__init__()
-        hidden_dims = hidden_dims or list(HIDDEN_DIMS)
-
-        # Encoder: input -> hidden layers -> bottleneck (linear only)
-        enc_layers = []
-        in_dim = input_dim
-        for h_dim in hidden_dims:
-            enc_layers.append(nn.Linear(in_dim, h_dim))
-            in_dim = h_dim
-        enc_layers.append(nn.Linear(in_dim, latent_dim))
-        self.encoder_net = nn.Sequential(*enc_layers)
-
-        # Decoder: bottleneck -> hidden layers -> output (linear only)
-        dec_layers = []
-        in_dim = latent_dim
-        for h_dim in reversed(hidden_dims):
-            dec_layers.append(nn.Linear(in_dim, h_dim))
-            in_dim = h_dim
-        dec_layers.append(nn.Linear(in_dim, input_dim))
-        self.decoder_net = nn.Sequential(*dec_layers)
-
-    def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        z = self.encoder_net(x)
-        x_recon = self.decoder_net(z)
-        return {"x_mu": x_recon, "z": z}
-
-    @torch.no_grad()
-    def get_embeddings(self, x: torch.Tensor) -> torch.Tensor:
-        return self.encoder_net(x)
-
-
-class DeterministicAutoencoder(nn.Module):
-    """Nonlinear deterministic autoencoder: ReLU activations, no KL term.
-
-    The encoder directly outputs the embedding (no mu/logvar split, no
-    reparameterization). This isolates the effect of the variational
-    objective: comparing against LilyVAE tells us how much the KL
-    regularizer contributes to downstream performance.
-    """
-
-    def __init__(
-        self,
-        input_dim: int = INPUT_DIM,
-        latent_dim: int = LATENT_DIM,
-        hidden_dims: list[int] | None = None,
-    ):
-        super().__init__()
-        hidden_dims = hidden_dims or list(HIDDEN_DIMS)
-
-        # Encoder with ReLU activations
-        enc_layers = []
-        in_dim = input_dim
-        for h_dim in hidden_dims:
-            enc_layers.append(nn.Linear(in_dim, h_dim))
-            enc_layers.append(nn.ReLU())
-            in_dim = h_dim
-        enc_layers.append(nn.Linear(in_dim, latent_dim))
-        self.encoder_net = nn.Sequential(*enc_layers)
-
-        # Decoder with ReLU activations
-        dec_layers = []
-        in_dim = latent_dim
-        for h_dim in reversed(hidden_dims):
-            dec_layers.append(nn.Linear(in_dim, h_dim))
-            dec_layers.append(nn.ReLU())
-            in_dim = h_dim
-        dec_layers.append(nn.Linear(in_dim, input_dim))
-        self.decoder_net = nn.Sequential(*dec_layers)
-
-    def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        z = self.encoder_net(x)
-        x_recon = self.decoder_net(z)
-        return {"x_mu": x_recon, "z": z}
-
-    @torch.no_grad()
-    def get_embeddings(self, x: torch.Tensor) -> torch.Tensor:
-        return self.encoder_net(x)
 
 
 # ---------------------------------------------------------------------------
@@ -417,40 +304,6 @@ class SCARFBaseline(nn.Module):
 # ---------------------------------------------------------------------------
 
 
-def _train_autoencoder(
-    model: nn.Module,
-    dataloader: DataLoader,
-    num_epochs: int,
-    lr: float,
-    weight_decay: float,
-    max_grad_norm: float,
-    device: torch.device,
-) -> nn.Module:
-    """Train a LinearAutoencoder or DeterministicAutoencoder with MSE loss."""
-    model = model.to(device)
-    optimizer = torch.optim.Adam(
-        model.parameters(), lr=lr, weight_decay=weight_decay
-    )
-
-    for epoch in range(num_epochs):
-        model.train()
-        for features, _, _ in dataloader:
-            features = features.to(device)
-            out = model(features)
-            loss = F.mse_loss(out["x_mu"], features)
-
-            optimizer.zero_grad()
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(
-                model.parameters(), max_grad_norm
-            )
-            optimizer.step()
-
-        if (epoch + 1) % 10 == 0 or epoch == 0:
-            print(f"  epoch {epoch+1:3d}/{num_epochs}")
-
-    return model
-
 
 def _train_scarf(
     model: SCARFBaseline,
@@ -534,131 +387,6 @@ def evaluate_pca_baseline(
 
     return metrics
 
-
-def evaluate_linear_autoencoder(
-    latent_dim: int = LATENT_DIM,
-    dataloader: DataLoader | None = None,
-    num_epochs: int = NUM_EPOCHS,
-    lr: float = LEARNING_RATE,
-    weight_decay: float = WEIGHT_DECAY,
-    max_grad_norm: float = MAX_GRAD_NORM,
-    device: str = "auto",
-) -> dict:
-    """Train and evaluate a LinearAutoencoder baseline.
-
-    Args:
-        latent_dim: Bottleneck dimensionality.
-        dataloader: Optional pre-built DataLoader (shuffle=False recommended).
-        num_epochs: Training epochs.
-        lr: Learning rate.
-        weight_decay: Adam weight decay.
-        max_grad_norm: Gradient clipping threshold.
-        device: "auto", "cuda", "mps", or "cpu".
-
-    Returns:
-        Metrics dict with model name, r2_avg, ari, auc_macro.
-    """
-    torch.manual_seed(SEED)
-    dev = get_device(device)
-
-    if dataloader is None:
-        dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-
-    print(f"\n[baseline] LinearAutoencoder  latent_dim={latent_dim}")
-    model = LinearAutoencoder(INPUT_DIM, latent_dim)
-    model = _train_autoencoder(
-        model, dataloader, num_epochs, lr, weight_decay, max_grad_norm, dev
-    )
-
-    eval_loader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-    recon_metrics = evaluate_reconstruction(model, eval_loader, dev)
-
-    all_z, all_labels = _extract_all_nn(model, eval_loader, dev)
-    clust_metrics = evaluate_clustering(all_z, all_labels)
-    cls_metrics = evaluate_classification(all_z, all_labels)
-
-    metrics = {
-        "model": "linear_autoencoder",
-        "latent_dim": latent_dim,
-        **recon_metrics,
-        "ari": clust_metrics["ari"],
-        "auc_macro": cls_metrics["auc_macro"],
-    }
-
-    from lilyvae.config import PROCESSED_DIR
-    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
-    if zs_path.exists():
-        zeroshot_targets = torch.load(zs_path, weights_only=False)
-        print("  Zero-shot prediction:")
-        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
-        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
-        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
-        metrics["zeroshot_n_variables"] = len(zs_r2s)
-
-    return metrics
-
-
-def evaluate_deterministic_autoencoder(
-    latent_dim: int = LATENT_DIM,
-    dataloader: DataLoader | None = None,
-    num_epochs: int = NUM_EPOCHS,
-    lr: float = LEARNING_RATE,
-    weight_decay: float = WEIGHT_DECAY,
-    max_grad_norm: float = MAX_GRAD_NORM,
-    device: str = "auto",
-) -> dict:
-    """Train and evaluate a DeterministicAutoencoder baseline.
-
-    Args:
-        latent_dim: Bottleneck dimensionality.
-        dataloader: Optional pre-built DataLoader (shuffle=False recommended).
-        num_epochs: Training epochs.
-        lr: Learning rate.
-        weight_decay: Adam weight decay.
-        max_grad_norm: Gradient clipping threshold.
-        device: "auto", "cuda", "mps", or "cpu".
-
-    Returns:
-        Metrics dict with model name, r2_avg, ari, auc_macro.
-    """
-    torch.manual_seed(SEED)
-    dev = get_device(device)
-
-    if dataloader is None:
-        dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-
-    print(f"\n[baseline] DeterministicAutoencoder  latent_dim={latent_dim}")
-    model = DeterministicAutoencoder(INPUT_DIM, latent_dim)
-    model = _train_autoencoder(
-        model, dataloader, num_epochs, lr, weight_decay, max_grad_norm, dev
-    )
-
-    eval_loader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
-    recon_metrics = evaluate_reconstruction(model, eval_loader, dev)
-
-    all_z, all_labels = _extract_all_nn(model, eval_loader, dev)
-    clust_metrics = evaluate_clustering(all_z, all_labels)
-    cls_metrics = evaluate_classification(all_z, all_labels)
-
-    metrics = {
-        "model": "deterministic_autoencoder",
-        "latent_dim": latent_dim,
-        **recon_metrics,
-        "ari": clust_metrics["ari"],
-        "auc_macro": cls_metrics["auc_macro"],
-    }
-
-    from lilyvae.config import PROCESSED_DIR
-    zs_path = PROCESSED_DIR / "zeroshot_targets.pt"
-    if zs_path.exists():
-        zeroshot_targets = torch.load(zs_path, weights_only=False)
-        print("  Zero-shot prediction:")
-        zs_results = evaluate_all_zeroshot(all_z, zeroshot_targets)
-        zs_r2s = [v["r2"] for v in zs_results.values() if not np.isnan(v["r2"])]
-        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s)) if zs_r2s else float("nan")
-        metrics["zeroshot_n_variables"] = len(zs_r2s)
-
-    return metrics
 
 
 def evaluate_tabnet_baseline(
@@ -781,34 +509,15 @@ def run_all_baselines(
     num_epochs: int = NUM_EPOCHS,
     device: str = "auto",
 ) -> list[dict]:
-    """Evaluate all five baselines and return a list of result dicts.
-
-    Args:
-        latent_dim: Embedding dimensionality for all baselines.
-        num_epochs: Training epochs for the neural baselines.
-        device: Compute device string.
+    """Evaluate all three baselines and return a list of result dicts.
 
     Returns:
-        List of metrics dicts, one per baseline, in order:
-        [pca, linear_autoencoder, deterministic_autoencoder,
-         tabnet_unsupervised, scarf_contrastive].
+        List of metrics dicts: [pca, tabnet_unsupervised, scarf_contrastive].
     """
     dataloader = get_dataloader(batch_size=BATCH_SIZE, shuffle=False)
 
     results = [
         evaluate_pca_baseline(latent_dim=latent_dim, dataloader=dataloader),
-        evaluate_linear_autoencoder(
-            latent_dim=latent_dim,
-            dataloader=dataloader,
-            num_epochs=num_epochs,
-            device=device,
-        ),
-        evaluate_deterministic_autoencoder(
-            latent_dim=latent_dim,
-            dataloader=dataloader,
-            num_epochs=num_epochs,
-            device=device,
-        ),
         evaluate_tabnet_baseline(
             latent_dim=latent_dim,
             dataloader=dataloader,

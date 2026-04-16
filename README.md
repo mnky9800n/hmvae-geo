@@ -13,56 +13,99 @@ measurements contain enough structure that supervision with human-assigned
 lithology labels adds no value and, at high weight, actively degrades
 reconstruction.
 
-## Quick start
+## Getting started
+
+### Prerequisites
+
+- Python 3.11+
+- [uv](https://github.com/astral-sh/uv) for dependency management
+- ~15 GB free disk (10.8 GB raw data + processed tensors + checkpoints)
+- GPU recommended (CUDA or Apple MPS). CPU-only works but the full pipeline
+  takes over a day.
+
+### Setup
 
 ```bash
-# One-time setup
+git clone https://github.com/mnky9800n/hmvae-geo.git
+cd hmvae-geo
 uv sync                         # install dependencies
 uv run lilyvae-download         # fetch LILY data from Zenodo (~10.8 GB)
+```
 
-# Reproduce every paper number and figure
+### Reproduce every paper number and figure
+
+```bash
 uv run lilyvae-pipeline
 ```
 
-`lilyvae-pipeline` runs the entire workflow end-to-end:
+This is idempotent: each step is skipped if its output already exists.
+Use `--force` to re-run from scratch.
 
-1. Preprocess raw CSVs into PyTorch tensors
-2. Train unsupervised and semi-supervised VAE checkpoints on the full dataset
-3. Run the canonical bootstrap evaluation: 30 borehole-level splits,
-   every model (11 total) retrained on each split, per-fold metrics
-   aggregated into `data/results/bootstrap_results.json`
-4. Generate paper figures
+### Quick sanity check without the full pipeline
 
-Each step is idempotent and will be skipped if its expected output already
-exists. Use `--force` to re-run from scratch.
+```bash
+uv run pytest tests/ -m "not slow"                 # unit tests, no data needed
+uv run lilyvae-bootstrap --iterations 2            # ~5 min per fold instead of 30 folds
+```
+
+### Working on the sparse autoencoder (SAE)
+
+The SAE code lives at `src/lilyvae/evaluation/sae.py`. It trains on the
+10-dimensional VAE latent space and exposes:
+
+- `SparseAutoencoder` -- small nn.Module with configurable hidden width
+- `train_sae(z, cfg)` -- train on a precomputed tensor of VAE latents
+- `score_features_against_targets(...)` -- per-feature scoring against four
+  geological hypotheses (depth, carbonate-vs-clay, volcanic, organic-rich)
+- `steer(...)` -- amplify a single SAE feature and decode back through the
+  VAE to see how reconstructions change
+
+The SAE is not wired into `lilyvae-pipeline`; it's a standalone exploration
+tool. See the module docstring for details on its limitations (the 10-dim
+VAE latent is much smaller than the 768+ dim residual streams SAEs are
+typically applied to, see https://arxiv.org/abs/2512.24440).
+
+Checkpoints and preprocessed tensors the SAE needs:
+
+- `data/checkpoints/unsupervised_embeddings.pt` (10-dim latents)
+- `data/processed/train_labels.pt`, `label_encoder.pkl`, `metadata.pt`
+
+Minimal example:
+
+```python
+import torch
+from lilyvae.config import CHECKPOINT_DIR
+from lilyvae.evaluation.sae import train_sae, SAETrainConfig
+
+z = torch.load(CHECKPOINT_DIR / "unsupervised_embeddings.pt", weights_only=True)
+sae, diagnostics = train_sae(z, SAETrainConfig(d_hidden=64, num_epochs=200))
+```
 
 ## What gets evaluated
 
-Every bootstrap iteration holds out 10% of boreholes and trains all 11 of
-these models on the remaining 90%. Within a fold, all models see the exact
-same train/test split so the comparison is apples-to-apples.
+The paper's main results table has three row groups:
 
-**Baselines (self-supervised / unsupervised, no labels):**
+**Baselines** (self-supervised, no labels), evaluated single-point on the
+full 238k-sample dataset:
 - PCA on the 6 input features
-- Linear autoencoder (no KL term, no nonlinearities)
-- Deterministic autoencoder (same architecture, no variational objective)
-- TabNet pretraining (Arik & Pfister 2021) — masked-feature prediction
-- SCARF (Bahri et al. 2022) — contrastive with feature corruption
+- TabNet pretraining (Arik & Pfister 2021) -- masked-feature prediction
+- SCARF (Bahri et al. 2022) -- contrastive with feature corruption
 
-**Ablations (VAE with one component changed):**
+**Ablations** (VAE with one component changed), also evaluated single-point:
 - Fixed-variance (MSE) decoder instead of heteroscedastic
 - Zero masking instead of learnable mask tokens
 - No masking at all
 - Fixed β instead of annealing schedule
 
-**Full models:**
+**Full models**, evaluated with a 30-fold borehole-level bootstrap to
+produce training-stability CIs:
 - Unsupervised VAE (ours)
 - Semi-supervised VAE with lithology classifier head
 
-Each model is scored on reconstruction R², clustering ARI (against true
-lithology), classification AUC (one-vs-rest SVM on embeddings), and
-zero-shot R² (CatBoost regressing unseen geophysical variables from the
-embeddings, trained and evaluated within the same held-out fold).
+Every model is scored on reconstruction R², clustering ARI (against true
+lithology), and classification AUC (one-vs-rest SVM on embeddings).
+Zero-shot R² (CatBoost regressing ~65 unseen geophysical variables from
+the embeddings) is reported on the full-data models only.
 
 ## Repository layout
 
@@ -73,22 +116,22 @@ src/lilyvae/
 ├── model/                       # VAE (heteroscedastic), classification head
 ├── training/                    # Loss functions, learnable masking, training loop
 ├── evaluation/
-│   ├── bootstrap.py             # Canonical bootstrap runner (THE source of truth)
-│   ├── baselines.py             # PCA, linear/det AE, TabNet, SCARF
-│   ├── ablations.py             # Fixed-variance decoder, alt masking strategies
+│   ├── bootstrap.py             # Bootstrap evaluator for the two VAE variants
+│   ├── single_point.py          # Full-data evaluator for baselines + ablations
+│   ├── baselines.py             # PCA, TabNet, SCARF
+│   ├── ablations.py             # FixedVarianceVAE, ZeroMasking, NoMasking
 │   ├── reconstruction.py        # Per-variable R²
 │   ├── clustering.py            # GMM ARI
 │   ├── classification.py        # SVM macro AUC
 │   ├── zeroshot.py              # CatBoost zero-shot prediction
-│   └── bootstrap_zeroshot.py    # Legacy bootstrap zero-shot (kept for quick eval)
+│   └── sae.py                   # Sparse autoencoder on latent space (future work)
 ├── plotting/                    # Paper figure generators
 └── scripts/                     # CLI entry points
     ├── download.py              # lilyvae-download
     ├── pipeline.py              # lilyvae-pipeline (the main one)
     ├── train.py                 # lilyvae-train
     ├── bootstrap.py             # lilyvae-bootstrap
-    ├── evaluate.py              # lilyvae-evaluate (quick debug, single run)
-    ├── zeroshot.py              # lilyvae-zeroshot (Monte Carlo exploration)
+    ├── single_point.py          # lilyvae-single-point
     └── plot.py                  # lilyvae-plot
 
 data/                            # All generated artifacts (gitignored)
@@ -96,7 +139,9 @@ data/                            # All generated artifacts (gitignored)
 ├── processed/                   # train_features.pt, train_labels.pt, metadata.pt, zeroshot_targets.pt
 ├── checkpoints/                 # {unsupervised,semi_supervised}_vae.pt, *_embeddings.pt
 └── results/
-    └── bootstrap_results.json   # Canonical paper numbers
+    ├── bootstrap_results.json   # Canonical VAE numbers
+    ├── single_point_results.json # Baseline + ablation numbers
+    └── zeroshot_fulldata.json   # Per-variable zero-shot R²
 ```
 
 ## CLI reference
@@ -106,28 +151,17 @@ data/                            # All generated artifacts (gitignored)
 | `lilyvae-download` | Download the LILY database from Zenodo (~10.8 GB) |
 | `lilyvae-pipeline` | Run everything end-to-end (the main command) |
 | `lilyvae-train` | Train just the full-data VAE checkpoints |
-| `lilyvae-bootstrap` | Run just the bootstrap evaluation |
-| `lilyvae-evaluate` | Quick debug: evaluate a checkpoint on full data (NOT what paper reports) |
-| `lilyvae-zeroshot` | Zero-shot with Monte Carlo hyperparameter search (exploration) |
+| `lilyvae-bootstrap` | Run just the bootstrap evaluation of the two VAE variants |
+| `lilyvae-single-point` | Baselines + ablations on full data |
 | `lilyvae-plot` | Regenerate paper figures |
-
-### `lilyvae-evaluate` vs `lilyvae-bootstrap`
-
-`lilyvae-evaluate` runs a single-shot evaluation of the saved checkpoints on
-the full dataset. It's useful for quick debugging but its numbers are
-**not** what the paper reports.
-
-`lilyvae-bootstrap` runs the canonical 30-fold borehole-level bootstrap
-used in the paper. Every number in the main results table comes from
-`data/results/bootstrap_results.json`.
 
 ## Runtime
 
 On an AMD EPYC 7995 workstation with 64 cores, 256 GB RAM, and 2× NVIDIA
 RTX 6000 Ada, the full pipeline (download excluded) takes roughly X.X
 hours. On a modern laptop CPU the bootstrap evaluation alone takes over 24
-hours and is not recommended; use the `--no-zeroshot` flag or a smaller
-`--iterations` value for development.
+hours and is not recommended; use `lilyvae-bootstrap --iterations 2` for a
+quick sanity check during development.
 
 ## Data
 
