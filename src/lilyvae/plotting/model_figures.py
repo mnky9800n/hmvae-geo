@@ -143,51 +143,6 @@ def plot_roc_comparison(output_dir: Path | None = None):
     print("  Saved fig_roc_comparison.png")
 
 
-def plot_generated_variables_grid(output_dir: Path | None = None, device: str = "auto"):
-    """PDFs for top lithologies across training variables (fig_generated_variables_grid.png)."""
-    import pickle
-
-    output_dir = output_dir or PAPER_DIR
-    dev = get_device(device)
-
-    features = torch.load(PROCESSED_DIR / "train_features.pt", weights_only=True)
-    labels = torch.load(PROCESSED_DIR / "train_labels.pt", weights_only=True)
-    metadata = torch.load(PROCESSED_DIR / "metadata.pt", weights_only=False)
-    var_names = metadata.get("feature_columns", TRAINING_VARIABLES)
-
-    with open(PROCESSED_DIR / "scaler.pkl", "rb") as f:
-        scaler = pickle.load(f)
-    with open(PROCESSED_DIR / "label_encoder.pkl", "rb") as f:
-        le = pickle.load(f)
-
-    raw = scaler.inverse_transform(features.numpy())
-    y = labels.numpy()
-
-    # Top 5 lithologies
-    counts = np.bincount(y)
-    top5 = np.argsort(counts)[::-1][:5]
-    top5_names = le.inverse_transform(top5)
-
-    fig, axes = plt.subplots(5, len(var_names), figsize=(3 * len(var_names), 12))
-
-    for row, (cls_idx, cls_name) in enumerate(zip(top5, top5_names)):
-        mask = y == cls_idx
-        for col, name in enumerate(var_names):
-            ax = axes[row, col]
-            vals = raw[mask, col]
-            ax.hist(vals, bins=40, density=True, color="steelblue", alpha=0.7, edgecolor="none")
-            if row == 0:
-                ax.set_title(name, fontsize=9)
-            if col == 0:
-                ax.set_ylabel(cls_name, fontsize=7)
-            ax.tick_params(labelsize=6)
-
-    plt.tight_layout()
-    plt.savefig(output_dir / "fig_generated_variables_grid.png", dpi=300, bbox_inches="tight")
-    plt.close()
-    print("  Saved fig_generated_variables_grid.png")
-
-
 def plot_alpha_sweep(output_dir: Path | None = None):
     """R² and AUC vs supervision weight alpha (fig_alpha_sweep.png)."""
     import json
