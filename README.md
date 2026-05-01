@@ -26,8 +26,8 @@ reconstruction.
 ### Setup
 
 ```bash
-git clone https://github.com/mnky9800n/hmvae-geo.git
-cd hmvae-geo
+git clone <repository-url>
+cd <repository-directory>
 uv sync                         # install dependencies
 uv run lilyvae-download         # fetch LILY data from Zenodo (~10.8 GB)
 ```
