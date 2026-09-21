@@ -69,10 +69,13 @@ class TargetSpec:
             in the supporting-information table so every exclusion is
             auditable rather than silent.
         winsorize: Clip the top and bottom percentile of the target
-            before fitting. Set for the SRM whole-core magnetic columns,
-            where the LILY release contains values up to 1.16e8 A m^2,
-            twelve orders of magnitude above anything physically
-            plausible for sediment.
+            before fitting. A blunt fallback for columns whose corruption
+            has no clean physical bound.
+        valid_range: (min, max) physically admissible values. Rows
+            outside are dropped before fitting or scoring. Preferred over
+            `winsorize` wherever the instrument defines a plausible
+            range, because it removes only impossible values instead of
+            trimming a fixed fraction of real ones.
     """
 
     tier: Tier
@@ -81,6 +84,7 @@ class TargetSpec:
     label: str
     reason: str = ""
     winsorize: bool = False
+    valid_range: tuple[float, float] | None = None
 
 
 _P = "procedural"
@@ -93,7 +97,8 @@ _I = "independent"
 TARGET_REGISTRY: dict[str, TargetSpec] = {
     # --- Automated vane shear -------------------------------------------
     "AVS_Vane shear strength (kN/m^2)": TargetSpec(
-        _I, "shear_strength", "AVS", "Vane shear strength"
+        _I, "shear_strength", "AVS", "Vane shear strength",
+        valid_range=(0.0, 1000.0),
     ),
     "AVS_Max torque angle (deg)": TargetSpec(
         _D, "shear_strength", "AVS", "Max torque angle",
@@ -104,9 +109,15 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         reason="Undrained shear strength again, by torvane instead of vane.",
     ),
     # --- Moisture and density -------------------------------------------
-    "MAD_Porosity (vol%)": TargetSpec(_I, "porosity", "MAD", "Porosity"),
+    "MAD_Porosity (vol%)": TargetSpec(
+        _I, "porosity", "MAD", "Porosity",
+        # A volume fraction. The release reaches -130 vol%.
+        valid_range=(0.0, 100.0),
+    ),
     "MAD_Grain density (g/cm^3)": TargetSpec(
-        _I, "grain_density", "MAD", "Grain density"
+        _I, "grain_density", "MAD", "Grain density",
+        # Rock-forming minerals span roughly quartz to heavy accessories.
+        valid_range=(1.5, 5.0),
     ),
     "MAD_Void ratio": TargetSpec(
         _D, "porosity", "MAD", "Void ratio",
@@ -158,13 +169,19 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         reason="Same quantity as the MS training input, point sensor.",
     ),
     # --- Penetrometer ----------------------------------------------------
-    "PEN": TargetSpec(_I, "penetration_resistance", "PEN", "Penetration resistance"),
+    "PEN": TargetSpec(
+        _I, "penetration_resistance", "PEN", "Penetration resistance",
+        valid_range=(0.0, 1000.0),
+    ),
     # --- P-wave velocity --------------------------------------------------
     "PWC_P-wave velocity x (m/s)": TargetSpec(
-        _I, "p_wave_discrete", "PWC", "P-wave velocity (discrete)"
+        _I, "p_wave_discrete", "PWC", "P-wave velocity (discrete)",
+        # Bounded below by water. The release contains -3.17e6 m/s.
+        valid_range=(1000.0, 8000.0),
     ),
     "PWL_P-wave velocity xy (m/s)": TargetSpec(
-        _I, "p_wave_whole_core", "PWL", "P-wave velocity (whole core)"
+        _I, "p_wave_whole_core", "PWL", "P-wave velocity (whole core)",
+        valid_range=(1000.0, 8000.0),
     ),
     **{
         name: TargetSpec(
@@ -222,10 +239,12 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         _I, "magnetisation_discrete", "SRMD", "Magnetisation (discrete)"
     ),
     "SRMD_Inclination raw (deg)": TargetSpec(
-        _I, "inclination_discrete", "SRMD", "Inclination (discrete)"
+        _I, "inclination_discrete", "SRMD", "Inclination (discrete)",
+        valid_range=(-90.0, 90.0),
     ),
     "SRMD_Declination raw (deg)": TargetSpec(
-        _I, "declination_discrete", "SRMD", "Declination (discrete)"
+        _I, "declination_discrete", "SRMD", "Declination (discrete)",
+        valid_range=(-360.0, 360.0),
     ),
     **{
         name: TargetSpec(
@@ -261,10 +280,12 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         winsorize=True,
     ),
     "SRM_Inclination raw (deg)": TargetSpec(
-        _I, "inclination_whole_core", "SRM", "Inclination (whole core)"
+        _I, "inclination_whole_core", "SRM", "Inclination (whole core)",
+        valid_range=(-90.0, 90.0),
     ),
     "SRM_Declination raw (deg)": TargetSpec(
-        _I, "declination_whole_core", "SRM", "Declination (whole core)"
+        _I, "declination_whole_core", "SRM", "Declination (whole core)",
+        valid_range=(-360.0, 360.0),
     ),
     **{
         name: TargetSpec(
@@ -293,7 +314,11 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
     ),
     # --- Thermal conductivity ---------------------------------------------
     "TCON_Thermal conductivity mean (W/(m*K))": TargetSpec(
-        _I, "thermal_conductivity", "TCON", "Thermal conductivity"
+        _I, "thermal_conductivity", "TCON", "Thermal conductivity",
+        # Wet sediment sits near 1 W/(m K). The release reaches 3.75e9,
+        # and those nine rows alone drove this column's reported R^2 from
+        # 0.78 to 0.99 in-sample while destroying it out of borehole.
+        valid_range=(0.2, 10.0),
     ),
     "TCON_Thermal conductivity observations (W/(m*K))": TargetSpec(
         _D, "thermal_conductivity", "TCON", "Thermal conductivity (obs.)",
@@ -453,3 +478,28 @@ def redundancy_clusters(
         key=len,
         reverse=True,
     )
+
+
+def apply_valid_range(
+    values: np.ndarray, valid_mask: np.ndarray, spec: TargetSpec | None
+) -> tuple[np.ndarray, int]:
+    """Drop physically impossible values from a target's valid mask.
+
+    The LILY release contains values that cannot be measurements:
+    thermal conductivity up to 3.75e9 W/(m K) against a sediment median
+    of 1.24, P-wave velocity down to -3.17e6 m/s, porosity at -130 vol%.
+    Such values dominate the total sum of squares, so a regressor that
+    memorises a handful of them scores R^2 near 1.0 while learning
+    nothing about rock, and fails completely once they land on the other
+    side of a split. Nine such rows out of 5,134 were enough to move
+    thermal conductivity's reported score from 0.78 to 0.99 in-sample and
+    from 0.49 to -0.01 out of borehole.
+
+    Returns the narrowed mask and the number of rows removed.
+    """
+    if spec is None or spec.valid_range is None:
+        return valid_mask, 0
+    lo, hi = spec.valid_range
+    values = np.asarray(values, dtype=np.float64)
+    narrowed = valid_mask & (values >= lo) & (values <= hi)
+    return narrowed, int(valid_mask.sum() - narrowed.sum())

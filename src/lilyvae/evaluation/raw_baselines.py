@@ -44,7 +44,12 @@ from sklearn.svm import LinearSVC
 from lilyvae.config import LATENT_DIM, PROCESSED_DIR, SEED
 from lilyvae.evaluation.bootstrap import ALL_TRAINERS
 from lilyvae.evaluation.folds import borehole_splits, energy_distance, lithology_jaccard
-from lilyvae.evaluation.targets import REPORTED_TIERS, TARGET_REGISTRY, select_targets
+from lilyvae.evaluation.targets import (
+    REPORTED_TIERS,
+    TARGET_REGISTRY,
+    apply_valid_range,
+    select_targets,
+)
 from lilyvae.evaluation.zeroshot_bootstrap import (
     MIN_TEST_ROWS,
     MIN_TRAIN_ROWS,
@@ -234,14 +239,16 @@ def run_raw_baselines(
     borehole_ids = np.asarray(metadata["borehole_ids"])
 
     names = select_targets(targets, tiers)
-    prepared = {
-        name: (
-            np.asarray(targets[name]["values"], dtype=np.float64),
-            np.asarray(targets[name]["valid_mask"], dtype=bool),
-            bool(TARGET_REGISTRY[name].winsorize),
+    prepared = {}
+    for name in names:
+        spec = TARGET_REGISTRY[name]
+        values = np.asarray(targets[name]["values"], dtype=np.float64)
+        mask, n_dropped = apply_valid_range(
+            values, np.asarray(targets[name]["valid_mask"], dtype=bool), spec
         )
-        for name in names
-    }
+        if n_dropped:
+            print(f"  {spec.label}: dropped {n_dropped} impossible row(s)")
+        prepared[name] = (values, mask, bool(spec.winsorize))
     raw = features.numpy().astype(np.float64)
     labels_np = labels.numpy()
 

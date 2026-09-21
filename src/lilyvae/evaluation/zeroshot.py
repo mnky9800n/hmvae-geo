@@ -14,6 +14,7 @@ from sklearn.metrics import r2_score
 
 from lilyvae.evaluation.targets import (
     HEADLINE_TIERS,
+    apply_valid_range,
     REPORTED_TIERS,
     TARGET_REGISTRY,
     select_targets,
@@ -99,15 +100,23 @@ def evaluate_all_zeroshot(
         spec = TARGET_REGISTRY.get(name)
         print(f"  Zero-shot: {name} ({target['n_valid']} samples)...")
         try:
+            mask, n_dropped = apply_valid_range(
+                target["values"].numpy(), target["valid_mask"].numpy().astype(bool),
+                spec,
+            )
             result = evaluate_zeroshot_variable(
                 embeddings,
                 target["values"],
-                target["valid_mask"],
+                torch.from_numpy(mask),
                 winsorize=bool(spec and spec.winsorize),
             )
+            result["n_outside_valid_range"] = n_dropped
             if spec is not None:
                 result["tier"] = spec.tier
                 result["group"] = spec.group
+            if n_dropped:
+                print(f"    dropped {n_dropped} row(s) outside "
+                      f"{spec.valid_range} as physically impossible")
             results[name] = result
             print(f"    R² = {result['r2']:.4f}")
         except Exception as e:

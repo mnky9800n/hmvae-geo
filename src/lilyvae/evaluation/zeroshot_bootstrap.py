@@ -47,6 +47,7 @@ from lilyvae.evaluation.bootstrap import ALL_TRAINERS, MODEL_REGISTRY
 from lilyvae.evaluation.folds import borehole_splits, energy_distance, lithology_jaccard
 from lilyvae.evaluation.targets import (
     HEADLINE_TIERS,
+    apply_valid_range,
     REPORTED_TIERS,
     TARGET_REGISTRY,
     select_targets,
@@ -181,14 +182,17 @@ def run_zeroshot_bootstrap(
             raise ValueError(f"No trainers match {models}. Known: {known}")
 
     names = select_targets(targets, tiers)
-    prepared = {
-        name: (
-            np.asarray(targets[name]["values"], dtype=np.float64),
-            np.asarray(targets[name]["valid_mask"], dtype=bool),
-            bool(TARGET_REGISTRY[name].winsorize),
+    prepared = {}
+    for name in names:
+        spec = TARGET_REGISTRY[name]
+        values = np.asarray(targets[name]["values"], dtype=np.float64)
+        mask, n_dropped = apply_valid_range(
+            values, np.asarray(targets[name]["valid_mask"], dtype=bool), spec
         )
-        for name in names
-    }
+        if n_dropped:
+            print(f"  {spec.label}: dropped {n_dropped} row(s) outside "
+                  f"{spec.valid_range} as physically impossible")
+        prepared[name] = (values, mask, bool(spec.winsorize))
     features_np = features.numpy().astype(np.float64)
     labels_np = labels.numpy()
 

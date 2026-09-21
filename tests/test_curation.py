@@ -367,3 +367,67 @@ def test_calibration_from_model_is_deterministic():
     b = calibration_from_model(vae, x)
     assert a["nll_heteroscedastic"] == b["nll_heteroscedastic"]
     assert a["mean_standardised_residual_sq"] == b["mean_standardised_residual_sq"]
+
+
+# --------------------------------------------- physical validity bounds
+
+
+def test_valid_range_removes_impossible_values():
+    """The mechanism that inflated the reported zero-shot scores.
+
+    A single value nine orders of magnitude above the real ones dominates
+    the total sum of squares, so memorising it reads as near-perfect R2.
+    """
+    from lilyvae.evaluation.targets import TargetSpec, apply_valid_range
+
+    spec = TargetSpec("independent", "g", "TCON", "x", valid_range=(0.2, 10.0))
+    values = np.array([1.1, 1.3, 0.9, 3.75e9, -0.016])
+    valid = np.ones(5, dtype=bool)
+
+    narrowed, dropped = apply_valid_range(values, valid, spec)
+    assert dropped == 2
+    assert narrowed.tolist() == [True, True, True, False, False]
+
+
+def test_valid_range_is_a_no_op_without_bounds():
+    from lilyvae.evaluation.targets import TargetSpec, apply_valid_range
+
+    spec = TargetSpec("independent", "g", "X", "x")
+    valid = np.array([True, True, False])
+    narrowed, dropped = apply_valid_range(np.array([1.0, 1e9, 3.0]), valid, spec)
+    assert dropped == 0
+    assert narrowed is valid
+
+
+def test_every_bounded_target_has_a_physically_sane_range():
+    """Guard against a typo turning a bound into a silent data filter."""
+    for name, spec in TARGET_REGISTRY.items():
+        if spec.valid_range is None:
+            continue
+        lo, hi = spec.valid_range
+        assert lo < hi, f"{name} has an inverted range"
+        assert np.isfinite(lo) and np.isfinite(hi), f"{name} has a non-finite bound"
+
+
+@requires_data
+def test_bounds_discard_only_a_tiny_fraction_of_real_data():
+    """Bounds must remove impossible values, not trim the distribution.
+
+    If a bound ever starts discarding a large share of a column it is
+    more likely to be wrong than the data is.
+    """
+    from lilyvae.evaluation.targets import apply_valid_range
+
+    targets = torch.load(PROCESSED_DIR / "zeroshot_targets.pt", weights_only=False)
+    for name in select_targets(targets, REPORTED_TIERS):
+        spec = TARGET_REGISTRY[name]
+        if spec.valid_range is None:
+            continue
+        values = np.asarray(targets[name]["values"], dtype=np.float64)
+        valid = np.asarray(targets[name]["valid_mask"], dtype=bool)
+        _, dropped = apply_valid_range(values, valid, spec)
+        fraction = dropped / max(int(valid.sum()), 1)
+        assert fraction < 0.05, (
+            f"{spec.label} loses {fraction:.1%} to its bound {spec.valid_range}; "
+            "check the bound before blaming the data"
+        )
