@@ -567,3 +567,59 @@ def test_gmm_component_count_is_not_searchable():
     assert "n_gmm_components" not in SEARCH_SPACE
     assert "n_gmm_components" not in SearchConfig.__dataclass_fields__
     assert "alpha" not in SEARCH_SPACE
+
+
+def test_constraint_prefers_ari_only_among_configs_that_keep_transfer(tmp_path):
+    """The point of the constraint: a big ARI win that costs transfer loses."""
+    from lilyvae.search.ledger import Ledger, Trial
+    from lilyvae.search.space import SearchConfig
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    ledger.append(Trial(
+        index=0, config=SearchConfig().to_dict(),
+        ari_median=0.23, auc_median=0.96,
+        auc_transfer_median=0.806,
+        auc_transfer_folds=[0.794, 0.806, 0.818],   # sd ~0.012
+        proposed_by="baseline",
+    ))
+    # Best ARI by far, but transfer collapses.
+    ledger.append(Trial(
+        index=1, config=SearchConfig(latent_dim=6).to_dict(),
+        ari_median=0.32, auc_median=0.95,
+        auc_transfer_median=0.780, auc_transfer_folds=[0.78, 0.78, 0.78],
+    ))
+    # Smaller ARI gain, transfer held.
+    ledger.append(Trial(
+        index=2, config=SearchConfig(beta_end=0.3).to_dict(),
+        ari_median=0.28, auc_median=0.95,
+        auc_transfer_median=0.800, auc_transfer_folds=[0.80, 0.80, 0.80],
+    ))
+
+    assert ledger.best().index == 2, "a transfer-destroying config must not win"
+    assert ledger.ranked()[-1].index == 1
+    assert ledger.transfer_floor() < 0.806
+
+
+def test_transfer_floor_is_permissive_without_a_baseline(tmp_path):
+    """No baseline must leave everything admissible, not reject everything."""
+    from lilyvae.search.ledger import Ledger, Trial
+    from lilyvae.search.space import SearchConfig
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    ledger.append(Trial(index=0, config=SearchConfig().to_dict(),
+                        ari_median=0.25, auc_median=0.95,
+                        auc_transfer_median=0.70))
+    assert ledger.transfer_floor() == float("-inf")
+    assert ledger.best().index == 0
+
+
+def test_fold_spread_falls_back_to_the_iqr(tmp_path):
+    """Trials recorded before per-fold values were stored still rank."""
+    from lilyvae.search.ledger import Trial
+    from lilyvae.search.space import SearchConfig
+
+    t = Trial(index=0, config=SearchConfig().to_dict(),
+              ari_median=0.25, auc_median=0.95,
+              auc_transfer_median=0.80,
+              auc_transfer_iqr=[0.794, 0.810])
+    assert abs(t.transfer_spread - (0.810 - 0.794) / 1.349) < 1e-9

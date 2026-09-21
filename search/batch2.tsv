@@ -1,0 +1,13 @@
+# Round 2, five folds. Round 1 (search/pilot_3fold_ledger.jsonl, three folds)
+# showed ARI and transfer AUC anti-correlated at -0.85, with beta_end 0.3 the
+# best configuration that still kept transfer. These proposals map that ridge
+# rather than pushing further in the direction that was already shown to trade
+# transfer away.
+{"beta_end": 0.15}	between the baseline 0.075 and the 0.3 that led round 1, to find where the ARI gain starts
+{"beta_end": 0.3}	round 1 leader, re-measured at five folds; it cleared the floor by 0.0003 there, which is inside the noise
+{"beta_end": 0.6}	past the round 1 leader, to see whether ARI keeps rising or transfer collapses
+{"latent_dim": 8}	latent 6 gave the best ARI of round 1 but failed the transfer constraint; 8 is the middle ground
+{"latent_dim": 8, "beta_end": 0.3}	the two admissible levers together
+{"mask_fraction": 0.05}	masking at 0.3 hurt both metrics, so test the other direction
+{"num_epochs": 150, "beta_end": 0.3}	give the stronger KL weight longer to settle, since beta reaches its final value only at epoch 50
+{"beta_end": 0.3, "logvar_clamp_min": -12.0}	stronger KL with the variance floor released, since the floor binds for 98% of samples

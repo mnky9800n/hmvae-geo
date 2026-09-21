@@ -13,6 +13,8 @@ import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+import numpy as np
+
 from lilyvae.search.space import SearchConfig
 
 
@@ -30,6 +32,11 @@ class Trial:
     #: This is the objective, not `auc_median`.
     auc_transfer_median: float = float("nan")
     auc_transfer_iqr: list[float] = field(default_factory=list)
+    #: Per-fold values, kept so the spread can be compared against the
+    #: difference between configurations. A gap smaller than the fold
+    #: spread is not a result.
+    ari_folds: list[float] = field(default_factory=list)
+    auc_transfer_folds: list[float] = field(default_factory=list)
     r2_median: float = float("nan")
     n_folds: int = 0
     elapsed_seconds: float = 0.0
@@ -37,32 +44,51 @@ class Trial:
     rationale: str = ""
     error: str = ""
 
+    def _spread(self, folds: list[float], iqr: list[float]) -> float:
+        """Fold-to-fold standard deviation, estimated from the IQR if the
+        per-fold values predate this field."""
+        vals = [v for v in folds if v == v]
+        if len(vals) >= 2:
+            return float(np.std(vals, ddof=1))
+        if len(iqr) == 2 and all(v == v for v in iqr):
+            # For a normal sample the IQR spans about 1.349 sigma.
+            return float((iqr[1] - iqr[0]) / 1.349)
+        return float("nan")
+
     @property
-    def objective(self) -> float:
-        """Scalar used to order the ledger: ARI and *transfer* AUC.
+    def transfer_spread(self) -> float:
+        return self._spread(self.auc_transfer_folds, self.auc_transfer_iqr)
 
-        The probe AUC in `auc_median` is not used. A three-epoch model
-        scores 0.9535 against 0.9573 for a fully trained one, so its
-        entire headroom is smaller than the fold-to-fold interquartile
-        width of about 0.01, and optimising it would chase noise. It is
-        the same saturation that made reconstruction R^2 useless as a
-        discriminator.
+    @property
+    def ari_spread(self) -> float:
+        return self._spread(self.ari_folds, self.ari_iqr)
 
-        Transfer AUC sits near 0.82 and drops when a configuration
-        stops generalising to a new borehole, so it has both room and
-        meaning. ARI ranges from about 0.14 to 0.42 across folds.
+    def sort_key(self, transfer_floor: float) -> tuple:
+        """Rank by ARI, but only among configurations that keep transfer.
 
-        Both terms are near enough in scale to average without one
-        dominating, but this remains a sorting convenience. The
-        trade-off between the two is the thing to look at.
+        Averaging ARI with transfer AUC does not express the goal. ARI
+        varies about four times as widely across configurations as
+        transfer AUC does (0.126 against 0.030 over the first round), so
+        a mean of the two is ARI wearing a disguise, and it will happily
+        trade away generalisation for clustering without saying so. The
+        first round showed exactly that: the configurations with the
+        best ARI had the worst transfer, correlation -0.85, and no
+        configuration beat the baseline on transfer at all.
+
+        So the constraint is stated rather than averaged. A
+        configuration is admissible when its transfer AUC has not fallen
+        more than one fold standard deviation below the baseline's;
+        among those, higher ARI wins. Inadmissible configurations sort
+        below every admissible one and are still ranked among
+        themselves, so a near miss stays visible.
         """
         if self.error:
-            return float("-inf")
-        transfer = self.auc_transfer_median
-        if transfer != transfer:  # nan, from a trial recorded before this change
-            return float("-inf")
-        return 0.5 * self.ari_median + 0.5 * transfer
-
+            return (-1, float("-inf"), float("-inf"))
+        feasible = (
+            self.auc_transfer_median == self.auc_transfer_median
+            and self.auc_transfer_median >= transfer_floor
+        )
+        return (1 if feasible else 0, self.ari_median, self.auc_transfer_median)
 
 class Ledger:
     """JSONL trial log."""
@@ -92,9 +118,41 @@ class Ledger:
     def next_index(self) -> int:
         return len(self.all())
 
-    def best(self) -> Trial | None:
+    #: How far below the baseline's transfer AUC a configuration may fall
+    #: and still count as keeping generalisation, in fold standard
+    #: deviations.
+    TRANSFER_TOLERANCE_SD = 1.0
+
+    def baseline(self) -> Trial | None:
+        """The reference configuration the constraint is measured against."""
+        for t in self.all():
+            if t.proposed_by == "baseline" and not t.error:
+                return t
+        return None
+
+    def transfer_floor(self) -> float:
+        """Lowest transfer AUC a configuration may have and stay admissible.
+
+        Returns -inf when no baseline has been recorded, which leaves
+        every configuration admissible rather than silently rejecting
+        all of them.
+        """
+        base = self.baseline()
+        if base is None:
+            return float("-inf")
+        sd = base.transfer_spread
+        if sd != sd:
+            return base.auc_transfer_median
+        return base.auc_transfer_median - self.TRANSFER_TOLERANCE_SD * sd
+
+    def ranked(self) -> list[Trial]:
+        floor = self.transfer_floor()
         ok = [t for t in self.all() if not t.error]
-        return max(ok, key=lambda t: t.objective) if ok else None
+        return sorted(ok, key=lambda t: t.sort_key(floor), reverse=True)
+
+    def best(self) -> Trial | None:
+        ranked = self.ranked()
+        return ranked[0] if ranked else None
 
     def summary(self, top: int = 10) -> str:
         """Human and agent readable digest, used to propose the next config."""
@@ -103,23 +161,43 @@ class Ledger:
         if not trials:
             return "No successful trials yet."
 
-        lines = [
-            f"{len(trials)} successful trial(s), {len(failed)} failed.",
+        floor = self.transfer_floor()
+        base = self.baseline()
+        lines = [f"{len(trials)} successful trial(s), {len(failed)} failed."]
+        if base is not None:
+            lines.append(
+                f"Objective: maximise ARI subject to transfer AUC >= {floor:.4f} "
+                f"(baseline {base.auc_transfer_median:.4f} minus "
+                f"{self.TRANSFER_TOLERANCE_SD:g} fold SD of "
+                f"{base.transfer_spread:.4f})."
+            )
+        else:
+            lines.append(
+                "No baseline trial recorded, so no transfer constraint is "
+                "applied yet. Run one with --by baseline."
+            )
+        lines += [
             "",
-            f"{'#':>3} {'ARI':>7} {'trAUC':>7} {'probe':>7} {'R2':>7}  "
+            f"{'':>2}{'#':>3} {'ARI':>7} {'trAUC':>7} {'probe':>7} {'R2':>7}  "
             f"{'latent':>6} {'hidden':>14} {'beta':>8} {'mask':>5} "
             f"{'lr':>8} {'ep':>4}  by",
         ]
-        for t in sorted(trials, key=lambda t: t.objective, reverse=True)[:top]:
+        for t in self.ranked()[:top]:
             c = t.config
+            keeps = (
+                t.auc_transfer_median == t.auc_transfer_median
+                and t.auc_transfer_median >= floor
+            )
             lines.append(
-                f"{t.index:>3} {t.ari_median:>7.4f} "
+                f"{'  ' if keeps else ' x'}{t.index:>3} {t.ari_median:>7.4f} "
                 f"{t.auc_transfer_median:>7.4f} {t.auc_median:>7.4f} "
                 f"{t.r2_median:>7.4f}  {c['latent_dim']:>6} "
                 f"{str(tuple(c['hidden_dims'])):>14} {c['beta_end']:>8.4f} "
                 f"{c['mask_fraction']:>5.2f} {c['learning_rate']:>8.5f} "
                 f"{c['num_epochs']:>4}  {t.proposed_by}"
             )
+        lines.append("")
+        lines.append("  x marks a configuration that gave up too much transfer AUC.")
         if failed:
             lines += ["", "failed:"]
             lines += [f"  #{t.index}: {t.error[:100]}" for t in failed[-5:]]

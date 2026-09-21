@@ -18,6 +18,13 @@ Three subcommands, designed so an agent can drive the loop:
 The loop is therefore: status, think, run, repeat; then report. It is
 resumable, because the ledger is the only state.
 
+The objective is to maximise ARI subject to transfer AUC staying
+within one fold standard deviation of the baseline's. It is a
+constraint rather than a weighted sum because ARI varies about four
+times as widely across configurations as transfer AUC does, so any
+average of the two is ARI in disguise and will trade generalisation
+away without saying so.
+
 A warning that belongs in the output rather than a footnote: the best of
 N trials is biased upward by an amount that grows with N. `status`
 prints the attempt count for that reason, and any improvement worth
@@ -44,10 +51,15 @@ def _cmd_status(args, ledger: Ledger) -> int:
     best = ledger.best()
     if best:
         n = len([t for t in ledger.all() if not t.error])
+        floor = ledger.transfer_floor()
+        keeps = best.auc_transfer_median >= floor
         print()
         print(f"Best so far is trial #{best.index} out of {n} attempt(s).")
         print(f"  ARI {best.ari_median:.4f}  transfer AUC "
               f"{best.auc_transfer_median:.4f}  (probe AUC {best.auc_median:.4f})")
+        if not keeps:
+            print("  NOTE: nothing tried yet keeps transfer AUC above the "
+                  "floor, so this is the least bad rather than an improvement.")
         print(f"  config: {json.dumps(best.config)}")
         print()
         print("The best of N trials is biased upward by an amount that grows")
@@ -96,6 +108,8 @@ def _cmd_run(args, ledger: Ledger) -> int:
             ari_iqr=res["ari_iqr"], auc_iqr=res["auc_iqr"],
             auc_transfer_median=res["auc_transfer_median"],
             auc_transfer_iqr=res["auc_transfer_iqr"],
+            ari_folds=[f["ari"] for f in res["per_fold"]],
+            auc_transfer_folds=[f["auc_transfer"] for f in res["per_fold"]],
             r2_median=res["r2_median"], n_folds=res["n_folds"],
             elapsed_seconds=res["elapsed_seconds"],
             proposed_by=proposed_by, rationale=rationale,
@@ -105,7 +119,15 @@ def _cmd_run(args, ledger: Ledger) -> int:
               f"IQR {res['auc_transfer_iqr']}      <- objective")
         print(f"  probe AUC    {res['auc_median']:.4f} IQR {res['auc_iqr']}"
               "  (saturated, not optimised)")
-        print(f"  recon R2 {res['r2_median']:.4f}")
+        print(f"  recon R2     {res['r2_median']:.4f}")
+        floor = ledger.transfer_floor()
+        if floor > float("-inf"):
+            if res["auc_transfer_median"] >= floor:
+                print(f"  keeps transfer AUC (floor {floor:.4f})")
+            else:
+                print(f"  GIVES UP transfer AUC: {res['auc_transfer_median']:.4f} "
+                      f"< floor {floor:.4f}; higher ARI here is a trade, "
+                      "not an improvement")
         print(f"  {res['elapsed_seconds']/60:.1f} min")
     except Exception as e:
         trial = Trial(
