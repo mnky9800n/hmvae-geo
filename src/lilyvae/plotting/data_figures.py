@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import torch
 from pathlib import Path
 
@@ -257,8 +258,24 @@ def plot_variable_correlations(output_dir: Path | None = None):
     # Create figure with grid of axes
     fig, axes = plt.subplots(n_vars, n_vars, figsize=(28, 28))
 
-    cmap = plt.cm.PRGn
-    norm = plt.Normalize(vmin=-1, vmax=1)
+    # Discrete bins so readers can map color to value at a glance. The
+    # custom diverging palette walks the full hue circle through a white
+    # midpoint at rho=0, giving distinct chroma at every band.
+    bounds = np.arange(-1.0, 1.0001, 0.1)
+    palette = [
+        "#5e3c99",  # purple
+        "#2c7bb6",  # blue
+        "#1a9850",  # green
+        "#ffffff",  # white (rho = 0)
+        "#fee08b",  # yellow
+        "#f46d43",  # orange
+        "#a50026",  # red
+    ]
+    base_cmap = mcolors.LinearSegmentedColormap.from_list(
+        "diverging_pbgwyor", palette
+    )
+    cmap = base_cmap.resampled(len(bounds) - 1)
+    norm = mcolors.BoundaryNorm(bounds, cmap.N)
 
     for i in range(n_vars):
         for j in range(n_vars):
@@ -342,12 +359,16 @@ def plot_variable_correlations(output_dir: Path | None = None):
         ha="left", va="center", fontsize=36, fontweight="bold", color="blue",
     )
 
-    # Colorbar
+    # Discrete colorbar with one tick per band boundary.
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array([])
-    cbar = fig.colorbar(sm, ax=axes, shrink=0.6, pad=0.01, aspect=30)
+    cbar = fig.colorbar(
+        sm, ax=axes, shrink=0.6, pad=0.01, aspect=30,
+        ticks=bounds, spacing="proportional",
+    )
     cbar.set_label("Spearman $\\rho$", fontsize=18)
     cbar.ax.tick_params(labelsize=14)
+    cbar.ax.set_yticklabels([f"{b:.1f}" for b in bounds])
 
     plt.subplots_adjust(wspace=0.05, hspace=0.05)
     plt.savefig(output_dir / "fig_lily_correlations.png", dpi=200, bbox_inches="tight")

@@ -176,13 +176,26 @@ def _train_ablation_model(
     weight_decay: float,
     max_grad_norm: float,
     device: torch.device,
+    beta_end: float | None = None,
+    beta_anneal_epochs: int | None = None,
 ) -> nn.Module:
     """Train vae + masking in-place and return the trained vae.
 
     When alpha_weight > 0, a classification head is added for lithology
     (semi-supervised training). alpha anneals from 0 to alpha_weight
     over the first 50 epochs.
+
+    Args:
+        beta_end: Final KL weight. Defaults to the configured BETA_END,
+            so existing callers are unaffected; the hyperparameter search
+            in `lilyvae.search` varies it.
+        beta_anneal_epochs: Epochs over which beta reaches beta_end.
+            Defaults to the configured BETA_ANNEAL_EPOCHS.
     """
+    beta_end = BETA_END if beta_end is None else beta_end
+    beta_anneal_epochs = (
+        BETA_ANNEAL_EPOCHS if beta_anneal_epochs is None else beta_anneal_epochs
+    )
     from lilyvae.model.heads import LithologyClassifier
     from lilyvae.config import NUM_LITHOLOGY_CLASSES, ALPHA_ANNEAL_EPOCHS
 
@@ -197,7 +210,7 @@ def _train_ablation_model(
         params += list(classifier.parameters())
 
     optimizer = torch.optim.Adam(params, lr=lr, weight_decay=weight_decay)
-    fixed_beta = BETA_END
+    fixed_beta = beta_end
 
     for epoch in range(num_epochs):
         vae.train()
@@ -206,7 +219,7 @@ def _train_ablation_model(
             classifier.train()
 
         if beta_schedule_type == "annealing":
-            beta = beta_schedule(epoch, BETA_START, BETA_END, BETA_ANNEAL_EPOCHS)
+            beta = beta_schedule(epoch, BETA_START, beta_end, beta_anneal_epochs)
         else:
             beta = fixed_beta
 

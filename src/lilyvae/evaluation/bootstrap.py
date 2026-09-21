@@ -330,6 +330,19 @@ def _compute_metrics(
 ) -> dict:
     """Compute reconstruction R^2, ARI, and AUC for one trained model.
 
+    All three are measured on boreholes the model was not trained on,
+    but they are not all the same kind of held-out.
+
+    ``r2_*`` and ``ari`` are clean: the reconstruction comes from a model
+    that never saw these rows, and the Gaussian mixture behind the ARI is
+    unsupervised, so no label information enters.
+
+    ``auc_macro`` is a **linear probe**. The SVM is fitted and scored on
+    the held-out embeddings, so it reports how separable lithology is in
+    the representation rather than how well an unseen borehole would be
+    classified. The transfer version of that number lives in
+    `raw_baselines.evaluate_classification_transfer` and is much lower.
+
     Zero-shot R^2 is deliberately NOT computed here; see module docstring.
     """
     metrics: dict = {"model": trained.name}

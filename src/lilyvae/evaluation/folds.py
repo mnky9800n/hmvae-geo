@@ -157,3 +157,55 @@ def energy_distance(
         return total / count
 
     return 2.0 * _mean_dist(x, y) - _mean_dist(x, x) - _mean_dist(y, y)
+
+
+@dataclass(frozen=True)
+class NestedSplit:
+    """A borehole pool reserved for model selection, and one held back.
+
+    Searching over configurations and keeping the best is itself a
+    fitting procedure. If the search reads the same folds the paper
+    reports, the reported number is a maximum over many draws rather
+    than an estimate, and it will not survive contact with new data.
+    That is the adaptive-overfitting version of the in-sample problem,
+    and the only reliable defence is boreholes the search never sees.
+
+    `search_boreholes` is what a tuning loop may use, through
+    `borehole_splits` restricted to it. `report_boreholes` is scored once,
+    at the end, by whichever configuration the search settled on.
+    """
+
+    search_mask: np.ndarray
+    report_mask: np.ndarray
+    search_boreholes: np.ndarray
+    report_boreholes: np.ndarray
+
+
+def nested_split(
+    borehole_ids: np.ndarray,
+    report_fraction: float = 0.2,
+    seed: int = SEED,
+) -> NestedSplit:
+    """Reserve a fraction of boreholes that model selection may not touch.
+
+    Args:
+        borehole_ids: Per-sample borehole identifier.
+        report_fraction: Fraction of boreholes held back for the final
+            report.
+        seed: Seed for the partition. Deliberately offset from the fold
+            seed so the reporting pool is not simply the first fold of
+            the ordinary bootstrap.
+    """
+    borehole_ids = np.asarray(borehole_ids)
+    unique = np.unique(borehole_ids)
+    n_report = max(1, int(len(unique) * report_fraction))
+    perm = np.random.RandomState(seed + 9973).permutation(unique)
+    report_boreholes = np.sort(perm[:n_report])
+    search_boreholes = np.sort(perm[n_report:])
+    report_mask = np.isin(borehole_ids, report_boreholes)
+    return NestedSplit(
+        search_mask=~report_mask,
+        report_mask=report_mask,
+        search_boreholes=search_boreholes,
+        report_boreholes=report_boreholes,
+    )

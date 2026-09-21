@@ -477,3 +477,93 @@ def test_training_bounds_would_remove_only_impossible_rows():
             f"{name} loses {outside.mean():.2%} to bound [{lo}, {hi}]; "
             "check the bound before blaming the data"
         )
+
+
+# ------------------------------------------------------------- search
+
+
+def test_nested_split_is_disjoint_and_stable():
+    from lilyvae.evaluation.folds import nested_split
+
+    rng = np.random.RandomState(0)
+    bh = np.array([f"BH{i:03d}" for i in rng.randint(0, 296, size=5000)])
+
+    a = nested_split(bh, report_fraction=0.2)
+    b = nested_split(bh, report_fraction=0.2)
+    assert np.array_equal(a.report_mask, b.report_mask)
+    assert not set(a.search_boreholes) & set(a.report_boreholes)
+    assert not (a.search_mask & a.report_mask).any()
+    assert (a.search_mask | a.report_mask).all()
+
+
+def test_search_folds_never_touch_reporting_boreholes():
+    """The whole point of the nested split."""
+    from lilyvae.evaluation.folds import nested_split
+
+    rng = np.random.RandomState(0)
+    bh = np.array([f"BH{i:03d}" for i in rng.randint(0, 296, size=5000)])
+    split = nested_split(bh, report_fraction=0.2)
+    pool = bh[split.search_mask]
+
+    reserved = set(split.report_boreholes)
+    for fold in borehole_splits(pool, 5, 0.1):
+        assert not set(pool[fold.test_mask]) & reserved
+        assert not set(pool[fold.train_mask]) & reserved
+
+
+def test_search_config_roundtrips_and_rejects_unknown_keys():
+    import pytest as _pytest
+    from lilyvae.search.space import SearchConfig, random_config
+
+    c = random_config(np.random.RandomState(0))
+    assert SearchConfig.from_dict(c.to_dict()) == c
+    with _pytest.raises(ValueError, match="unknown config keys"):
+        SearchConfig.from_dict({"latent_dim": 8, "nonsense": 1})
+
+
+def test_ledger_roundtrips_and_deduplicates(tmp_path):
+    from lilyvae.search.ledger import Ledger, Trial
+    from lilyvae.search.space import SearchConfig
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    assert ledger.all() == []
+    assert ledger.best() is None
+
+    cfg = SearchConfig(latent_dim=16)
+    ledger.append(Trial(index=0, config=cfg.to_dict(),
+                        ari_median=0.30, auc_median=0.95))
+    ledger.append(Trial(index=1, config=SearchConfig(latent_dim=8).to_dict(),
+                        ari_median=0.20, auc_median=0.94))
+
+    assert len(ledger.all()) == 2
+    assert ledger.next_index() == 2
+    assert ledger.best().index == 0
+    assert cfg.key() in ledger.seen()
+
+
+def test_failed_trials_never_win_and_are_excluded_from_seen(tmp_path):
+    from lilyvae.search.ledger import Ledger, Trial
+    from lilyvae.search.space import SearchConfig
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    bad = SearchConfig(latent_dim=32)
+    ledger.append(Trial(index=0, config=bad.to_dict(),
+                        ari_median=float("nan"), auc_median=float("nan"),
+                        error="boom"))
+    assert ledger.best() is None
+    # A failure must not block a retry of that configuration.
+    assert bad.key() not in ledger.seen()
+
+    ledger.append(Trial(index=1, config=SearchConfig().to_dict(),
+                        ari_median=0.25, auc_median=0.95))
+    assert ledger.best().index == 1
+
+
+def test_gmm_component_count_is_not_searchable():
+    """ARI is measured with a Gaussian mixture, so its component count
+    would move the metric rather than the representation."""
+    from lilyvae.search.space import SEARCH_SPACE, SearchConfig
+
+    assert "n_gmm_components" not in SEARCH_SPACE
+    assert "n_gmm_components" not in SearchConfig.__dataclass_fields__
+    assert "alpha" not in SEARCH_SPACE

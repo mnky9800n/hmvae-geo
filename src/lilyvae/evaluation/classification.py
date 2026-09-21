@@ -11,7 +11,20 @@ def evaluate_classification(
     labels: torch.Tensor,
     top_n: int = 10,
 ) -> dict:
-    """Train per-class one-vs-rest SVMs on embeddings and compute AUC.
+    """Linear-probe AUC: how separable is lithology in this embedding?
+
+    The SVM is fitted and scored on the SAME rows, so this measures
+    linear decodability of lithology from the representation. It is not
+    classification performance on unseen data, even when the embeddings
+    come from held-out boreholes: the VAE has not seen those boreholes
+    but this classifier has.
+
+    Both quantities are worth reporting and they are far apart. On
+    held-out boreholes this probe reads about 0.957 macro AUC, while
+    `raw_baselines.evaluate_classification_transfer`, which fits the SVM
+    on training boreholes and applies it to held-out ones, reads about
+    0.82. Use this one to describe the representation and that one to
+    describe what the pipeline would do on a new borehole.
 
     Each lithology class gets its own binary SVM. Only classes with both
     positive and negative examples in the data are evaluated.
