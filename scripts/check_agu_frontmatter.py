@@ -1,0 +1,65 @@
+"""Check the AGU front-matter limits that the submission system enforces.
+
+Three Key Points of at most 140 characters each, an abstract of at most
+250 words, a plain language summary of at most 200 words, and the
+presence of Open Research, acknowledgments and a corresponding author.
+Exits non-zero if any of those fail, so `check_paper_build.sh` can gate
+on it.
+
+Usage:  python scripts/check_agu_frontmatter.py [path/to/main.tex]
+"""
+import re, sys, pathlib
+
+DEFAULT = (
+    pathlib.Path(__file__).resolve().parent.parent
+    / "an-unsupervised-embeddings-model-for-ocean-crust-lithology"
+    / "jgr_ml.tex"
+)
+path = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT
+tex = path.read_text()
+
+def block(env):
+    m = re.search(r"\\begin\{%s\}(.*?)\\end\{%s\}" % (env, env), tex, re.S)
+    return m.group(1) if m else ""
+
+def section_star(name):
+    m = re.search(r"\\section\*\{%s\}(.*?)(?=\\section)" % name, tex, re.S)
+    return m.group(1) if m else ""
+
+def words(s):
+    s = re.sub(r"%.*", "", s)
+    s = re.sub(r"\\[a-zA-Z]+\*?", " ", s)
+    s = re.sub(r"[{}$\\]", " ", s)
+    return len([w for w in s.split() if any(c.isalnum() for c in w)])
+
+fail = 0
+
+kps = [k.strip() for k in block("keypoints").split(r"\item") if k.strip()]
+print(f"Key Points: {len(kps)} (AGU requires 3)")
+if len(kps) != 3:
+    fail = 1
+for i, k in enumerate(kps, 1):
+    flat = " ".join(k.split())
+    status = "ok" if len(flat) <= 140 else "TOO LONG"
+    print(f"  {i}. {len(flat):>3}/140 chars  {status}")
+    print(f"     {flat}")
+    if len(flat) > 140:
+        fail = 1
+
+for label, text, limit in (
+    ("Abstract", block("abstract"), 250),
+    ("Plain Language Summary", section_star("Plain Language Summary"), 200),
+):
+    n = words(text)
+    status = "ok" if n <= limit else "TOO LONG"
+    print(f"{label}: {n}/{limit} words  {status}")
+    if n > limit:
+        fail = 1
+
+for required in (r"\\section\*\{Open Research\}", r"\\acknowledgments",
+                 r"\\correspondingauthor"):
+    if not re.search(required, tex):
+        print(f"MISSING: {required}")
+        fail = 1
+
+sys.exit(fail)
