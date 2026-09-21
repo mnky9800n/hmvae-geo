@@ -23,6 +23,8 @@ lilyvae-pipeline = "lilyvae.scripts.pipeline:main"
 lilyvae-train = "lilyvae.scripts.train:main"
 lilyvae-bootstrap = "lilyvae.scripts.bootstrap:main"
 lilyvae-single-point = "lilyvae.scripts.single_point:main"
+lilyvae-depth-confound = "lilyvae.scripts.depth_confound:main"
+lilyvae-zeroshot-bootstrap = "lilyvae.scripts.zeroshot_bootstrap:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
 [project.optional-dependencies]

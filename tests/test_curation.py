@@ -172,3 +172,65 @@ def test_no_independent_target_is_collinear_with_anything():
         if any(not c.startswith("[input] ") for c in cluster)
     ]
     assert not offenders, f"independent targets are collinear: {offenders}"
+
+
+# ------------------------------------------------- zero-shot transfer
+
+
+def test_transfer_refuses_thin_folds():
+    """Too few rows on either side must give nan, not a noisy number."""
+    from lilyvae.evaluation.zeroshot_bootstrap import evaluate_zeroshot_transfer
+
+    n = 200
+    rng = np.random.RandomState(0)
+    z = rng.normal(size=(n, 10))
+    y = rng.normal(size=n)
+    valid = np.ones(n, dtype=bool)
+    train = np.zeros(n, dtype=bool)
+    train[:10] = True          # below MIN_TRAIN_ROWS
+    test = ~train
+
+    assert np.isnan(
+        evaluate_zeroshot_transfer(z, y, valid, train, test)["r2"]
+    )
+
+
+def test_transfer_never_fits_on_held_out_rows():
+    """A target that is pure noise on the held-out side cannot score well."""
+    from lilyvae.evaluation.zeroshot_bootstrap import evaluate_zeroshot_transfer
+
+    n = 2000
+    rng = np.random.RandomState(0)
+    z = rng.normal(size=(n, 10))
+    y = z[:, 0] * 3.0
+    train = np.zeros(n, dtype=bool)
+    train[: n // 2] = True
+    test = ~train
+    # Scramble the relationship on the held-out side only.
+    y_broken = y.copy()
+    y_broken[test] = rng.normal(size=test.sum()) * 3.0
+
+    res = evaluate_zeroshot_transfer(
+        z, y_broken, np.ones(n, dtype=bool), train, test
+    )
+    assert res["n_train"] == n // 2
+    assert res["r2"] < 0.1
+
+
+def test_transfer_winsorize_thresholds_come_from_training_rows():
+    """Clipping must not peek at the held-out distribution."""
+    from lilyvae.evaluation.zeroshot_bootstrap import evaluate_zeroshot_transfer
+
+    n = 1000
+    rng = np.random.RandomState(0)
+    z = rng.normal(size=(n, 10))
+    y = z[:, 0].copy()
+    train = np.zeros(n, dtype=bool)
+    train[: n // 2] = True
+    test = ~train
+    y[test][:5] = 1e12  # corruption only on the held-out side
+
+    res = evaluate_zeroshot_transfer(
+        z, y, np.ones(n, dtype=bool), train, test, winsorize=True
+    )
+    assert np.isfinite(res["r2"])
