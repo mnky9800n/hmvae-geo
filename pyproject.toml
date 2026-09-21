@@ -25,6 +25,7 @@ lilyvae-bootstrap = "lilyvae.scripts.bootstrap:main"
 lilyvae-single-point = "lilyvae.scripts.single_point:main"
 lilyvae-depth-confound = "lilyvae.scripts.depth_confound:main"
 lilyvae-zeroshot-bootstrap = "lilyvae.scripts.zeroshot_bootstrap:main"
+lilyvae-raw-baselines = "lilyvae.scripts.raw_baselines:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
 [project.optional-dependencies]

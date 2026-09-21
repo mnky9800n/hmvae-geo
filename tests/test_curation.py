@@ -234,3 +234,60 @@ def test_transfer_winsorize_thresholds_come_from_training_rows():
         z, y, np.ones(n, dtype=bool), train, test, winsorize=True
     )
     assert np.isfinite(res["r2"])
+
+
+# ------------------------------------------------------ raw baselines
+
+
+def test_classification_transfer_skips_unscorable_classes():
+    """A class absent from the held-out side cannot be scored."""
+    from lilyvae.evaluation.raw_baselines import evaluate_classification_transfer
+
+    rng = np.random.RandomState(0)
+    x_train = rng.normal(size=(400, 6))
+    y_train = rng.randint(0, 4, size=400)
+    x_test = rng.normal(size=(200, 6))
+    y_test = rng.randint(0, 2, size=200)  # classes 2 and 3 never appear
+
+    res = evaluate_classification_transfer(x_train, y_train, x_test, y_test)
+    assert res["n_classes_evaluated"] <= 2
+    assert set(res["per_class_auc"]) <= {0, 1}
+
+
+def test_arms_are_fitted_on_training_boreholes_only():
+    """PCA must not see held-out rows when it is fitted."""
+    import torch as _torch
+    from lilyvae.evaluation.raw_baselines import _build_arm
+
+    rng = np.random.RandomState(0)
+    raw = rng.normal(size=(600, 6))
+    # Give the held-out block a wildly different scale. If PCA were fitted
+    # on everything, its components would rotate towards that block.
+    train_mask = np.zeros(600, dtype=bool)
+    train_mask[:500] = True
+    raw[~train_mask] *= 50.0
+
+    features = _torch.tensor(raw, dtype=_torch.float32)
+    labels = _torch.tensor(rng.randint(0, 3, size=600))
+
+    projected = _build_arm("pca", features, labels, train_mask, device="cpu")
+    # Components fitted on the training block only, so the held-out block
+    # still projects to a much larger radius.
+    train_radius = np.linalg.norm(projected[train_mask], axis=1).mean()
+    test_radius = np.linalg.norm(projected[~train_mask], axis=1).mean()
+    assert test_radius > 10 * train_radius
+
+
+def test_knn_transfer_refuses_thin_folds():
+    from lilyvae.evaluation.raw_baselines import evaluate_knn_transfer
+
+    n = 300
+    rng = np.random.RandomState(0)
+    raw = rng.normal(size=(n, 6))
+    y = rng.normal(size=n)
+    valid = np.ones(n, dtype=bool)
+    train = np.zeros(n, dtype=bool)
+    train[:5] = True
+    assert np.isnan(
+        evaluate_knn_transfer(raw, y, valid, train, ~train)["r2"]
+    )
