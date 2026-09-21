@@ -431,3 +431,49 @@ def test_bounds_discard_only_a_tiny_fraction_of_real_data():
             f"{spec.label} loses {fraction:.1%} to its bound {spec.valid_range}; "
             "check the bound before blaming the data"
         )
+
+
+# ------------------------------------------- training-variable bounds
+
+
+def test_training_variable_bounds_are_sane():
+    from lilyvae.data.preprocessing import TRAINING_VARIABLE_BOUNDS
+
+    for name, (lo, hi) in TRAINING_VARIABLE_BOUNDS.items():
+        assert lo < hi, f"{name} has an inverted range"
+        assert np.isfinite(lo) and np.isfinite(hi)
+
+
+def test_susceptibility_and_ngr_are_not_bounded_below_at_zero():
+    """Both are legitimately negative and must not be filtered.
+
+    Magnetic susceptibility is negative for diamagnetic carbonate and
+    quartz-rich sediment; NGR can go slightly negative after background
+    subtraction. Bounding either at zero would delete real measurements.
+    """
+    from lilyvae.data.preprocessing import TRAINING_VARIABLE_BOUNDS
+
+    assert "magnetic_susceptibility" not in TRAINING_VARIABLE_BOUNDS
+    assert "NGR" not in TRAINING_VARIABLE_BOUNDS
+
+
+@requires_data
+def test_training_bounds_would_remove_only_impossible_rows():
+    """Applied to the current tensors, the bounds must be a light touch."""
+    import pickle
+
+    from lilyvae.data.preprocessing import TRAINING_VARIABLE_BOUNDS
+
+    scaler = pickle.load(open(PROCESSED_DIR / "scaler.pkl", "rb"))
+    z = torch.load(PROCESSED_DIR / "train_features.pt", weights_only=True).numpy()
+    raw = scaler.inverse_transform(z)
+
+    for i, name in enumerate(TRAINING_VARIABLES):
+        if name not in TRAINING_VARIABLE_BOUNDS:
+            continue
+        lo, hi = TRAINING_VARIABLE_BOUNDS[name]
+        outside = (raw[:, i] < lo) | (raw[:, i] > hi)
+        assert outside.mean() < 0.02, (
+            f"{name} loses {outside.mean():.2%} to bound [{lo}, {hi}]; "
+            "check the bound before blaming the data"
+        )

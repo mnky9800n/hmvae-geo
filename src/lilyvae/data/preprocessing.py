@@ -31,6 +31,29 @@ TRAINING_FILES = {
 }
 
 # Common columns across all LILY CSVs
+#: Physically admissible ranges for the training variables. The LILY
+#: release contains bulk densities that cannot be measurements: 74
+#: negative values and 59 above 3.0 g/cm^3, against a sediment median of
+#: 1.71 and a maximum plausible value near 2.9 for dense basalt.
+#:
+#: They are rare, 0.755% of the column, and their effect is not. Extreme
+#: values dominate the sum of squares, so reconstruction R^2 collapses on
+#: any fold that holds them out: two of thirty bootstrap folds scored
+#: -615,160 and -81.9 while the median stayed at 0.997 and hid them.
+#: The same failure mode, at much larger magnitude, affects the held-out
+#: variables and is handled in `evaluation/targets.py`.
+#:
+#: Variables with no entry here are left alone. Magnetic susceptibility
+#: is legitimately negative for diamagnetic carbonate and quartz-rich
+#: sediment, and NGR can go slightly negative after background
+#: subtraction, so neither is bounded below at zero.
+TRAINING_VARIABLE_BOUNDS: dict[str, tuple[float, float]] = {
+    "bulk_density": (0.8, 3.0),          # g/cm^3, soupy ooze to dense basalt
+    "R": (0.0, 255.0),                   # 8-bit line-scan channel
+    "G": (0.0, 255.0),
+    "B": (0.0, 255.0),
+}
+
 DEPTH_COL = "Depth CSF-A (m)"
 BOREHOLE_COLS = ["Exp", "Site", "Hole"]
 LITHOLOGY_COL = "Principal"
@@ -151,6 +174,23 @@ def preprocess(raw_dir: Path | None = None, output_dir: Path | None = None) -> N
     merged = merged.dropna(subset=feature_cols)
     n_boreholes = merged["_borehole"].nunique()
     print(f"\nAfter dropping NaN: {len(merged)} samples, {n_boreholes} boreholes")
+
+    # Step 3b: Drop rows whose training values cannot be measurements.
+    # See TRAINING_VARIABLE_BOUNDS for why a fraction of a percent of the
+    # column matters this much.
+    before = len(merged)
+    for column, (lo, hi) in TRAINING_VARIABLE_BOUNDS.items():
+        if column not in merged.columns:
+            continue
+        outside = ~merged[column].between(lo, hi)
+        if outside.any():
+            print(f"  {column}: dropping {int(outside.sum())} row(s) outside "
+                  f"[{lo}, {hi}] as physically impossible")
+            merged = merged[~outside]
+    if len(merged) != before:
+        n_boreholes = merged["_borehole"].nunique()
+        print(f"After physical-range filter: {len(merged)} samples "
+              f"({before - len(merged)} removed), {n_boreholes} boreholes")
 
     # Step 4: Encode lithology labels
     le = LabelEncoder()
