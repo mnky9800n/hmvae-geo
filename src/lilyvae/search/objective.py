@@ -130,12 +130,22 @@ def evaluate_config(
         }
         # Transfer AUC: probe fitted on training boreholes only.
         from lilyvae.evaluation.raw_baselines import evaluate_classification_transfer
-        entry["auc_transfer"] = float(
-            evaluate_classification_transfer(
-                z_train.numpy(), train_l.numpy(),
-                z_test.numpy(), test_l.numpy(),
-            )["auc_macro"]
+        cls = evaluate_classification_transfer(
+            z_train.numpy(), train_l.numpy(),
+            z_test.numpy(), test_l.numpy(),
         )
+        entry["auc_transfer"] = float(cls["auc_macro"])
+        # Keep the per-class detail. The macro average covers only about
+        # 45 of the 139 classes on any fold, because the rest lack two
+        # examples on one side of the split, and the covered set changes
+        # from fold to fold. Comparing two configurations on the macro
+        # number alone can therefore compare averages over different
+        # class sets, and it hides a configuration that is much better on
+        # some lithologies and worse on others.
+        entry["n_classes"] = int(cls["n_classes_evaluated"])
+        entry["per_class_transfer"] = {
+            str(k): float(v) for k, v in cls["per_class_auc"].items()
+        }
         per_fold.append(entry)
 
     def agg(key: str) -> tuple[float, list[float]]:
@@ -153,9 +163,23 @@ def evaluate_config(
     tra_m, tra_i = agg("auc_transfer")
     r2_m, _ = agg("r2")
 
+    # Median per class across the folds where that class was scorable,
+    # with the fold count kept so a class seen once is not read as
+    # confidently as one seen five times.
+    by_class: dict[str, list[float]] = {}
+    for f in per_fold:
+        for cls_id, auc in f.get("per_class_transfer", {}).items():
+            by_class.setdefault(cls_id, []).append(auc)
+    per_class_transfer = {
+        k: {"auc_median": float(np.median(v)), "n_folds": len(v)}
+        for k, v in sorted(by_class.items(), key=lambda kv: int(kv[0]))
+    }
+
     return {
         "pool": pool,
         "n_folds": len(per_fold),
+        "per_class_transfer": per_class_transfer,
+        "n_classes_scored": len(per_class_transfer),
         "ari_median": ari_m, "ari_iqr": ari_i,
         "auc_median": auc_m, "auc_iqr": auc_i,
         "auc_transfer_median": tra_m, "auc_transfer_iqr": tra_i,

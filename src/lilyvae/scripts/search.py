@@ -101,6 +101,8 @@ def _run_one(
             auc_transfer_iqr=res["auc_transfer_iqr"],
             ari_folds=[f["ari"] for f in res["per_fold"]],
             auc_transfer_folds=[f["auc_transfer"] for f in res["per_fold"]],
+            per_class_transfer=res.get("per_class_transfer", {}),
+            n_classes_scored=res.get("n_classes_scored", 0),
             r2_median=res["r2_median"], n_folds=res["n_folds"],
             elapsed_seconds=res["elapsed_seconds"],
             proposed_by=proposed_by, rationale=rationale,
@@ -111,6 +113,7 @@ def _run_one(
         print(f"  probe AUC    {res['auc_median']:.4f} IQR {res['auc_iqr']}"
               "  (saturated, not optimised)")
         print(f"  recon R2     {res['r2_median']:.4f}")
+        print(f"  classes scored {res.get('n_classes_scored', 0)} of 139")
         floor = ledger.transfer_floor()
         if floor > float("-inf"):
             if res["auc_transfer_median"] >= floor:

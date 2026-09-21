@@ -37,6 +37,12 @@ class Trial:
     #: spread is not a result.
     ari_folds: list[float] = field(default_factory=list)
     auc_transfer_folds: list[float] = field(default_factory=list)
+    #: Per-lithology transfer AUC, keyed by encoded class id. The macro
+    #: average covers only about 45 of 139 classes on a given fold, so a
+    #: configuration can be much better on some lithologies while the
+    #: average says it is no better at all.
+    per_class_transfer: dict = field(default_factory=dict)
+    n_classes_scored: int = 0
     r2_median: float = float("nan")
     n_folds: int = 0
     elapsed_seconds: float = 0.0
