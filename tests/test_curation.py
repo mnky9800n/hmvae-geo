@@ -291,3 +291,79 @@ def test_knn_transfer_refuses_thin_folds():
     assert np.isnan(
         evaluate_knn_transfer(raw, y, valid, train, ~train)["r2"]
     )
+
+
+# -------------------------------------------------------- calibration
+
+
+def test_calibration_recognises_well_calibrated_variances():
+    """Residuals drawn at the predicted scale must give coverage near nominal."""
+    from lilyvae.evaluation.calibration import evaluate_calibration
+
+    rng = np.random.RandomState(0)
+    n, d = 20000, 6
+    mu = rng.normal(size=(n, d))
+    logvar = rng.uniform(-2.0, 2.0, size=(n, d))
+    x = mu + rng.normal(size=(n, d)) * np.exp(0.5 * logvar)
+
+    res = evaluate_calibration(x, mu, logvar, clamp=(-6.0, 6.0))
+    assert abs(res["mean_standardised_residual_sq"] - 1.0) < 0.05
+    for level in ("0.68", "0.95"):
+        cov = res["coverage"][level]
+        assert abs(cov["excess"]) < 0.02
+    # Learned per-sample variances should beat one variance per column.
+    assert res["nll_gain_from_learned_variance"] > 0
+    # And larger predicted variance should track larger error.
+    assert res["spearman_variance_vs_abs_error"] > 0.3
+
+
+def test_calibration_detects_overwide_intervals():
+    """Variances far too large must show as coverage above nominal."""
+    from lilyvae.evaluation.calibration import evaluate_calibration
+
+    rng = np.random.RandomState(1)
+    n, d = 20000, 6
+    mu = np.zeros((n, d))
+    x = rng.normal(size=(n, d)) * 0.01
+    logvar = np.zeros((n, d))  # variance 1 against residuals of size 0.01
+
+    res = evaluate_calibration(x, mu, logvar, clamp=(-6.0, 6.0))
+    assert res["mean_standardised_residual_sq"] < 0.01
+    assert res["coverage"]["0.68"]["empirical"] > 0.99
+
+
+def test_calibration_measures_clamp_saturation():
+    from lilyvae.evaluation.calibration import evaluate_calibration
+
+    n, d = 1000, 6
+    mu = np.zeros((n, d))
+    x = np.zeros((n, d))
+    logvar = np.full((n, d), -6.0)   # every prediction pinned at the floor
+    res = evaluate_calibration(x, mu, logvar, clamp=(-6.0, 6.0))
+    assert res["fraction_at_clamp_floor"] == 1.0
+    assert res["fraction_at_clamp_ceiling"] == 0.0
+    # Fully saturated, so there is no ordering to correlate against error.
+    assert np.isnan(res["spearman_variance_vs_abs_error"])
+
+
+def test_decoder_clamp_is_configurable_and_defaults_unchanged():
+    from lilyvae.config import LOGVAR_CLAMP_MAX, LOGVAR_CLAMP_MIN
+    from lilyvae.model.vae import LilyVAE
+
+    assert LilyVAE().decoder.logvar_clamp == (LOGVAR_CLAMP_MIN, LOGVAR_CLAMP_MAX)
+    assert LilyVAE(logvar_clamp=(-12.0, 6.0)).decoder.logvar_clamp == (-12.0, 6.0)
+
+
+def test_calibration_from_model_is_deterministic():
+    """Decoding must not reparameterise, or the numbers move between runs."""
+    import torch as _torch
+    from lilyvae.evaluation.calibration import calibration_from_model
+    from lilyvae.model.vae import LilyVAE
+
+    _torch.manual_seed(0)
+    vae = LilyVAE()
+    x = _torch.randn(512, 6)
+    a = calibration_from_model(vae, x)
+    b = calibration_from_model(vae, x)
+    assert a["nll_heteroscedastic"] == b["nll_heteroscedastic"]
+    assert a["mean_standardised_residual_sq"] == b["mean_standardised_residual_sq"]

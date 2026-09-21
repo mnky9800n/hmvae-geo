@@ -36,9 +36,25 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     """Heteroscedastic Gaussian decoder: outputs per-variable mean and log-variance."""
 
-    def __init__(self, latent_dim: int = LATENT_DIM, hidden_dims: list[int] = None, output_dim: int = INPUT_DIM):
+    def __init__(
+        self,
+        latent_dim: int = LATENT_DIM,
+        hidden_dims: list[int] = None,
+        output_dim: int = INPUT_DIM,
+        logvar_clamp: tuple[float, float] = (LOGVAR_CLAMP_MIN, LOGVAR_CLAMP_MAX),
+    ):
+        """Args:
+            logvar_clamp: (min, max) bounds on the predicted log-variance.
+                Defaults to the values in config. The floor binds for the
+                great majority of samples at the default of -6, because
+                reconstruction is near-perfect and the model would prefer
+                smaller variances than the clamp allows; widening it is
+                how `evaluation/calibration.py` tests whether that floor
+                is what makes the predicted variances uninformative.
+        """
         super().__init__()
         hidden_dims = list(reversed(hidden_dims or list(HIDDEN_DIMS)))
+        self.logvar_clamp = tuple(logvar_clamp)
 
         layers = []
         in_dim = latent_dim
@@ -55,7 +71,7 @@ class Decoder(nn.Module):
         h = self.network(z)
         mu = self.fc_mu(h)
         logvar = self.fc_logvar(h)
-        logvar = torch.clamp(logvar, LOGVAR_CLAMP_MIN, LOGVAR_CLAMP_MAX)
+        logvar = torch.clamp(logvar, self.logvar_clamp[0], self.logvar_clamp[1])
         return mu, logvar
 
 
@@ -65,10 +81,13 @@ class LilyVAE(nn.Module):
         input_dim: int = INPUT_DIM,
         latent_dim: int = LATENT_DIM,
         hidden_dims: list[int] | None = None,
+        logvar_clamp: tuple[float, float] = (LOGVAR_CLAMP_MIN, LOGVAR_CLAMP_MAX),
     ):
         super().__init__()
         self.encoder = Encoder(input_dim, hidden_dims, latent_dim)
-        self.decoder = Decoder(latent_dim, hidden_dims, input_dim)
+        self.decoder = Decoder(
+            latent_dim, hidden_dims, input_dim, logvar_clamp=logvar_clamp
+        )
 
     def reparameterize(self, mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
         std = torch.exp(0.5 * logvar)
