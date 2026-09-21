@@ -623,3 +623,106 @@ def test_fold_spread_falls_back_to_the_iqr(tmp_path):
               auc_transfer_median=0.80,
               auc_transfer_iqr=[0.794, 0.810])
     assert abs(t.transfer_spread - (0.810 - 0.794) / 1.349) < 1e-9
+
+
+# -------------------------------------------------- autonomous proposer
+
+
+def _seed(ledger, **kw):
+    from lilyvae.search.ledger import Trial
+    from lilyvae.search.space import SearchConfig
+    defaults = dict(ari_median=0.23, auc_median=0.96,
+                    auc_transfer_median=0.806,
+                    auc_transfer_folds=[0.794, 0.806, 0.818])
+    cfg = kw.pop("config", SearchConfig())
+    defaults.update(kw)
+    ledger.append(Trial(index=ledger.next_index(), config=cfg.to_dict(), **defaults))
+
+
+def test_proposer_starts_from_the_baseline(tmp_path):
+    from lilyvae.search.ledger import Ledger
+    from lilyvae.search.propose import propose_next
+    from lilyvae.search.space import SearchConfig
+
+    cfg, why = propose_next(Ledger(tmp_path / "l.jsonl"), np.random.RandomState(0))
+    assert cfg == SearchConfig()
+    assert why.startswith("baseline")
+
+
+def test_proposer_never_repeats_a_configuration(tmp_path):
+    from lilyvae.search.ledger import Ledger
+    from lilyvae.search.propose import propose_next
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    _seed(ledger, proposed_by="baseline")
+    rng = np.random.RandomState(0)
+    for _ in range(25):
+        cfg, _why = propose_next(ledger, rng)
+        assert cfg.key() not in ledger.seen()
+        _seed(ledger, config=cfg)
+
+
+def test_proposer_climbs_from_an_admissible_trial_not_the_best_ari(tmp_path):
+    """A config that wins ARI by destroying transfer must not be the base."""
+    from lilyvae.search.ledger import Ledger
+    from lilyvae.search.propose import climb_from
+    from lilyvae.search.space import SearchConfig
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    _seed(ledger, proposed_by="baseline")
+    _seed(ledger, config=SearchConfig(latent_dim=6),
+          ari_median=0.32, auc_transfer_median=0.70,
+          auc_transfer_folds=[0.70, 0.70, 0.70])
+    _seed(ledger, config=SearchConfig(beta_end=0.3),
+          ari_median=0.28, auc_transfer_median=0.805,
+          auc_transfer_folds=[0.805, 0.805, 0.805])
+
+    incumbent = climb_from(ledger)
+    assert incumbent.index == 2, "must climb from the admissible trial"
+
+
+def test_proposer_explores_when_nothing_is_admissible(tmp_path):
+    from lilyvae.search.ledger import Ledger
+    from lilyvae.search.propose import climb_from, propose_next
+    from lilyvae.search.space import SearchConfig
+
+    ledger = Ledger(tmp_path / "l.jsonl")
+    _seed(ledger, proposed_by="baseline")
+    # Baseline itself is admissible by construction, so drop it and leave
+    # only a failing trial as the reference point.
+    ledger2 = Ledger(tmp_path / "l2.jsonl")
+    _seed(ledger2, proposed_by="baseline",
+          auc_transfer_median=0.90, auc_transfer_folds=[0.90, 0.90, 0.90])
+    _seed(ledger2, config=SearchConfig(latent_dim=6),
+          auc_transfer_median=0.50, auc_transfer_folds=[0.5, 0.5, 0.5])
+    assert climb_from(ledger2).index == 0
+
+
+def test_perturb_changes_exactly_one_dimension(tmp_path):
+    from lilyvae.search.propose import perturb
+    from lilyvae.search.space import SearchConfig
+
+    base = SearchConfig()
+    rng = np.random.RandomState(0)
+    for _ in range(40):
+        new, dimension = perturb(base, rng)
+        a, b = base.to_dict(), new.to_dict()
+        changed = [k for k in a if a[k] != b[k]]
+        assert changed in ([], [dimension]), (
+            f"perturb touched {changed} while reporting {dimension}"
+        )
+
+
+def test_perturb_stays_inside_the_declared_space():
+    from lilyvae.search.propose import perturb
+    from lilyvae.search.space import SEARCH_SPACE, SearchConfig
+
+    rng = np.random.RandomState(1)
+    cfg = SearchConfig()
+    for _ in range(200):
+        cfg, _ = perturb(cfg, rng)
+        assert SEARCH_SPACE["beta_end"][0] <= cfg.beta_end <= SEARCH_SPACE["beta_end"][1]
+        assert 0.0 <= cfg.mask_fraction <= 0.5
+        assert cfg.latent_dim in SEARCH_SPACE["latent_dim"]
+        assert cfg.num_epochs in SEARCH_SPACE["num_epochs"]
+        assert cfg.logvar_clamp_min in SEARCH_SPACE["logvar_clamp_min"]

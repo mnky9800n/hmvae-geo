@@ -35,11 +35,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 
 import numpy as np
 
 from lilyvae.config import RESULTS_DIR, SEED
 from lilyvae.search.ledger import Ledger, Trial
+from lilyvae.search.propose import climb_from, propose_next
 from lilyvae.search.objective import evaluate_config
 from lilyvae.search.space import SEARCH_SPACE, SearchConfig, random_config
 
@@ -72,35 +74,24 @@ def _cmd_status(args, ledger: Ledger) -> int:
     return 0
 
 
-def _cmd_run(args, ledger: Ledger) -> int:
-    if args.random:
-        seen = ledger.seen()
-        rng = np.random.RandomState(SEED + ledger.next_index())
-        for _ in range(100):
-            config = random_config(rng)
-            if config.key() not in seen:
-                break
-        proposed_by, rationale = "random", "unguided draw"
-    else:
-        if not args.config:
-            print("give --config '<json>' or --random")
-            return 2
-        config = SearchConfig.from_dict(json.loads(args.config))
-        proposed_by = args.by
-        rationale = args.rationale
-
-    if config.key() in ledger.seen():
-        print("This configuration is already in the ledger; nothing to do.")
-        return 0
-
+def _run_one(
+    ledger: Ledger,
+    config: SearchConfig,
+    proposed_by: str,
+    rationale: str,
+    folds: int,
+    device: str,
+    report_fraction: float,
+) -> Trial:
+    """Evaluate one configuration and append it to the ledger."""
     index = ledger.next_index()
     print(f"trial #{index}: {json.dumps(config.to_dict())}")
     print(f"  proposed by {proposed_by}" + (f": {rationale}" if rationale else ""))
 
     try:
         res = evaluate_config(
-            config, n_folds=args.folds, device=args.device,
-            pool="search", report_fraction=args.report_fraction,
+            config, n_folds=folds, device=device,
+            pool="search", report_fraction=report_fraction,
         )
         trial = Trial(
             index=index, config=config.to_dict(),
@@ -138,7 +129,75 @@ def _cmd_run(args, ledger: Ledger) -> int:
         print(f"  FAILED: {e}")
 
     ledger.append(trial)
+    return trial
+
+
+
+
+def _cmd_run(args, ledger: Ledger) -> int:
+    if args.random:
+        seen = ledger.seen()
+        rng = np.random.RandomState(SEED + ledger.next_index())
+        for _ in range(100):
+            config = random_config(rng)
+            if config.key() not in seen:
+                break
+        proposed_by, rationale = "random", "unguided draw"
+    else:
+        if not args.config:
+            print("give --config '<json>' or --random")
+            return 2
+        config = SearchConfig.from_dict(json.loads(args.config))
+        proposed_by = args.by
+        rationale = args.rationale
+
+    if config.key() in ledger.seen():
+        print("This configuration is already in the ledger; nothing to do.")
+        return 0
+
+    _run_one(ledger, config, proposed_by, rationale,
+             args.folds, args.device, args.report_fraction)
     return 0
+
+
+def _cmd_auto(args, ledger: Ledger) -> int:
+    """Propose and evaluate configurations until a budget runs out."""
+    rng = np.random.RandomState(SEED + ledger.next_index())
+    deadline = time.time() + args.hours * 3600 if args.hours else None
+    done = 0
+
+    print(f"auto: up to {args.trials} trial(s)"
+          + (f", stopping after {args.hours:g}h" if args.hours else "")
+          + f", {args.folds} folds each")
+
+    while done < args.trials:
+        if deadline and time.time() > deadline:
+            print(f"\nstopping: {args.hours:g}h budget reached after {done} trial(s)")
+            break
+        try:
+            config, rationale = propose_next(ledger, rng)
+        except RuntimeError as e:
+            print(f"\nstopping: {e}")
+            break
+
+        proposed_by = "baseline" if rationale.startswith("baseline") else "auto"
+        print(f"\n{'='*70}")
+        print(f"auto trial {done+1}/{args.trials}")
+        print(f"{'='*70}")
+        _run_one(ledger, config, proposed_by, rationale,
+                 args.folds, args.device, args.report_fraction)
+        done += 1
+
+        incumbent = climb_from(ledger)
+        if incumbent is not None:
+            print(f"  leader: trial #{incumbent.index}, ARI "
+                  f"{incumbent.ari_median:.4f}, transfer AUC "
+                  f"{incumbent.auc_transfer_median:.4f}")
+
+    print()
+    print(ledger.summary(top=args.top))
+    return 0
+
 
 
 def _cmd_report(args, ledger: Ledger) -> int:
@@ -195,6 +254,17 @@ def main() -> int:
     p.add_argument("--device", default="auto")
     p.add_argument("--report-fraction", type=float, default=0.2)
     p.set_defaults(fn=_cmd_run)
+
+    p = sub.add_parser(
+        "auto", help="propose and evaluate configurations unattended")
+    p.add_argument("--trials", type=int, default=20)
+    p.add_argument("--hours", type=float, default=None,
+                   help="wall-clock budget; stops before starting a trial past it")
+    p.add_argument("--folds", type=int, default=5)
+    p.add_argument("--device", default="auto")
+    p.add_argument("--report-fraction", type=float, default=0.2)
+    p.add_argument("--top", type=int, default=12)
+    p.set_defaults(fn=_cmd_auto)
 
     p = sub.add_parser("report", help="score one trial on the reserved boreholes")
     p.add_argument("--index", type=int, required=True)
