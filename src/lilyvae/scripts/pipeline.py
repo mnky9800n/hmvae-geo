@@ -136,7 +136,10 @@ def _step_zeroshot(force: bool) -> None:
         print(f"[skip] zeroshot_fulldata.json already at {out_path}")
         return
 
-    from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
+    from lilyvae.evaluation.zeroshot import (
+        evaluate_all_zeroshot,
+        summarize_zeroshot,
+    )
 
     print(f"\n[run]  zero-shot evaluation on full-data VAE embeddings")
     zeroshot_targets = torch.load(PROCESSED_DIR / "zeroshot_targets.pt", weights_only=False)
@@ -149,15 +152,23 @@ def _step_zeroshot(force: bool) -> None:
         print(f"\n  {model_type}:")
         embeddings = torch.load(embeddings_path, weights_only=True)
         per_variable = evaluate_all_zeroshot(embeddings, zeroshot_targets)
-        r2s = [v["r2"] for v in per_variable.values()
-               if isinstance(v.get("r2"), float) and not (v["r2"] != v["r2"])]
-        avg = float(sum(r2s) / len(r2s)) if r2s else float("nan")
+        summary = summarize_zeroshot(per_variable)
         all_results[model_type] = {
-            "r2_avg": avg,
-            "n_variables": len(r2s),
+            # Kept so results stay comparable with the earlier draft; the
+            # curated headline is r2_headline.
+            "r2_avg": summary["r2_uncurated"],
+            "n_variables": summary["n_uncurated"],
+            "curated": summary,
             "per_variable": per_variable,
         }
-        print(f"    average R^2 across {len(r2s)} variables: {avg:.4f}")
+        print(
+            f"    headline R^2 (independent, n={summary['n_headline']}): "
+            f"{summary['r2_headline']:.4f}"
+        )
+        print(
+            f"    uncurated R^2 (all columns, n={summary['n_uncurated']}): "
+            f"{summary['r2_uncurated']:.4f}"
+        )
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w") as f:

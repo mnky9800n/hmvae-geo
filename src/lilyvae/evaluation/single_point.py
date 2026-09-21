@@ -46,7 +46,7 @@ from lilyvae.evaluation.bootstrap import (
     _compute_metrics,
     _print_summary,
 )
-from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
+from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot, summarize_zeroshot
 from lilyvae.training.trainer import get_device
 
 
@@ -133,15 +133,12 @@ def run_single_point_eval(
                     zs_results = evaluate_all_zeroshot(
                         trained.embeddings, zeroshot_targets
                     )
-                    zs_r2s = [
-                        v["r2"] for v in zs_results.values()
-                        if isinstance(v.get("r2"), float)
-                        and not np.isnan(v["r2"])
-                        and np.isfinite(v["r2"])
-                    ]
-                    if zs_r2s:
-                        metrics["zeroshot_r2_avg"] = float(np.mean(zs_r2s))
-                        metrics["zeroshot_n_variables"] = len(zs_r2s)
+                    zs_summary = summarize_zeroshot(zs_results)
+                    if zs_summary["n_uncurated"]:
+                        metrics["zeroshot_r2_avg"] = zs_summary["r2_uncurated"]
+                        metrics["zeroshot_n_variables"] = zs_summary["n_uncurated"]
+                        metrics["zeroshot_r2_headline"] = zs_summary["r2_headline"]
+                        metrics["zeroshot_n_headline"] = zs_summary["n_headline"]
                 except Exception as e:
                     print(f"    zeroshot ERROR: {e}")
 

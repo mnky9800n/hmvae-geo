@@ -78,6 +78,7 @@ from lilyvae.evaluation.baselines import (
     _train_scarf,
 )
 from lilyvae.evaluation.classification import evaluate_classification
+from lilyvae.evaluation.folds import borehole_splits
 from lilyvae.evaluation.clustering import evaluate_clustering
 from lilyvae.model.vae import LilyVAE
 from lilyvae.training.masking import LearnableMasking
@@ -374,6 +375,7 @@ def run_bootstrap(
     test_fraction: float = 0.1,
     device: str = "auto",
     models: list[str] | None = None,
+    all_models: bool = False,
 ) -> dict:
     """Run the canonical bootstrap evaluation for training-stability metrics.
 
@@ -396,31 +398,38 @@ def run_bootstrap(
     metadata = torch.load(PROCESSED_DIR / "metadata.pt", weights_only=False)
     borehole_ids = np.asarray(metadata["borehole_ids"])
 
-    registry = MODEL_REGISTRY
+    available = ALL_TRAINERS if all_models else MODEL_REGISTRY
+    registry = available
     if models is not None:
         wanted = set(models)
-        registry = [(n, fn) for (n, fn) in MODEL_REGISTRY if n in wanted]
+        registry = [(n, fn) for (n, fn) in ALL_TRAINERS if n in wanted]
         if not registry:
-            raise ValueError(f"No models in MODEL_REGISTRY match {models}")
+            known = ", ".join(n for n, _ in ALL_TRAINERS)
+            raise ValueError(f"No trainers match {models}. Known: {known}")
 
     unique_boreholes = np.unique(borehole_ids)
-    n_test = max(1, int(len(unique_boreholes) * test_fraction))
-    rng = np.random.RandomState(SEED)
 
     per_iteration: list[dict] = []
     start_time = time.time()
 
-    for iteration in range(n_iterations):
+    folds = borehole_splits(
+        borehole_ids,
+        n_iterations=n_iterations,
+        test_fraction=test_fraction,
+        seed=SEED,
+    )
+
+    for fold in folds:
+        iteration = fold.iteration
         iter_start = time.time()
         print(f"\n{'='*70}")
         print(f"Bootstrap iteration {iteration+1}/{n_iterations}")
         print(f"{'='*70}")
 
         # Same split seen by every model in this iteration
-        perm = rng.permutation(unique_boreholes)
-        test_boreholes = set(perm[:n_test])
-        test_mask = np.array([bh in test_boreholes for bh in borehole_ids])
-        train_mask = ~test_mask
+        test_boreholes = fold.test_boreholes
+        test_mask = fold.test_mask
+        train_mask = fold.train_mask
 
         train_features = features[train_mask]
         train_labels = labels[train_mask]
@@ -489,12 +498,14 @@ def run_bootstrap(
 def _aggregate_summary(per_iteration: list[dict]) -> dict:
     """Compute median, IQR, 95% CI, mean, std for every (model, metric) pair.
 
-    Also aggregates ``zeroshot_r2_avg`` if the single-point evaluator added
-    that key to a model's metrics dict; the key is simply skipped for
-    bootstrap outputs that never compute zero-shot.
+    Also aggregates ``zeroshot_r2_avg`` (every harvested column) and
+    ``zeroshot_r2_headline`` (the curated `independent` tier) when an
+    evaluator added those keys; they are skipped for outputs that never
+    compute zero-shot.
     """
     metric_keys = [
-        "r2_avg", "ari", "auc_macro", "zeroshot_r2_avg",
+        "r2_avg", "ari", "auc_macro",
+        "zeroshot_r2_avg", "zeroshot_r2_headline",
     ] + [f"r2_{v}" for v in TRAINING_VARIABLES]
 
     model_names = set()

@@ -6,9 +6,10 @@ borehole-level splits. Writes `data/results/bootstrap_results.json`,
 which is the source of truth for the VAE rows' CIs in the paper's main
 results table.
 
-Only the VAE variants are bootstrapped -- see the module docstring in
-`lilyvae.evaluation.bootstrap` for the rationale. Baselines and ablation
-variants get single-point full-data evaluation from `lilyvae-single-point`.
+By default only the VAE variants are bootstrapped. Pass --all-models to
+bootstrap the baselines and ablations on the same folds; the paper's main
+table needs that, because reporting bootstrapped VAEs beside single-run
+in-sample baselines compares protocols rather than architectures.
 
 Zero-shot R^2 is not computed here. It is a property of the full-data
 trained VAE's embedding space and is measured separately via the
@@ -18,6 +19,9 @@ Usage
 -----
 Full run (2 VAE variants x 30 folds, matches the paper):
     uv run lilyvae-bootstrap
+
+Every row of the main table under one protocol (9 models x 30 folds):
+    uv run lilyvae-bootstrap --all-models
 
 Quick sanity check (2 folds):
     uv run lilyvae-bootstrap --iterations 2
@@ -29,7 +33,7 @@ import argparse
 import json
 
 from lilyvae.config import RESULTS_DIR
-from lilyvae.evaluation.bootstrap import MODEL_REGISTRY, run_bootstrap
+from lilyvae.evaluation.bootstrap import ALL_TRAINERS, run_bootstrap
 from lilyvae.scripts import make_serializable
 
 
@@ -45,8 +49,17 @@ def main():
         nargs="+",
         default=None,
         help=(
-            "Subset of model names to run (default: all). "
-            f"Available: {', '.join(n for n, _ in MODEL_REGISTRY)}"
+            "Subset of model names to run (default: the two VAE variants). "
+            f"Available: {', '.join(n for n, _ in ALL_TRAINERS)}"
+        ),
+    )
+    parser.add_argument(
+        "--all-models",
+        action="store_true",
+        help=(
+            "Bootstrap every baseline and ablation as well as the two VAEs, "
+            "so every row of the paper's main table is measured under one "
+            "protocol instead of mixing bootstrap and single-run in-sample."
         ),
     )
     parser.add_argument(
@@ -68,6 +81,7 @@ def main():
         test_fraction=args.test_fraction,
         device=args.device,
         models=args.models,
+        all_models=args.all_models,
     )
 
     with open(output_path, "w") as f:
