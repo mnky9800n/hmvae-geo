@@ -1,0 +1,10 @@
+# One factor changed from baseline per row, so a difference is attributable.
+# Format: <JSON config><TAB><rationale>
+{"latent_dim": 16}	wider latent: ARI is scored by a 10-component mixture on a 10-d space, so give the mixture room to separate classes
+{"latent_dim": 6}	tighter bottleneck: force the encoder to discard measurement noise, which may help transfer even if it costs reconstruction
+{"beta_end": 0.3}	stronger KL: a more heavily regularised latent should cluster more cleanly, the main lever on ARI
+{"beta_end": 0.01}	weaker KL: the opposite direction, to confirm 0.075 is not simply the low end of a monotone trend
+{"mask_fraction": 0.3}	heavier masking: a stronger self-supervision signal is the usual route to representations that survive a distribution shift
+{"hidden_dims": [256, 128]}	more encoder capacity, holding the bottleneck fixed
+{"logvar_clamp_min": -12.0}	release the variance floor: it binds for 98% of samples, so it is shaping training whether or not we intended it
+{"latent_dim": 16, "beta_end": 0.3}	interaction of the two levers most likely to move ARI on their own
