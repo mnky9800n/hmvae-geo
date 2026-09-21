@@ -46,7 +46,8 @@ def _cmd_status(args, ledger: Ledger) -> int:
         n = len([t for t in ledger.all() if not t.error])
         print()
         print(f"Best so far is trial #{best.index} out of {n} attempt(s).")
-        print(f"  ARI {best.ari_median:.4f}  probe AUC {best.auc_median:.4f}")
+        print(f"  ARI {best.ari_median:.4f}  transfer AUC "
+              f"{best.auc_transfer_median:.4f}  (probe AUC {best.auc_median:.4f})")
         print(f"  config: {json.dumps(best.config)}")
         print()
         print("The best of N trials is biased upward by an amount that grows")
@@ -93,13 +94,17 @@ def _cmd_run(args, ledger: Ledger) -> int:
             index=index, config=config.to_dict(),
             ari_median=res["ari_median"], auc_median=res["auc_median"],
             ari_iqr=res["ari_iqr"], auc_iqr=res["auc_iqr"],
+            auc_transfer_median=res["auc_transfer_median"],
+            auc_transfer_iqr=res["auc_transfer_iqr"],
             r2_median=res["r2_median"], n_folds=res["n_folds"],
             elapsed_seconds=res["elapsed_seconds"],
             proposed_by=proposed_by, rationale=rationale,
         )
-        print(f"  ARI {res['ari_median']:.4f} IQR {res['ari_iqr']}")
-        print(f"  probe AUC {res['auc_median']:.4f} IQR {res['auc_iqr']}")
-        print(f"  transfer AUC {res['auc_transfer_median']:.4f}")
+        print(f"  ARI          {res['ari_median']:.4f} IQR {res['ari_iqr']}")
+        print(f"  transfer AUC {res['auc_transfer_median']:.4f} "
+              f"IQR {res['auc_transfer_iqr']}      <- objective")
+        print(f"  probe AUC    {res['auc_median']:.4f} IQR {res['auc_iqr']}"
+              "  (saturated, not optimised)")
         print(f"  recon R2 {res['r2_median']:.4f}")
         print(f"  {res['elapsed_seconds']/60:.1f} min")
     except Exception as e:
@@ -123,7 +128,8 @@ def _cmd_report(args, ledger: Ledger) -> int:
     config = SearchConfig.from_dict(trial.config)
 
     print(f"Scoring trial #{args.index} on the reserved reporting boreholes.")
-    print(f"  search ARI {trial.ari_median:.4f}, probe AUC {trial.auc_median:.4f}")
+    print(f"  search ARI {trial.ari_median:.4f}, "
+          f"transfer AUC {trial.auc_transfer_median:.4f}")
     res = evaluate_config(
         config, n_folds=args.folds, device=args.device,
         pool="report", report_fraction=args.report_fraction,
@@ -134,10 +140,10 @@ def _cmd_report(args, ledger: Ledger) -> int:
     print(f"  reported transfer AUC {res['auc_transfer_median']:.4f}")
     print(f"  reported recon R2     {res['r2_median']:.4f}")
     drop_ari = trial.ari_median - res["ari_median"]
-    drop_auc = trial.auc_median - res["auc_median"]
+    drop_auc = trial.auc_transfer_median - res["auc_transfer_median"]
     print()
     print(f"  shrinkage from search to report: ARI {drop_ari:+.4f}, "
-          f"AUC {drop_auc:+.4f}")
+          f"transfer AUC {drop_auc:+.4f}")
     print("  A large drop means the search fitted the tuning folds.")
 
     out = RESULTS_DIR / f"search_report_trial{args.index}.json"

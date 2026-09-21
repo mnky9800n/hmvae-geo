@@ -26,6 +26,10 @@ class Trial:
     auc_median: float
     ari_iqr: list[float] = field(default_factory=list)
     auc_iqr: list[float] = field(default_factory=list)
+    #: Probe fitted on training boreholes and applied to held-out ones.
+    #: This is the objective, not `auc_median`.
+    auc_transfer_median: float = float("nan")
+    auc_transfer_iqr: list[float] = field(default_factory=list)
     r2_median: float = float("nan")
     n_folds: int = 0
     elapsed_seconds: float = 0.0
@@ -35,18 +39,29 @@ class Trial:
 
     @property
     def objective(self) -> float:
-        """Scalar used only for ordering the ledger.
+        """Scalar used to order the ledger: ARI and *transfer* AUC.
 
-        ARI and AUC live on different scales: ARI sits near 0.26 with an
-        interquartile width around 0.08, AUC near 0.96 with a width
-        around 0.01. Adding them lets AUC set the level while ARI sets
-        the variance, which is why this is a convenience for sorting and
-        not the thing to optimise blindly. Report both, and look at the
-        trade-off rather than the sum.
+        The probe AUC in `auc_median` is not used. A three-epoch model
+        scores 0.9535 against 0.9573 for a fully trained one, so its
+        entire headroom is smaller than the fold-to-fold interquartile
+        width of about 0.01, and optimising it would chase noise. It is
+        the same saturation that made reconstruction R^2 useless as a
+        discriminator.
+
+        Transfer AUC sits near 0.82 and drops when a configuration
+        stops generalising to a new borehole, so it has both room and
+        meaning. ARI ranges from about 0.14 to 0.42 across folds.
+
+        Both terms are near enough in scale to average without one
+        dominating, but this remains a sorting convenience. The
+        trade-off between the two is the thing to look at.
         """
         if self.error:
             return float("-inf")
-        return 0.5 * self.ari_median + 0.5 * self.auc_median
+        transfer = self.auc_transfer_median
+        if transfer != transfer:  # nan, from a trial recorded before this change
+            return float("-inf")
+        return 0.5 * self.ari_median + 0.5 * transfer
 
 
 class Ledger:
@@ -91,13 +106,15 @@ class Ledger:
         lines = [
             f"{len(trials)} successful trial(s), {len(failed)} failed.",
             "",
-            f"{'#':>3} {'ARI':>7} {'AUC':>7} {'R2':>7}  {'latent':>6} "
-            f"{'hidden':>14} {'beta':>8} {'mask':>5} {'lr':>8} {'ep':>4}  by",
+            f"{'#':>3} {'ARI':>7} {'trAUC':>7} {'probe':>7} {'R2':>7}  "
+            f"{'latent':>6} {'hidden':>14} {'beta':>8} {'mask':>5} "
+            f"{'lr':>8} {'ep':>4}  by",
         ]
         for t in sorted(trials, key=lambda t: t.objective, reverse=True)[:top]:
             c = t.config
             lines.append(
-                f"{t.index:>3} {t.ari_median:>7.4f} {t.auc_median:>7.4f} "
+                f"{t.index:>3} {t.ari_median:>7.4f} "
+                f"{t.auc_transfer_median:>7.4f} {t.auc_median:>7.4f} "
                 f"{t.r2_median:>7.4f}  {c['latent_dim']:>6} "
                 f"{str(tuple(c['hidden_dims'])):>14} {c['beta_end']:>8.4f} "
                 f"{c['mask_fraction']:>5.2f} {c['learning_rate']:>8.5f} "
