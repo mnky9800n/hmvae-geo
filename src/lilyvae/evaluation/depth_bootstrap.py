@@ -8,7 +8,8 @@ property that also tracks compaction while knowing nothing about rock.
 Anyone who has looked at a core could do the same with a depth scale.
 
 Answering it needs more than noting that the embedding beats depth.
-Four arms, all scored on held-out boreholes over the shared folds:
+Four sets of inputs, all given to the same regressor and scored on
+held-out boreholes over the same folds:
 
 ``depth_only``       depth alone predicts the target. The proxy story in
                      its purest form, and the number that says how much
@@ -62,9 +63,20 @@ from lilyvae.evaluation.zeroshot_bootstrap import (
 )
 from lilyvae.training.trainer import get_device
 
-#: The arms compared. Kept to four because each is a CatBoost fit per
-#: target per fold, and the full sweep already costs hours.
-ARMS = ("depth_only", "embedding", "embedding_resid", "embedding_depth")
+#: The four feature sets compared. Everything else is held fixed: same
+#: regressor, same targets, same folds. Only the input columns change.
+#: Kept to four because each is a CatBoost fit per target per fold, and
+#: the sweep already costs hours.
+FEATURE_SETS = ("depth_only", "embedding", "embedding_resid", "embedding_depth")
+
+#: Plain descriptions, used in printed tables and figure captions so the
+#: output does not depend on knowing the key names.
+FEATURE_SET_LABELS = {
+    "depth_only": "depth alone",
+    "embedding": "the embedding",
+    "embedding_resid": "embedding, depth removed first",
+    "embedding_depth": "embedding plus depth",
+}
 
 
 def _prepare(targets: dict, names: list[str]) -> dict:
@@ -88,7 +100,7 @@ def _arm_features(
         return embeddings
     if arm == "embedding_depth":
         return np.column_stack([embeddings, depths])
-    raise ValueError(f"unknown arm {arm!r}")
+    raise ValueError(f"unknown feature set {arm!r}")
 
 
 def evaluate_depth_arms(
@@ -100,7 +112,7 @@ def evaluate_depth_arms(
     test_mask: np.ndarray,
     winsorize: bool = False,
 ) -> dict:
-    """Score every arm for one target on one fold."""
+    """Score every feature set for one target on one fold."""
     fit_rows = valid & train_mask
     score_rows = valid & test_mask
     n_train, n_test = int(fit_rows.sum()), int(score_rows.sum())
@@ -117,7 +129,7 @@ def evaluate_depth_arms(
         return {"n_train": n_train, "n_test": n_test}
 
     out = {"n_train": n_train, "n_test": n_test}
-    for arm in ARMS:
+    for arm in FEATURE_SETS:
         x = _arm_features(arm, embeddings, depths)
         if arm == "embedding_resid":
             # Regress depth out of the target on the training rows, then
@@ -146,7 +158,7 @@ def run_depth_bootstrap(
     tiers: tuple[str, ...] = HEADLINE_TIERS,
     device: str = "auto",
 ) -> dict:
-    """Bootstrap the depth arms across borehole folds."""
+    """Bootstrap the four feature sets across borehole folds."""
     from lilyvae.evaluation.bootstrap import ALL_TRAINERS
 
     dev = get_device(device)
@@ -162,7 +174,7 @@ def run_depth_bootstrap(
     trainer = dict(ALL_TRAINERS)["unsupervised_vae"]
 
     print(f"Depth bootstrap: {n_iterations} folds, {len(names)} targets, "
-          f"arms {', '.join(ARMS)}")
+          f"inputs: {', '.join(FEATURE_SET_LABELS[a] for a in FEATURE_SETS)}")
     print(f"  depth range {depths.min():.1f}-{depths.max():.1f} m")
 
     per_iteration, start = [], time.time()
@@ -201,7 +213,7 @@ def run_depth_bootstrap(
     return {
         "config": {
             "n_iterations": n_iterations, "test_fraction": test_fraction,
-            "tiers": list(tiers), "arms": list(ARMS), "targets": names, "seed": SEED,
+            "tiers": list(tiers), "feature_sets": list(FEATURE_SETS), "targets": names, "seed": SEED,
         },
         "per_iteration": per_iteration,
         "summary": summary,
@@ -213,7 +225,7 @@ def _summarise(per_iteration: list[dict], names: list[str]) -> dict:
     summary = {"per_target": {}, "overall": {}}
     for name in names:
         entry = {}
-        for arm in ARMS:
+        for arm in FEATURE_SETS:
             vals = [
                 it["per_variable"].get(name, {}).get(arm)
                 for it in per_iteration
@@ -223,7 +235,7 @@ def _summarise(per_iteration: list[dict], names: list[str]) -> dict:
                 entry[arm] = _distribution(vals)
         summary["per_target"][name] = entry
 
-    for arm in ARMS:
+    for arm in FEATURE_SETS:
         medians = [
             summary["per_target"][n][arm]["median"]
             for n in names if arm in summary["per_target"].get(n, {})
@@ -238,20 +250,21 @@ def _summarise(per_iteration: list[dict], names: list[str]) -> dict:
 
 
 def _print_summary(summary: dict, names: list[str]) -> None:
-    print(f"\n{'='*86}")
-    print(f"{'target':<34} " + "".join(f"{a[:15]:>13}" for a in ARMS))
-    print("=" * 86)
+    print(f"\n{'='*104}")
+    print(f"{'target':<34} " + "".join(
+        f"{FEATURE_SET_LABELS[a][:15]:>17}" for a in FEATURE_SETS))
+    print("=" * 104)
     for name in names:
         e = summary["per_target"].get(name, {})
         label = TARGET_REGISTRY[name].label if name in TARGET_REGISTRY else name
         row = "".join(
-            f"{e[a]['median']:>13.3f}" if a in e else f"{'--':>13}" for a in ARMS
+            f"{e[a]['median']:>17.3f}" if a in e else f"{'--':>17}" for a in FEATURE_SETS
         )
         print(f"{label[:33]:<34} {row}")
-    print("-" * 86)
+    print("-" * 104)
     row = "".join(
-        f"{summary['overall'][a]['median_over_targets']:>13.3f}"
-        if a in summary["overall"] else f"{'--':>13}" for a in ARMS
+        f"{summary['overall'][a]['median_over_targets']:>17.3f}"
+        if a in summary["overall"] else f"{'--':>17}" for a in FEATURE_SETS
     )
     print(f"{'median over targets':<34} {row}")
 

@@ -19,7 +19,8 @@ Every arm here is scored on held-out boreholes over the same folds as
 the rest of the evaluation, so the comparison is between feature sets
 rather than between protocols.
 
-Arms
+Feature sets compared (the regressor, targets and folds are identical
+throughout; only the input columns change)
 ----
 ``raw6``       the six standardised training variables
 ``pca``        principal components of those six
@@ -58,7 +59,7 @@ from lilyvae.evaluation.zeroshot_bootstrap import (
 )
 from lilyvae.training.trainer import get_device
 
-#: Neighbours for the kNN arm, matching the earlier rebuttal script.
+#: Neighbours for the kNN comparison, matching the earlier script.
 KNN_K = 10
 
 #: Feature sets compared. "embedding" is resolved per fold by training a
@@ -73,7 +74,7 @@ def _build_arm(
     train_mask: np.ndarray,
     device,
 ) -> np.ndarray:
-    """Return the per-sample feature matrix for one arm.
+    """Return the per-sample feature matrix for one feature set.
 
     Anything fitted (PCA, the VAE) is fitted on training boreholes only
     and then applied to every row, so held-out rows never influence the
@@ -403,7 +404,8 @@ def _summarize(per_iteration: list[dict]) -> dict:
 
 def _print_summary(summary: dict) -> None:
     print(f"\n{'='*70}")
-    print(f"{'arm':<20} {'zero-shot R2 (median)':>24} {'AUC (median)':>16}")
+    print(f"{'features given to the regressor':<34} "
+          f"{'zero-shot R2 (median)':>24} {'AUC (median)':>16}")
     print(f"{'='*70}")
     for name, entry in summary.items():
         zs = entry.get("zeroshot_r2_headline", {})
