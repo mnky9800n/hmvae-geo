@@ -332,16 +332,35 @@ def plot_transfer_by_novelty(
     ax.scatter([r[2] for r in rows], ys, s=110, color=REFERENCE,
                zorder=4, linewidths=2, edgecolors="white")
 
+    # Each value sits on the outer side of its own dot, so a number is
+    # always read against the dot it belongs to. Labelling by which value
+    # is larger instead makes the colour-to-number mapping flip from row
+    # to row, which is exactly how a reader loses track of the encoding.
     for y, (_, a, b) in zip(ys, rows):
-        ax.text(min(a, b) - 0.035, y, f"{min(a, b):.2f}", ha="right", va="center",
-                fontsize=9, color=MUTED)
-        ax.text(max(a, b) + 0.035, y, f"{max(a, b):.2f}", ha="left", va="center",
-                fontsize=9, color=MUTED)
+        a_left = a <= b
+        ax.text(a - 0.035 if a_left else a + 0.035, y, f"{a:.2f}",
+                ha="right" if a_left else "left", va="center",
+                fontsize=9.5, color=INK)
+        ax.text(b + 0.035 if a_left else b - 0.035, y, f"{b:.2f}",
+                ha="left" if a_left else "right", va="center",
+                fontsize=9.5, color=INK)
+
+    # Name the two dots where the reader first meets them.
+    top = len(rows) - 1
+    a_top, b_top = rows[top][1], rows[top][2]
+    ax.annotate("familiar rock", xy=(a_top, top), xytext=(a_top, top + 0.42),
+                ha="center", va="bottom", fontsize=9, color=SERIES,
+                arrowprops=dict(arrowstyle="-", color=SERIES, lw=1.0,
+                                shrinkA=0, shrinkB=7))
+    ax.annotate("unfamiliar rock", xy=(b_top, top), xytext=(b_top - 0.10, top + 0.42),
+                ha="center", va="bottom", fontsize=9, color=REFERENCE,
+                arrowprops=dict(arrowstyle="-", color=REFERENCE, lw=1.0,
+                                shrinkA=0, shrinkB=7))
 
     ax.set_yticks(ys)
     ax.set_yticklabels([r[0] for r in rows], fontsize=10.5, color=INK)
     ax.set_xlim(-0.02, 1.0)
-    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.set_ylim(-0.6, len(rows) + 0.15)
     ax.set_xlabel("how much of the property the model gets right on boreholes "
                   "it never saw  ($R^2$)", fontsize=10, color=MUTED)
     ax.grid(axis="x", color=GRID, lw=0.6)
@@ -354,13 +373,15 @@ def plot_transfer_by_novelty(
     ax.legend(
         handles=[
             Line2D([], [], marker="o", ls="", markersize=10, color=SERIES,
-                   label=f"boreholes most like the training core "
-                         f"({novelty[familiar].mean()*100:.0f}% unfamiliar rock)"),
+                   label=f"familiar rock: boreholes whose core is "
+                         f"{novelty[familiar].mean()*100:.0f}% rock types "
+                         "the model barely saw"),
             Line2D([], [], marker="o", ls="", markersize=10, color=REFERENCE,
-                   label=f"boreholes least like it "
-                         f"({novelty[unfamiliar].mean()*100:.0f}% unfamiliar rock)"),
+                   label=f"unfamiliar rock: "
+                         f"{novelty[unfamiliar].mean()*100:.0f}% rock types "
+                         "the model barely saw"),
         ],
-        loc="upper center", bbox_to_anchor=(0.5, -0.16), ncols=2,
+        loc="upper left", bbox_to_anchor=(0.0, -0.13), ncols=1,
         frameon=False, fontsize=9.5, labelcolor=MUTED,
         handletextpad=0.4, columnspacing=2.4,
     )
