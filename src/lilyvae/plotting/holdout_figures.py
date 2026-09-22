@@ -127,16 +127,34 @@ def plot_holdout_novelty(
                 color=colour, lw=2.0, solid_capstyle="round", zorder=4)
 
     ratio = np.median(distances) / max(np.median(null), 1e-12)
+
+    # Energy distance has no natural scale, so mark what a known
+    # displacement of the same data looks like. Calibrated by shifting a
+    # single standardised input variable on a random tenth of the rows:
+    # the statistic grows roughly as the square of the displacement.
+    calibration = [(0.0213, "0.25 SD"), (0.0766, "0.5 SD"), (0.3086, "1 SD")]
+    for value, label in calibration:
+        if value > distances.max() * 1.15:
+            continue
+        ax.axvline(value, color=MUTED, lw=0.8, ls=(0, (2, 3)), zorder=2)
+        ax.text(value, 1.60, label, fontsize=7.5, color=MUTED,
+                ha="center", va="bottom")
+    # Caption sits on its own line above the tick labels so the two do
+    # not overlap at the left edge.
+    ax.text(0.0, 1.10, "dotted lines: energy distance equivalent to shifting "
+            "one input variable by",
+            fontsize=7.5, color=MUTED, ha="left", va="bottom",
+            transform=ax.transAxes)
     ax.set_yticks([0.0, 1.0])
     ax.set_yticklabels(["held-out\nboreholes", "random split\n(no shift)"],
                        fontsize=9, color=INK)
     ax.set_xlabel("energy distance from the training rows, in the six input features",
                   fontsize=9, color=MUTED)
-    ax.set_ylim(-0.55, 1.55)
+    ax.set_ylim(-0.55, 1.85)
     ax.set_title(
         f"Held-out boreholes sit {ratio:.0f}x further from the training data "
         "than a random split does",
-        fontsize=11, color=INK, loc="left", pad=10)
+        fontsize=11, color=INK, loc="left", pad=24)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
