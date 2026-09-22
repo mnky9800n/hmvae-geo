@@ -22,6 +22,13 @@ from lilyvae.config import (
 )
 
 # Skip all tests in this module if data is not present
+#: Rows surviving preprocessing. This was 238,767 until the physical-range
+#: filter was added: bulk density carried 74 negative values and 59 above
+#: 3.0 g/cm^3, which cannot be measurements, and 1,804 rows were removed.
+#: Two of thirty bootstrap folds had previously scored reconstruction R^2
+#: of -615,160 and -81.9 because those values landed in the held-out set.
+N_SAMPLES = 236_963
+
 pytestmark = pytest.mark.requires_data
 
 def _data_available():
@@ -88,10 +95,10 @@ def _load_vae(model_name):
 
 class TestPreprocessing:
     def test_features_shape(self, features):
-        assert features.shape == (238767, INPUT_DIM)
+        assert features.shape == (N_SAMPLES, INPUT_DIM)
 
     def test_labels_shape(self, labels):
-        assert labels.shape == (238767,)
+        assert labels.shape == (N_SAMPLES,)
 
     def test_num_classes(self, label_encoder):
         assert len(label_encoder.classes_) == NUM_LITHOLOGY_CLASSES
@@ -119,7 +126,7 @@ class TestPreprocessing:
     def test_metadata_exists(self):
         metadata = torch.load(PROCESSED_DIR / "metadata.pt", weights_only=False)
         assert "borehole_ids" in metadata
-        assert len(metadata["borehole_ids"]) == 238767
+        assert len(metadata["borehole_ids"]) == N_SAMPLES
 
     def test_zeroshot_targets_exist(self):
         targets = torch.load(PROCESSED_DIR / "zeroshot_targets.pt", weights_only=False)
@@ -131,10 +138,10 @@ class TestPreprocessing:
 
 class TestCheckpoints:
     def test_unsup_embeddings_shape(self, unsup_embeddings):
-        assert unsup_embeddings.shape == (238767, LATENT_DIM)
+        assert unsup_embeddings.shape == (N_SAMPLES, LATENT_DIM)
 
     def test_semi_embeddings_shape(self, semi_embeddings):
-        assert semi_embeddings.shape == (238767, LATENT_DIM)
+        assert semi_embeddings.shape == (N_SAMPLES, LATENT_DIM)
 
     def test_unsup_checkpoint_loads(self):
         _load_vae("unsupervised")  # should not raise

@@ -134,8 +134,16 @@ def evaluate_zeroshot_transfer(
 
     model = _fit_catboost(embeddings[fit_rows], y_train)
     r2 = r2_score(y_test, model.predict(embeddings[score_rows]))
+    # The same model scored on the boreholes it was fitted on. Reporting
+    # the two side by side is the clearest statement of what the holdout
+    # costs, and it is the number the earlier draft reported alone.
+    r2_train = (
+        r2_score(y_train, model.predict(embeddings[fit_rows]))
+        if np.ptp(y_train) > 0 else float("nan")
+    )
     return {
         "r2": float(r2),
+        "r2_train": float(r2_train),
         "n_train": n_train,
         "n_test": n_test,
         "n_winsorized": n_clipped,
