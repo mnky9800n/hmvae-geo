@@ -239,11 +239,26 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         _I, "magnetisation_discrete", "SRMD", "Magnetisation (discrete)"
     ),
     "SRMD_Inclination raw (deg)": TargetSpec(
-        _I, "inclination_discrete", "SRMD", "Inclination (discrete)",
+        _P, "drilling_overprint", "SRMD", "Inclination (discrete)",
+        reason=(
+            "Inclination does survive in unoriented core, unlike declination, "
+            "so this is a real palaeomagnetic quantity in principle. In this "
+            "release it is not: 75% of values are positive with a mean of "
+            "+27 deg, where a genuine record over this much section would be "
+            "roughly balanced between normal and reversed polarity. That bias "
+            "is the steep downward overprint the drill string imparts, so "
+            "predicting it means predicting how strongly the core took the "
+            "overprint, which tracks magnetic susceptibility, a training input."
+        ),
         valid_range=(-90.0, 90.0),
     ),
     "SRMD_Declination raw (deg)": TargetSpec(
-        _I, "declination_discrete", "SRMD", "Declination (discrete)",
+        _P, "core_orientation", "SRMD", "Declination (discrete)",
+        reason=(
+            "Azimuth of the magnetisation in core that is not azimuthally "
+            "oriented. The piece rotates freely in the barrel, so this records "
+            "how it happened to sit, not the rock."
+        ),
         valid_range=(-360.0, 360.0),
     ),
     **{
@@ -259,11 +274,11 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         )
     },
     "SRMD_Inclination background & drift corrected (deg)": TargetSpec(
-        _D, "inclination_discrete", "SRMD", "Inclination (corrected)",
+        _P, "drilling_overprint", "SRMD", "Inclination (corrected)",
         reason="Drift-corrected copy of the raw inclination.",
     ),
     "SRMD_Declination background & drift corrected (deg)": TargetSpec(
-        _D, "declination_discrete", "SRMD", "Declination (corrected)",
+        _P, "core_orientation", "SRMD", "Declination (corrected)",
         reason="Drift-corrected copy of the raw declination.",
     ),
     "SRMD_Demag level (mT)": TargetSpec(
@@ -280,11 +295,19 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         winsorize=True,
     ),
     "SRM_Inclination raw (deg)": TargetSpec(
-        _I, "inclination_whole_core", "SRM", "Inclination (whole core)",
+        _P, "drilling_overprint", "SRM", "Inclination (whole core)",
+        reason=(
+            "Same drilling overprint as the discrete measurement: 76% positive, "
+            "mean +27 deg, against the balanced polarity a real record would show."
+        ),
         valid_range=(-90.0, 90.0),
     ),
     "SRM_Declination raw (deg)": TargetSpec(
-        _I, "declination_whole_core", "SRM", "Declination (whole core)",
+        _P, "core_orientation", "SRM", "Declination (whole core)",
+        reason=(
+            "Azimuth of magnetisation in unoriented core; near-uniform over "
+            "0-360 deg, with the modal 5-degree bin holding 1.3% of samples."
+        ),
         valid_range=(-360.0, 360.0),
     ),
     **{
@@ -301,11 +324,11 @@ TARGET_REGISTRY: dict[str, TargetSpec] = {
         )
     },
     "SRM_Inclination background & drift corrected (deg)": TargetSpec(
-        _D, "inclination_whole_core", "SRM", "Inclination (corrected)",
+        _P, "drilling_overprint", "SRM", "Inclination (corrected)",
         reason="Drift-corrected copy of the raw inclination.",
     ),
     "SRM_Declination background & drift corrected (deg)": TargetSpec(
-        _D, "declination_whole_core", "SRM", "Declination (corrected)",
+        _P, "core_orientation", "SRM", "Declination (corrected)",
         reason="Drift-corrected copy of the raw declination.",
     ),
     "SRM_Demag level (mT)": TargetSpec(
