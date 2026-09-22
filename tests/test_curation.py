@@ -726,3 +726,79 @@ def test_perturb_stays_inside_the_declared_space():
         assert cfg.latent_dim in SEARCH_SPACE["latent_dim"]
         assert cfg.num_epochs in SEARCH_SPACE["num_epochs"]
         assert cfg.logvar_clamp_min in SEARCH_SPACE["logvar_clamp_min"]
+
+
+# ---------------------------------------------------- literature checks
+
+
+def test_doi_cleaning_strips_the_usual_prefixes():
+    from lilyvae.literature.crossref import clean_doi
+
+    for form in ("10.1121/1.388539", "https://doi.org/10.1121/1.388539",
+                 "doi:10.1121/1.388539", "DOI: 10.1121/1.388539 ",
+                 "https://dx.doi.org/10.1121/1.388539."):
+        assert clean_doi(form) == "10.1121/1.388539"
+
+
+def test_bibtex_is_refused_for_anything_unvalidated():
+    import pytest as _pytest
+    from lilyvae.literature.crossref import Reference, to_bibtex
+
+    for status in ("mismatch", "not_found", "error", "unchecked"):
+        ref = Reference(doi="10.0/x", claimed_title="t", status=status)
+        with _pytest.raises(ValueError, match="refusing to emit"):
+            to_bibtex(ref)
+
+
+def test_bibtex_strips_publisher_markup():
+    """Crossref returns JATS tags inside titles; they must not reach the bib."""
+    from lilyvae.literature.crossref import Reference, to_bibtex
+
+    ref = Reference(
+        doi="10.0/x", claimed_title="Quantifying K, U, and Th contents",
+        status="validated",
+        crossref_title="Quantifying <scp>K</scp>, <scp>U</scp>, and Th contents",
+        authors=["Ada Lovelace"], year=2017, container="Journal",
+    )
+    out = to_bibtex(ref)
+    assert "<scp>" not in out and "</scp>" not in out
+    assert "Quantifying K, U, and Th contents" in out
+
+
+def test_citation_keys_are_stable_and_skip_stopwords():
+    from lilyvae.literature.crossref import Reference
+
+    ref = Reference(doi="10.0/x", claimed_title="", status="validated",
+                    crossref_title="The relations between the thermal properties",
+                    authors=["Yoshifumi Goto"], year=2009)
+    assert ref.citation_key() == "goto2009relations"
+
+
+def test_ledger_reports_mechanisms_with_no_reference(tmp_path):
+    """A mechanism with no validated source is a claim the paper cannot make."""
+    from lilyvae.literature.crossref import Reference
+    from lilyvae.literature.ledger import MECHANISMS, LiteratureLedger
+
+    ledger = LiteratureLedger(tmp_path / "lit.json")
+    ledger.add(Reference(doi="10.0/a", claimed_title="t", status="validated",
+                         crossref_title="t", mechanism="porosity",
+                         authors=["A B"], year=2000))
+    summary = ledger.summary()
+    assert "porosity" in summary
+    # Everything else is still unsupported and must be called out.
+    assert "no validated reference" in summary
+    for mechanism in MECHANISMS:
+        if mechanism != "porosity":
+            assert mechanism in summary
+
+
+def test_ledger_refuses_duplicate_dois(tmp_path):
+    from lilyvae.literature.crossref import Reference
+    from lilyvae.literature.ledger import LiteratureLedger
+
+    ledger = LiteratureLedger(tmp_path / "lit.json")
+    ref = Reference(doi="10.0/a", claimed_title="t", status="validated",
+                    crossref_title="t", authors=["A B"], year=2000)
+    assert ledger.add(ref) is True
+    assert ledger.add(ref) is False
+    assert len(ledger.all()) == 1
