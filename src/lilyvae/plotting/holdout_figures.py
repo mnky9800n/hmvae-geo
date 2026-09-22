@@ -403,3 +403,127 @@ def plot_transfer_by_novelty(
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
     plt.close(fig)
     return out
+
+
+def plot_train_vs_heldout(
+    results_path: Path | None = None,
+    output_dir: Path | None = None,
+    model: str = "unsupervised_vae",
+    floor: float = -0.3,
+) -> Path:
+    """What the borehole holdout costs, property by property.
+
+    The same regressor scored on the boreholes it was fitted on and on
+    boreholes it never saw. This is the comparison the earlier draft
+    made implicitly by reporting only the first number, and the length
+    of each bar is what that choice was worth.
+
+    Every property is shown, including the ones that fail. Presenting
+    only the six that transfer would repeat, in the choice of rows, the
+    same selection that made the original figures look strong. Values
+    below `floor` are drawn at the floor with the true number printed,
+    so a collapse is visible without one failure setting the scale for
+    everything else.
+    """
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+
+    apply_style()
+    results_path = results_path or (RESULTS_DIR / "zeroshot_bootstrap_trainside.json")
+    output_dir = Path(output_dir or PAPER_DIR)
+    data = json.loads(Path(results_path).read_text())
+
+    train, test = {}, {}
+    for it in data["per_iteration"]:
+        entry = next((m for m in it["models"] if m["model"] == model), None)
+        for name, res in (entry or {}).get("per_variable", {}).items():
+            if np.isfinite(res.get("r2_train", np.nan)):
+                train.setdefault(name, []).append(res["r2_train"])
+            if np.isfinite(res.get("r2", np.nan)):
+                test.setdefault(name, []).append(res["r2"])
+
+    rows = []
+    for name in train:
+        if name not in test:
+            continue
+        spec = TARGET_REGISTRY.get(name)
+        label = (spec.label if spec else name).replace(
+            "Magnetic susceptibility (point)", "Point magnetic susceptibility")
+        if spec and spec.tier == "same_modality":
+            label += "†"
+        rows.append((label, float(np.median(train[name])), float(np.median(test[name]))))
+    rows.sort(key=lambda r: r[2])
+
+    fig, ax = plt.subplots(figsize=(9.6, 0.42 * len(rows) + 2.9))
+    ys = np.arange(len(rows))
+
+    for y, (_, a, b) in zip(ys, rows):
+        ax.plot([max(b, floor), a], [y, y], color=GRID, lw=3.0,
+                solid_capstyle="round", zorder=2)
+    ax.scatter([r[1] for r in rows], ys, s=105, color=SERIES, zorder=4,
+               linewidths=2, edgecolors="white")
+    ax.scatter([max(r[2], floor) for r in rows], ys, s=105, color=REFERENCE,
+               zorder=4, linewidths=2, edgecolors="white")
+
+    for y, (_, a, b) in zip(ys, rows):
+        ax.text(a + 0.028, y, f"{a:.2f}", ha="left", va="center",
+                fontsize=9.5, color=INK)
+        off = b < floor
+        if off:
+            # Printed to the right of the clipped dot; to its left it
+            # collides with the property name.
+            ax.text(floor + 0.030, y, f"◀ {b:.2f}", ha="left", va="center",
+                    fontsize=9.5, color=REFERENCE)
+        else:
+            ax.text(b - 0.028, y, f"{b:.2f}", ha="right", va="center",
+                    fontsize=9.5, color=INK)
+
+    top = len(rows) - 1
+    ax.annotate("boreholes it was fitted on", xy=(rows[top][1], top),
+                xytext=(rows[top][1] + 0.02, top + 0.95), ha="center", va="bottom",
+                fontsize=9, color=SERIES,
+                arrowprops=dict(arrowstyle="-", color=SERIES, lw=1.0,
+                                shrinkA=0, shrinkB=7))
+    ax.annotate("boreholes it never saw", xy=(max(rows[top][2], floor), top),
+                xytext=(max(rows[top][2], floor) - 0.30, top + 0.42),
+                ha="center", va="bottom", fontsize=9, color=REFERENCE,
+                arrowprops=dict(arrowstyle="-", color=REFERENCE, lw=1.0,
+                                shrinkA=0, shrinkB=7))
+
+    ax.axvline(0.0, color=MUTED, lw=0.9, ls=(0, (3, 3)), zorder=1)
+    ax.set_yticks(ys)
+    ax.set_yticklabels([r[0] for r in rows], fontsize=10, color=INK)
+    ax.set_xlim(floor - 0.08, 1.06)
+    ax.set_ylim(-0.7, len(rows) + 0.85)
+    ax.set_xlabel("how much of the property the model gets right  ($R^2$; "
+                  "0 means no better than guessing the average)",
+                  fontsize=10, color=MUTED)
+    ax.grid(axis="x", color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color(GRID)
+    ax.tick_params(colors=MUTED, labelsize=9, length=0)
+
+    ax.legend(handles=[
+        Line2D([], [], marker="o", ls="", markersize=10, color=SERIES,
+               label="scored on the boreholes the regressor was fitted on"),
+        Line2D([], [], marker="o", ls="", markersize=10, color=REFERENCE,
+               label="scored on boreholes neither the model nor the regressor saw"),
+    ], loc="upper left", bbox_to_anchor=(0.0, -0.10), ncols=1, frameon=False,
+        fontsize=9.5, labelcolor=MUTED, handletextpad=0.4)
+
+    fig.suptitle("What it costs to predict a borehole the model has never seen",
+                 fontsize=13.5, color=INK, x=0.012, ha="left", y=1.0)
+    fig.text(0.012, 0.945,
+             "Long bars are properties that looked strong only because the "
+             "regressor was scored on the core it was fitted on.\n"
+             "† the same quantity as a training input, measured by a "
+             "different instrument.  ◀ value below the axis.",
+             fontsize=9.5, color=MUTED, ha="left", va="top")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    out = output_dir / "fig_train_vs_heldout.png"
+    fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    return out
