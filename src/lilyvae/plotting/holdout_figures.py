@@ -237,3 +237,148 @@ def plot_holdout_novelty(
 
 if __name__ == "__main__":
     print(plot_holdout_novelty())
+
+
+#: A lithology holding less than this share of the training core counts
+#: as one the model barely saw.
+RARE_IN_TRAINING = 0.005
+
+
+def fold_novelty(borehole_ids: np.ndarray, labels: np.ndarray,
+                 n_folds: int = 30, test_fraction: float = 0.1) -> np.ndarray:
+    """Share of each fold's held-out core that is rock the model barely saw.
+
+    Energy distance is the statistically proper measure of how far a
+    held-out set sits from training, and it is unreadable to anyone who
+    has not met it. This is the same question asked in units a core
+    describer already thinks in: what fraction of the rock being
+    predicted is a lithology that made up almost none of the training
+    material.
+    """
+    from lilyvae.evaluation.folds import borehole_splits
+
+    out = []
+    for fold in borehole_splits(borehole_ids, n_folds, test_fraction, seed=SEED):
+        train_labels, test_labels = labels[fold.train_mask], labels[fold.test_mask]
+        share = np.bincount(train_labels, minlength=int(labels.max()) + 1)
+        share = share / max(len(train_labels), 1)
+        out.append(float(np.mean(share[test_labels] < RARE_IN_TRAINING)))
+    return np.array(out)
+
+
+def plot_transfer_by_novelty(
+    results_path: Path | None = None,
+    output_dir: Path | None = None,
+    model: str = "unsupervised_vae",
+) -> Path:
+    """The same finding as `plot_holdout_novelty`, for a reader in a hurry.
+
+    Folds are split into the third whose held-out core most resembles the
+    training material and the third that least resembles it, and each
+    property's accuracy is shown for both. A short connector means the
+    property is predicted about as well on unfamiliar rock as on
+    familiar rock, which is the whole claim.
+    """
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+
+    apply_style()
+    results_path = results_path or (RESULTS_DIR / "zeroshot_bootstrap.json")
+    output_dir = Path(output_dir or PAPER_DIR)
+    data = json.loads(Path(results_path).read_text())
+
+    labels = torch.load(PROCESSED_DIR / "train_labels.pt", weights_only=True).numpy()
+    metadata = torch.load(PROCESSED_DIR / "metadata.pt", weights_only=False)
+    novelty = fold_novelty(np.asarray(metadata["borehole_ids"]), labels,
+                           n_folds=len(data["per_iteration"]))
+
+    per_target = {}
+    for i, it in enumerate(data["per_iteration"]):
+        entry = next((m for m in it["models"] if m["model"] == model), None)
+        if entry is None:
+            continue
+        for name, res in entry.get("per_variable", {}).items():
+            per_target.setdefault(name, []).append((i, res.get("r2", float("nan"))))
+
+    lo, hi = np.percentile(novelty, [33.3, 66.7])
+    familiar = novelty <= lo
+    unfamiliar = novelty >= hi
+
+    summary = data["summary"][model]["per_target"]
+    keep = [n for n in per_target
+            if summary.get(n, {}).get("median", float("-inf")) >= MIN_MEDIAN_R2]
+    keep.sort(key=lambda n: summary[n]["median"])
+
+    rows = []
+    for name in keep:
+        vals = np.full(len(novelty), np.nan)
+        for i, r2 in per_target[name]:
+            vals[i] = r2
+        a = np.nanmedian(vals[familiar])
+        b = np.nanmedian(vals[unfamiliar])
+        spec = TARGET_REGISTRY.get(name)
+        label = spec.label if spec else name
+        label = label.replace("Magnetic susceptibility (point)",
+                              "Point magnetic susceptibility")
+        rows.append((label, a, b))
+
+    fig, ax = plt.subplots(figsize=(9.2, 0.46 * len(rows) + 2.6))
+    ys = np.arange(len(rows))
+
+    for y, (_, a, b) in zip(ys, rows):
+        ax.plot([a, b], [y, y], color=GRID, lw=3.0, solid_capstyle="round", zorder=2)
+    ax.scatter([r[1] for r in rows], ys, s=110, color=SERIES,
+               zorder=4, linewidths=2, edgecolors="white")
+    ax.scatter([r[2] for r in rows], ys, s=110, color=REFERENCE,
+               zorder=4, linewidths=2, edgecolors="white")
+
+    for y, (_, a, b) in zip(ys, rows):
+        ax.text(min(a, b) - 0.035, y, f"{min(a, b):.2f}", ha="right", va="center",
+                fontsize=9, color=MUTED)
+        ax.text(max(a, b) + 0.035, y, f"{max(a, b):.2f}", ha="left", va="center",
+                fontsize=9, color=MUTED)
+
+    ax.set_yticks(ys)
+    ax.set_yticklabels([r[0] for r in rows], fontsize=10.5, color=INK)
+    ax.set_xlim(-0.02, 1.0)
+    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.set_xlabel("how much of the property the model gets right on boreholes "
+                  "it never saw  ($R^2$)", fontsize=10, color=MUTED)
+    ax.grid(axis="x", color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color(GRID)
+    ax.tick_params(colors=MUTED, labelsize=9, length=0)
+
+    ax.legend(
+        handles=[
+            Line2D([], [], marker="o", ls="", markersize=10, color=SERIES,
+                   label=f"boreholes most like the training core "
+                         f"({novelty[familiar].mean()*100:.0f}% unfamiliar rock)"),
+            Line2D([], [], marker="o", ls="", markersize=10, color=REFERENCE,
+                   label=f"boreholes least like it "
+                         f"({novelty[unfamiliar].mean()*100:.0f}% unfamiliar rock)"),
+        ],
+        loc="upper center", bbox_to_anchor=(0.5, -0.16), ncols=2,
+        frameon=False, fontsize=9.5, labelcolor=MUTED,
+        handletextpad=0.4, columnspacing=2.4,
+    )
+
+    fig.suptitle("The model does about as well on unfamiliar rock as on familiar rock",
+                 fontsize=13.5, color=INK, x=0.012, ha="left", y=1.005)
+    better = sum(1 for _, a, b in rows if b >= a)
+    fig.text(0.012, 0.93,
+             "Each borehole is predicted by a model that never saw it. Folds are "
+             "split by how much of the held-out core\nis a rock type that made up "
+             "almost none of the training material. Short bars mean the accuracy "
+             "held up;\n"
+             f"for {better} of the {len(rows)} properties the less familiar "
+             "boreholes were predicted slightly better.",
+             fontsize=10, color=MUTED, ha="left", va="top")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    out = output_dir / "fig_transfer_by_novelty.png"
+    fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    return out
