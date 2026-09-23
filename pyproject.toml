@@ -30,6 +30,8 @@ lilyvae-raw-baselines = "lilyvae.scripts.raw_baselines:main"
 lilyvae-calibration = "lilyvae.scripts.calibration:main"
 lilyvae-search = "lilyvae.scripts.search:main"
 lilyvae-literature = "lilyvae.scripts.literature:main"
+lilyvae-alpha-sweep = "lilyvae.scripts.alpha_sweep:main"
+lilyvae-per-class = "lilyvae.scripts.per_class:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
 [project.optional-dependencies]
