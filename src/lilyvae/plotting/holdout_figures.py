@@ -527,3 +527,72 @@ def plot_train_vs_heldout(
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
     plt.close(fig)
     return out
+
+
+def plot_depth_within_between(
+    within_pooled_heldout: list[tuple[str, float, float, float]],
+    output_dir: Path | None = None,
+) -> Path:
+    """Depth explains a borehole and does not travel between boreholes.
+
+    Three bars per property: depth fitted inside a single hole, depth
+    fitted across pooled holes, and depth fitted on holes it has not
+    seen. The collapse from left to right is the argument, and it is the
+    reason the six measurements are worth having even though depth beats
+    them comfortably within any one hole.
+    """
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+
+    apply_style()
+    output_dir = Path(output_dir or PAPER_DIR)
+    rows = sorted(within_pooled_heldout, key=lambda r: -r[1])
+    labels = [r[0] for r in rows]
+    series = [
+        ("inside one borehole", [r[1] for r in rows], SERIES),
+        ("boreholes pooled", [r[2] for r in rows], "#eda100"),
+        ("a borehole it never saw", [r[3] for r in rows], REFERENCE),
+    ]
+
+    ys = np.arange(len(rows))
+    height = 0.26
+    fig, ax = plt.subplots(figsize=(9.4, 0.62 * len(rows) + 2.8))
+
+    for k, (name, values, colour) in enumerate(series):
+        offset = (1 - k) * height
+        ax.barh(ys + offset, values, height=height * 0.92, color=colour,
+                edgecolor="white", linewidth=1.2, zorder=3, label=name)
+        for y, v in zip(ys + offset, values):
+            ax.text(v + 0.015 if v >= 0 else v - 0.015, y, f"{v:.2f}",
+                    va="center", ha="left" if v >= 0 else "right",
+                    fontsize=8.2, color=INK)
+
+    ax.axvline(0.0, color=MUTED, lw=0.9, zorder=2)
+    ax.set_yticks(ys)
+    ax.set_yticklabels(labels, fontsize=10, color=INK)
+    ax.set_xlim(-0.18, 1.12)
+    ax.set_xlabel("how much of the property depth alone explains  ($R^2$)",
+                  fontsize=10, color=MUTED)
+    ax.grid(axis="x", color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color(GRID)
+    ax.tick_params(colors=MUTED, labelsize=9, length=0)
+    ax.legend(loc="upper left", bbox_to_anchor=(0.0, -0.09), ncols=3,
+              frameon=False, fontsize=9.5, labelcolor=MUTED, handlelength=1.2)
+
+    fig.suptitle("Depth explains a borehole almost completely, and the next one "
+                 "not at all", fontsize=13.5, color=INK, x=0.012, ha="left", y=1.0)
+    fig.text(0.012, 0.945,
+             "Sediment compacts with burial, so depth should dominate, and inside "
+             "a single hole it does. It does not carry\nbetween holes, because the "
+             "same depth means a different thing at every site. The six "
+             "measurements are\nweaker locally and carry the part that travels.",
+             fontsize=9.8, color=MUTED, ha="left", va="top")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    out = output_dir / "fig_depth_within_between.png"
+    fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    return out
