@@ -149,13 +149,10 @@ def plot_holdout_novelty(
     ax.set_yticks([0.0, 1.0])
     ax.set_yticklabels(["held-out\nboreholes", "random split\n(no shift)"],
                        fontsize=9, color=INK)
-    ax.set_xlabel("energy distance from the training rows, in the six input features",
-                  fontsize=9, color=MUTED)
+    ax.set_xlabel("energy distance", fontsize=10, color=MUTED)
     ax.set_ylim(-0.55, 1.85)
-    ax.set_title(
-        f"Held-out boreholes sit {ratio:.0f}x further from the training data "
-        "than a random split does",
-        fontsize=11, color=INK, loc="left", pad=24)
+    ax.set_title(f"{ratio:.0f}x further than a random split",
+                 fontsize=10, color=MUTED, loc="left", pad=24)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
@@ -220,15 +217,7 @@ def plot_holdout_novelty(
         if len(distances[ok]) > 2 and np.ptp(distances[ok]) > 0:
             n_sig += linregress(distances[ok], r2[ok]).pvalue < 0.05
 
-    fig.suptitle(
-        "Transfer changes little across the full range of distribution shift",
-        fontsize=13, color=INK, x=0.055, ha="left", y=1.005)
-    fig.text(
-        0.055, 0.966,
-        f"{n_sig} of {len(keep)} properties show a decline distinguishable from "
-        "flat; dashed fits are not.   \u2020 same quantity, different instrument.",
-        fontsize=9.5, color=MUTED, ha="left")
-
+    # Title and reading live in the caption.
     output_dir.mkdir(parents=True, exist_ok=True)
     out = output_dir / "fig_holdout_novelty.png"
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
@@ -455,7 +444,7 @@ def plot_train_vs_heldout(
         rows.append((label, float(np.median(train[name])), float(np.median(test[name]))))
     rows.sort(key=lambda r: r[2])
 
-    fig, ax = plt.subplots(figsize=(9.6, 0.42 * len(rows) + 2.9))
+    fig, ax = plt.subplots(figsize=(9.6, 0.42 * len(rows) + 1.2))
     ys = np.arange(len(rows))
 
     for y, (_, a, b) in zip(ys, rows):
@@ -479,26 +468,12 @@ def plot_train_vs_heldout(
             ax.text(b - 0.028, y, f"{b:.2f}", ha="right", va="center",
                     fontsize=9.5, color=INK)
 
-    top = len(rows) - 1
-    ax.annotate("boreholes it was fitted on", xy=(rows[top][1], top),
-                xytext=(rows[top][1] + 0.02, top + 0.95), ha="center", va="bottom",
-                fontsize=9, color=SERIES,
-                arrowprops=dict(arrowstyle="-", color=SERIES, lw=1.0,
-                                shrinkA=0, shrinkB=7))
-    ax.annotate("boreholes it never saw", xy=(max(rows[top][2], floor), top),
-                xytext=(max(rows[top][2], floor) - 0.30, top + 0.42),
-                ha="center", va="bottom", fontsize=9, color=REFERENCE,
-                arrowprops=dict(arrowstyle="-", color=REFERENCE, lw=1.0,
-                                shrinkA=0, shrinkB=7))
-
     ax.axvline(0.0, color=MUTED, lw=0.9, ls=(0, (3, 3)), zorder=1)
     ax.set_yticks(ys)
     ax.set_yticklabels([r[0] for r in rows], fontsize=10, color=INK)
     ax.set_xlim(floor - 0.08, 1.06)
-    ax.set_ylim(-0.7, len(rows) + 0.85)
-    ax.set_xlabel("how much of the property the model gets right  ($R^2$; "
-                  "0 means no better than guessing the average)",
-                  fontsize=10, color=MUTED)
+    ax.set_ylim(-0.7, len(rows) - 0.25)
+    ax.set_xlabel("$R^2$", fontsize=10, color=MUTED)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
@@ -508,21 +483,14 @@ def plot_train_vs_heldout(
 
     ax.legend(handles=[
         Line2D([], [], marker="o", ls="", markersize=10, color=SERIES,
-               label="scored on the boreholes the regressor was fitted on"),
+               label="in-sample"),
         Line2D([], [], marker="o", ls="", markersize=10, color=REFERENCE,
-               label="scored on boreholes neither the model nor the regressor saw"),
-    ], loc="upper left", bbox_to_anchor=(0.0, -0.10), ncols=1, frameon=False,
+               label="held-out boreholes"),
+    ], loc="upper left", bbox_to_anchor=(0.0, -0.06), ncols=2, frameon=False,
         fontsize=9.5, labelcolor=MUTED, handletextpad=0.4)
 
-    fig.suptitle("What it costs to predict a borehole the model has never seen",
-                 fontsize=13.5, color=INK, x=0.012, ha="left", y=1.0)
-    fig.text(0.012, 0.945,
-             "Long bars are properties that looked strong only because the "
-             "regressor was scored on the core it was fitted on.\n"
-             "† the same quantity as a training input, measured by a "
-             "different instrument.  ◀ value below the axis.",
-             fontsize=9.5, color=MUTED, ha="left", va="top")
-
+    # No title and no subtitle: this figure goes in a paper, where the caption
+    # carries the reading, the dagger and the left-arrow marker.
     output_dir.mkdir(parents=True, exist_ok=True)
     out = output_dir / "fig_train_vs_heldout.png"
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
@@ -572,8 +540,7 @@ def plot_depth_within_between(
     ax.set_yticks(ys)
     ax.set_yticklabels(labels, fontsize=10, color=INK)
     ax.set_xlim(-0.18, 1.12)
-    ax.set_xlabel("how much of the property depth alone explains  ($R^2$)",
-                  fontsize=10, color=MUTED)
+    ax.set_xlabel("$R^2$", fontsize=11, color=MUTED)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
@@ -583,15 +550,7 @@ def plot_depth_within_between(
     ax.legend(loc="upper left", bbox_to_anchor=(0.0, -0.09), ncols=3,
               frameon=False, fontsize=9.5, labelcolor=MUTED, handlelength=1.2)
 
-    fig.suptitle("Depth explains a borehole almost completely, and the next one "
-                 "not at all", fontsize=13.5, color=INK, x=0.012, ha="left", y=1.0)
-    fig.text(0.012, 0.945,
-             "Sediment compacts with burial, so depth should dominate, and inside "
-             "a single hole it does. It does not carry\nbetween holes, because the "
-             "same depth means a different thing at every site. The six "
-             "measurements are\nweaker locally and carry the part that travels.",
-             fontsize=9.8, color=MUTED, ha="left", va="top")
-
+    # Title and reading live in the caption.
     output_dir.mkdir(parents=True, exist_ok=True)
     out = output_dir / "fig_depth_within_between.png"
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")

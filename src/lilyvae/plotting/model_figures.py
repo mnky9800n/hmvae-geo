@@ -211,22 +211,12 @@ def plot_alpha_sweep(output_dir: Path | None = None):
     axes[0].annotate("unsupervised", xy=(x[0], entries[0]["r2_avg"]),
                      xytext=(x[0], 0.86), ha="center", fontsize=8.5, color=MUTED,
                      arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8))
-    axes[1].set_xlabel("supervision weight $\\alpha$  (log scale)",
-                       fontsize=10, color=MUTED)
+    axes[1].set_xlabel("$\\alpha$", fontsize=11, color=MUTED)
 
     # Headings live above the axes rather than on them, so the subtitle
     # cannot land on the top panel's data.
-    fig.subplots_adjust(top=0.80)
-    fig.suptitle(
-        "Raising the supervision weight degrades reconstruction and leaves "
-        "lithology untouched",
-        fontsize=12.5, color=INK, x=0.06, ha="left", y=0.965)
-    fig.text(0.06, 0.915,
-             "Median over 5 borehole folds, shaded to the interquartile range. "
-             "Reconstruction falls from 0.999 to 0.836\n(Spearman $\\rho=-0.98$ "
-             "against $\\log\\alpha$); classification stays within 0.961-0.968 "
-             "($\\rho=+0.20$, $p=0.51$).",
-             fontsize=9.2, color=MUTED, ha="left", va="top")
+    # Title and reading live in the caption.
+    fig.subplots_adjust(top=0.97)
 
     out = output_dir / "fig_alpha_sweep.png"
     plt.savefig(out, dpi=200, facecolor="white")
