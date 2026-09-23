@@ -171,7 +171,14 @@ def evaluate_config(
         for cls_id, auc in f.get("per_class_transfer", {}).items():
             by_class.setdefault(cls_id, []).append(auc)
     per_class_transfer = {
-        k: {"auc_median": float(np.median(v)), "n_folds": len(v)}
+        k: {
+            "auc_median": float(np.median(v)),
+            "n_folds": len(v),
+            # Fold spread for this class, so an apparent per-class gain
+            # can be compared against how much that class moves anyway.
+            "auc_sd": float(np.std(v, ddof=1)) if len(v) > 1 else float("nan"),
+            "folds": [float(x) for x in v],
+        }
         for k, v in sorted(by_class.items(), key=lambda kv: int(kv[0]))
     }
 

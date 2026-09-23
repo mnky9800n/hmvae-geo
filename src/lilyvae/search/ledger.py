@@ -208,3 +208,61 @@ class Ledger:
             lines += ["", "failed:"]
             lines += [f"  #{t.index}: {t.error[:100]}" for t in failed[-5:]]
         return "\n".join(lines)
+
+
+#: A per-class transfer AUC gain must exceed this to count as an
+#: improvement. Set from the per-class fold spread when it is available
+#: and used as a floor otherwise, because a class measured on two folds
+#: can show a large apparent gain from noise alone.
+MIN_CLASS_GAIN = 0.02
+
+#: A drop larger than this counts as breaking a lithology. Chosen from
+#: the observed failure it is meant to catch: raising the KL weight to
+#: 0.3 took tuff from 0.615 to 0.152 and ash/tuff from 0.483 to 0.131,
+#: which no gain elsewhere should be allowed to buy.
+MAX_CLASS_LOSS = 0.05
+
+
+def class_profile(trial: "Trial", baseline: "Trial") -> dict:
+    """Compare a trial to the baseline lithology by lithology.
+
+    The macro average cannot express what matters here. It covers a
+    shifting subset of about 45 of the 139 classes, it includes classes
+    where the probe is anti-predictive out of borehole, and it lets a
+    large gain on one rock cancel a collapse on another. Raising the KL
+    weight to 0.3 improved very fine sand by 0.29 and interbedded sand
+    and mud by 0.20 while destroying tuff and ash/tuff, and the macro
+    number moved by 0.014.
+
+    Only classes both runs scored are compared, so the count is not
+    partly a change of denominator. A class counts as improved when the
+    gain clears both MIN_CLASS_GAIN and its own fold spread.
+
+    Returns counts of improved, broken and unchanged classes, plus the
+    per-class deltas.
+    """
+    a = baseline.per_class_transfer or {}
+    b = trial.per_class_transfer or {}
+    common = sorted(set(a) & set(b), key=int)
+
+    deltas, improved, broken = {}, 0, 0
+    for cls in common:
+        ma, mb = a[cls]["auc_median"], b[cls]["auc_median"]
+        delta = mb - ma
+        deltas[cls] = delta
+        spread = max(
+            [v for v in (a[cls].get("auc_sd"), b[cls].get("auc_sd")) if v == v]
+            or [0.0]
+        )
+        if delta > max(MIN_CLASS_GAIN, spread):
+            improved += 1
+        elif delta < -MAX_CLASS_LOSS:
+            broken += 1
+
+    return {
+        "n_common": len(common),
+        "n_improved": improved,
+        "n_broken": broken,
+        "n_unchanged": len(common) - improved - broken,
+        "deltas": deltas,
+    }
