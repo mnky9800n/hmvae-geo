@@ -100,4 +100,30 @@ def check_sample_counts(tex: str) -> int:
 
 
 fail |= check_sample_counts(tex)
+
+
+
+def check_floats_are_referenced(tex: str) -> int:
+    """Every labelled float must be cited from the prose.
+
+    The previous submission labelled a correlation figure and never
+    referred to it, and a reviewer listed that among the reasons the
+    paper was hard to follow. LaTeX does not warn about a label nobody
+    uses, so it is checked here.
+    """
+    import re
+
+    labels = set(re.findall(r"\\label\{((?:fig|tab):[^}]+)\}", tex))
+    refs = set(re.findall(r"\\(?:ref|autoref|Cref|cref)\{([^}]+)\}", tex))
+    orphans = sorted(labels - refs)
+    if orphans:
+        print("FAIL: labelled floats never referenced from the text: "
+              + ", ".join(orphans))
+        return 1
+    if labels:
+        print(f"Floats: all {len(labels)} labelled float(s) referenced  ok")
+    return 0
+
+
+fail |= check_floats_are_referenced(tex)
 sys.exit(fail)
