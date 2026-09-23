@@ -82,7 +82,11 @@ fi
 
 # AGU enforces the front-matter limits at submission, so check them here
 # rather than discovering them in the submission form.
-if ! python3 "$SCRIPT_DIR/check_agu_frontmatter.py" \
+FRONTMATTER_PY=(python3)
+if command -v uv >/dev/null 2>&1 && [ -d "$SCRIPT_DIR/../.venv" ]; then
+    FRONTMATTER_PY=(uv --project "$SCRIPT_DIR/.." run python)
+fi
+if ! "${FRONTMATTER_PY[@]}" "$SCRIPT_DIR/check_agu_frontmatter.py" \
         "$PAPER_DIR/$MAIN.tex"; then
     echo
     echo "FAIL: AGU front-matter limits"

@@ -62,4 +62,42 @@ for required in (r"\\section\*\{Open Research\}", r"\\acknowledgments",
         print(f"MISSING: {required}")
         fail = 1
 
+
+
+
+def check_sample_counts(tex: str) -> int:
+    """Numbers written into prose drift from the data that produced them.
+
+    The observation count appeared twice in this manuscript and both
+    were stale after the physical-range filter changed it. A hardcoded
+    figure that no longer matches the tensors is the kind of error that
+    survives every proofread, so it is checked rather than trusted.
+    """
+    import re
+
+    try:
+        import torch
+
+        from lilyvae.config import PROCESSED_DIR
+
+        actual = len(torch.load(
+            PROCESSED_DIR / "train_labels.pt", weights_only=True
+        ))
+    except Exception as e:                       # no data present, e.g. in CI
+        print(f"sample-count check skipped: {e}")
+        return 0
+
+    formatted = {f"{actual:,}", str(actual)}
+    found = set(re.findall(r"\b\d{3},\d{3}\b", tex))
+    stale = {f for f in found if f not in formatted}
+    if stale:
+        print(f"FAIL: manuscript cites {sorted(stale)} observations; "
+              f"the processed data has {actual:,}")
+        return 1
+    if found:
+        print(f"Sample count: {actual:,} matches the manuscript  ok")
+    return 0
+
+
+fail |= check_sample_counts(tex)
 sys.exit(fail)
