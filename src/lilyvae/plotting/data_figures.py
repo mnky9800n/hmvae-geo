@@ -1,6 +1,7 @@
 """Figures describing the LILY dataset."""
 
 import numpy as np
+from scipy.stats import spearmanr
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -8,6 +9,7 @@ import torch
 from pathlib import Path
 
 from lilyvae.config import PROCESSED_DIR, PAPER_DIR, TRAINING_VARIABLES, BIN_SIZE_CM
+from lilyvae.plotting.palette import TEAL
 
 
 def load_metadata():
@@ -27,7 +29,13 @@ def load_labels():
 
 
 def plot_dataset_summary(output_dir: Path | None = None):
-    """Composite figure: map background with histogram insets (left) and ship photo (right)."""
+    """Global distribution of the modelled subset (fig_lily_dataset.png).
+
+    The map fills the frame. A previous version gave a third of the
+    figure to a photograph of the drill ship and shrank the distribution
+    to fit around it, which inverted the priority: the point of the
+    figure is where the data is and, as importantly, where it is not.
+    """
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
 
@@ -39,7 +47,6 @@ def plot_dataset_summary(output_dir: Path | None = None):
     depths_m = depth_bins * (BIN_SIZE_CM / 100.0)
 
     # Load ship image
-    ship_img = plt.imread(Path(__file__).resolve().parents[3] / "Joides.jpg")
 
     fig = plt.figure(figsize=(16, 9))
 
@@ -56,7 +63,7 @@ def plot_dataset_summary(output_dir: Path | None = None):
 
     # --- Left insets: 3 histograms in a white box ---
     # Inset axes are placed with generous margins inside the box
-    inset_w, inset_h = 0.23, 0.14
+    inset_w, inset_h = 0.185, 0.115
     inset_x = -0.06  # left margin inside box (shifted 10% left)
     gap = 0.08  # vertical space between axes (for xlabel + next title)
 
@@ -83,7 +90,7 @@ def plot_dataset_summary(output_dir: Path | None = None):
 
     # (a) Depth distribution
     ax_a = fig.add_axes([inset_x, y_a, inset_w, inset_h], **hist_kw)
-    ax_a.hist(depths_m, bins=50, color="steelblue", edgecolor="black", linewidth=0.3)
+    ax_a.hist(depths_m, bins=50, color=TEAL, edgecolor="black", linewidth=0.3)
     ax_a.set_xlabel("Depth (m)", fontsize=9, labelpad=2)
     ax_a.set_ylabel("Count", fontsize=9, labelpad=2)
     ax_a.set_title("(a) Depth distribution", fontsize=10, pad=3)
@@ -93,7 +100,7 @@ def plot_dataset_summary(output_dir: Path | None = None):
     # (b) Samples per borehole
     ax_b = fig.add_axes([inset_x, y_b, inset_w, inset_h], **hist_kw)
     bh_counts = pd.Series(borehole_ids).value_counts().values
-    ax_b.hist(bh_counts, bins=30, color="coral", edgecolor="black", linewidth=0.3)
+    ax_b.hist(bh_counts, bins=30, color=TEAL, edgecolor="black", linewidth=0.3)
     ax_b.set_xlabel("Samples per borehole", fontsize=9, labelpad=2)
     ax_b.set_ylabel("Boreholes", fontsize=9, labelpad=2)
     ax_b.set_title(f"(b) Samples/borehole (n={len(bh_counts)})", fontsize=10, pad=3)
@@ -104,7 +111,7 @@ def plot_dataset_summary(output_dir: Path | None = None):
     ax_c = fig.add_axes([inset_x, y_c, inset_w, inset_h], **hist_kw)
     expeditions = pd.Series(borehole_ids).str.split("-").str[0]
     exp_counts = expeditions.value_counts().sort_index()
-    ax_c.bar(range(len(exp_counts)), exp_counts.values, color="seagreen", edgecolor="black", linewidth=0.3)
+    ax_c.bar(range(len(exp_counts)), exp_counts.values, color=TEAL, edgecolor="black", linewidth=0.3)
     ax_c.set_xlabel("Expedition", fontsize=9, labelpad=2)
     ax_c.set_ylabel("Samples", fontsize=9, labelpad=2)
     ax_c.set_title(f"(c) Samples/expedition (n={len(exp_counts)})", fontsize=10, pad=3)
@@ -113,37 +120,11 @@ def plot_dataset_summary(output_dir: Path | None = None):
     ax_c.tick_params(labelsize=7, pad=1)
     ax_c.patch.set_alpha(0)
 
-    # --- Right upper inset: ship photo with black border ---
-    ship_h_over_w = ship_img.shape[0] / ship_img.shape[1]
-    ship_w = 0.33
-    ship_h = ship_w * ship_h_over_w * (16 / 9)
-    ship_x = min(0.74, 0.99 - ship_w)  # clamp so it stays in bounds
-    ship_y = 0.90 - ship_h
-
-    ax_ship = fig.add_axes([ship_x, ship_y, ship_w, ship_h], zorder=3)
-    ax_ship.imshow(ship_img)
-    ax_ship.set_xticks([])
-    ax_ship.set_yticks([])
-    # Black border via rectangle patch in figure coords
-    from matplotlib.patches import Rectangle
-    border = Rectangle(
-        (ship_x, ship_y), ship_w, ship_h,
-        transform=fig.transFigure, linewidth=1.5,
-        edgecolor="black", facecolor="none", zorder=4,
-    )
-    fig.patches.append(border)
-
-    # Caption below the photo -- wrap to exact ship image width
-    caption_text = "The drilling ship JOIDES Resolution on Expedition 321"
-    wrap_width_px = ship_w * fig.get_size_inches()[0] * fig.dpi
-    caption_obj = fig.text(
-        ship_x + ship_w / 2, ship_y - 0.01,
-        caption_text,
-        ha="center", va="top", fontsize=14, fontstyle="italic",
-        wrap=True,
-        bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="black", linewidth=1, alpha=0.92),
-    )
-    caption_obj._get_wrap_line_width = lambda: wrap_width_px
+    # The ship photograph that used to sit here has been removed. It was
+    # decorative, it occupied a third of the frame that the global
+    # distribution needed, and it implied a single platform: LILY draws on
+    # holes drilled from several vessels, and the same measurements are
+    # made on continental cores that never go to sea.
 
     plt.savefig(output_dir / "fig_lily_dataset.png", dpi=300, bbox_inches="tight")
     plt.close()
@@ -181,7 +162,7 @@ def plot_variables_distribution(output_dir: Path | None = None):
     axes = axes.flatten()
 
     for i, (ax, name) in enumerate(zip(axes, var_names)):
-        ax.hist(raw[:, i], bins=80, color=colors.get(name, "steelblue"), edgecolor="none", alpha=0.8)
+        ax.hist(raw[:, i], bins=80, color=TEAL, edgecolor="none", alpha=0.85)
         ax.set_xlabel(name)
         ax.set_ylabel("Count")
         if name in xlims:
@@ -194,183 +175,100 @@ def plot_variables_distribution(output_dir: Path | None = None):
 
 
 def plot_variable_correlations(output_dir: Path | None = None):
-    """Pairwise correlation matrix with histograms on diagonal (fig_lily_correlations.png).
+    """Which inputs carry which held-out variable (fig_lily_correlations.png).
 
-    All training + zero-shot variables. Lower triangle shows Spearman rho as
-    colored cells, diagonal shows histograms, upper triangle is blank.
-    A box is drawn around the held-out variable block in the bottom-right.
+    This replaces a full pairwise grid over every variable, which at
+    roughly sixty variables meant several thousand panels on a 28-inch
+    canvas and was unreadable without magnification. The content that
+    mattered was always one block of it: the six inputs against the
+    variables the model is asked to predict.
+
+    Columns are restricted to the tiers the paper reports, so the
+    procedural columns and the algebraic restatements of one another are
+    not shown. Showing them exaggerates how much is being predicted, and
+    a reader counting columns is the person most likely to be misled.
+
+    The scale is banded rather than continuous, because a correlation
+    matrix is read by matching a cell to a number.
     """
     import pickle
-    from matplotlib.patches import Rectangle
+
+    from lilyvae.evaluation.targets import (
+        REPORTED_TIERS, TARGET_REGISTRY, select_targets,
+    )
+    from lilyvae.plotting.palette import GRID, INK, MUTED, diverging_cmap
 
     output_dir = output_dir or PAPER_DIR
     features = load_features()
     metadata = load_metadata()
 
-    # Inverse-scale training features to original units
     with open(PROCESSED_DIR / "scaler.pkl", "rb") as f:
         scaler = pickle.load(f)
-    raw_train = scaler.inverse_transform(features.numpy())
+    raw = scaler.inverse_transform(features.numpy())
     train_names = list(metadata.get("feature_columns", TRAINING_VARIABLES))
 
-    # Load all zero-shot targets
     zeroshot = torch.load(PROCESSED_DIR / "zeroshot_targets.pt", weights_only=False)
+    targets = select_targets(zeroshot, REPORTED_TIERS)
+    targets.sort(key=lambda n: (TARGET_REGISTRY[n].tier != "independent",
+                                TARGET_REGISTRY[n].label))
 
-    # Build DataFrame: training vars first, then all held-out
-    df = pd.DataFrame(raw_train, columns=train_names)
+    corr = np.full((len(train_names), len(targets)), np.nan)
+    for j, name in enumerate(targets):
+        values = zeroshot[name]["values"].numpy().astype(float).copy()
+        values[~zeroshot[name]["valid_mask"].numpy().astype(bool)] = np.nan
+        for i in range(len(train_names)):
+            both = np.isfinite(values) & np.isfinite(raw[:, i])
+            if both.sum() > 50:
+                corr[i, j] = spearmanr(raw[both, i], values[both]).statistic
 
-    held_out_names = []
-    for key in sorted(zeroshot.keys()):
-        if "raw" in key.lower():
-            continue
-        if "[manual]" in key:
-            continue
-        if key == "MAD_Bulk density (g/cm^3)":
-            continue
-        if "Caliper separation" in key:
-            continue
-        target = zeroshot[key]
-        values = target["values"].numpy().copy()
-        mask = target["valid_mask"].numpy().astype(bool)
-        values[~mask] = np.nan
-        # Shorten display name
-        short = key.replace("_DataLITH", "")
-        df[short] = values
-        held_out_names.append(short)
+    cmap, norm, bounds = diverging_cmap(20)
+    fig, ax = plt.subplots(figsize=(1.0 + 0.62 * len(targets), 4.6))
+    ax.imshow(corr, cmap=cmap, norm=norm, aspect="auto")
 
-    n_train = len(train_names)
-    n_held = len(held_out_names)
-    all_names = train_names + held_out_names
-    n_vars = len(all_names)
+    for i in range(corr.shape[0]):
+        for j in range(corr.shape[1]):
+            if not np.isfinite(corr[i, j]):
+                continue
+            ax.text(j, i, f"{corr[i, j]:.2f}", ha="center", va="center",
+                    fontsize=8.0,
+                    color="white" if abs(corr[i, j]) > 0.55 else INK)
 
-    # Display names: training vars replace _ with space, held-out strip prefix before first _
-    def _display_name(name, is_training):
-        if is_training:
-            return name.replace("_", " ")
-        if "_" in name:
-            return name.split("_", 1)[1]
-        return name
-    display_names = [_display_name(n, i < n_train) for i, n in enumerate(all_names)]
+    ax.set_xticks(range(len(targets)))
+    ax.set_xticklabels(
+        [TARGET_REGISTRY[n].label
+         + ("\u2020" if TARGET_REGISTRY[n].tier == "same_modality" else "")
+         for n in targets],
+        rotation=40, ha="right", fontsize=9.5, color=INK)
+    ax.set_yticks(range(len(train_names)))
+    ax.set_yticklabels([n.replace("_", " ") for n in train_names],
+                       fontsize=10, color=INK)
+    ax.set_xticks(np.arange(-0.5, len(targets), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(train_names), 1), minor=True)
+    ax.grid(which="minor", color="white", linewidth=2)
+    ax.tick_params(which="both", length=0)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
-    # Compute Spearman correlation matrix
-    corr = df[all_names].corr(method="spearman")
+    bar = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax,
+                       ticks=bounds[::4], pad=0.02, fraction=0.04)
+    bar.set_label("Spearman $\\rho$", fontsize=9.5, color=MUTED)
+    bar.ax.tick_params(labelsize=8.5, colors=MUTED, length=0)
+    bar.outline.set_visible(False)
 
-    # Create figure with grid of axes
-    fig, axes = plt.subplots(n_vars, n_vars, figsize=(28, 28))
+    # Two lines of heading above the axes, the second clear of the first.
+    ax.set_title(
+        "Rank correlation between the six inputs and the variables predicted "
+        "from them",
+        fontsize=12, color=INK, loc="left", pad=44)
+    ax.text(0.0, 1.0,
+            "\u2020 the same quantity as an input, measured by another "
+            "instrument.\nProcedural columns and algebraic restatements of "
+            "other targets are not shown.",
+            fontsize=9, color=MUTED, ha="left", va="bottom",
+            linespacing=1.5, transform=ax.transAxes)
 
-    # Discrete bins so readers can map color to value at a glance. The
-    # custom diverging palette walks the full hue circle through a white
-    # midpoint at rho=0, giving distinct chroma at every band.
-    bounds = np.arange(-1.0, 1.0001, 0.1)
-    palette = [
-        "#5e3c99",  # purple
-        "#2c7bb6",  # blue
-        "#1a9850",  # green
-        "#ffffff",  # white (rho = 0)
-        "#fee08b",  # yellow
-        "#f46d43",  # orange
-        "#a50026",  # red
-    ]
-    base_cmap = mcolors.LinearSegmentedColormap.from_list(
-        "diverging_pbgwyor", palette
-    )
-    cmap = base_cmap.resampled(len(bounds) - 1)
-    norm = mcolors.BoundaryNorm(bounds, cmap.N)
-
-    for i in range(n_vars):
-        for j in range(n_vars):
-            ax = axes[i, j]
-            ax.set_xticks([])
-            ax.set_yticks([])
-
-            if i == j:
-                # Diagonal: histogram
-                vals = df[all_names[i]].dropna().values
-                color = "#1f77b4" if i < n_train else "#ff7f0e"
-                lo, hi = np.nanpercentile(vals, [1, 99])
-                if not np.isfinite(lo) or not np.isfinite(hi) or lo == hi:
-                    ax.text(0.5, 0.5, "?", ha="center", va="center", transform=ax.transAxes)
-                else:
-                    vals_clipped = vals[(vals >= lo) & (vals <= hi)]
-                    ax.hist(vals_clipped, bins=30, color=color, edgecolor="none", alpha=0.8)
-            elif i > j:
-                # Lower triangle: colored correlation cell
-                r = corr.iloc[i, j]
-                if np.isnan(r):
-                    ax.set_facecolor("lightgray")
-                else:
-                    ax.set_facecolor(cmap(norm(r)))
-            else:
-                # Upper triangle: blank
-                ax.axis("off")
-
-        # Row labels on left
-        if True:
-            axes[i, 0].set_ylabel(display_names[i], fontsize=10, rotation=0, ha="right", va="center", labelpad=3)
-
-    # Column labels on bottom
-    for j in range(n_vars):
-        axes[-1, j].set_xlabel(display_names[j], fontsize=10, rotation=90, ha="center", va="top", labelpad=3)
-
-    # Draw box around held-out block (bottom-right of lower triangle)
-    # In axes coordinates, the held-out block spans rows/cols [n_train:n_vars]
-    # Get positions of the corner axes to draw a rectangle in figure coords
-    ax_top_left = axes[n_train, n_train]
-    ax_bot_right = axes[n_vars - 1, n_vars - 1]
-    fig.canvas.draw()
-
-    pos_tl = ax_top_left.get_position()
-    pos_br = ax_bot_right.get_position()
-
-    rect = Rectangle(
-        (pos_tl.x0, pos_br.y0),
-        pos_br.x1 - pos_tl.x0,
-        pos_tl.y1 - pos_br.y0,
-        transform=fig.transFigure,
-        linewidth=3, edgecolor="red", facecolor="none",
-        clip_on=False, zorder=10,
-    )
-    fig.patches.append(rect)
-
-    # Label
-    fig.text(
-        (pos_tl.x0 + pos_br.x1) / 2, pos_tl.y1 + 0.005,
-        "held-out (zero-shot) variables",
-        ha="center", va="bottom", fontsize=36, fontweight="bold", color="red",
-    )
-
-    # Box around training variables (top-left block)
-    ax_train_tl = axes[0, 0]
-    ax_train_br = axes[n_train - 1, n_train - 1]
-    pos_train_tl = ax_train_tl.get_position()
-    pos_train_br = ax_train_br.get_position()
-    rect_train = Rectangle(
-        (pos_train_tl.x0, pos_train_br.y0),
-        pos_train_br.x1 - pos_train_tl.x0,
-        pos_train_tl.y1 - pos_train_br.y0,
-        transform=fig.transFigure,
-        linewidth=3, edgecolor="blue", facecolor="none",
-        clip_on=False, zorder=10,
-    )
-    fig.patches.append(rect_train)
-    fig.text(
-        pos_train_br.x1 + 0.005, (pos_train_tl.y1 + pos_train_br.y0) / 2,
-        "training variables",
-        ha="left", va="center", fontsize=36, fontweight="bold", color="blue",
-    )
-
-    # Discrete colorbar with one tick per band boundary.
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-    sm.set_array([])
-    cbar = fig.colorbar(
-        sm, ax=axes, shrink=0.6, pad=0.01, aspect=30,
-        ticks=bounds, spacing="proportional",
-    )
-    cbar.set_label("Spearman $\\rho$", fontsize=18)
-    cbar.ax.tick_params(labelsize=14)
-    cbar.ax.set_yticklabels([f"{b:.1f}" for b in bounds])
-
-    plt.subplots_adjust(wspace=0.05, hspace=0.05)
-    plt.savefig(output_dir / "fig_lily_correlations.png", dpi=200, bbox_inches="tight")
+    out = output_dir / "fig_lily_correlations.png"
+    plt.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
     plt.close()
-    print("  Saved fig_lily_correlations.png")
+    print(f"  Saved {out.name}")
+
