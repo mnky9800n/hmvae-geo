@@ -176,8 +176,9 @@ def plot_alpha_sweep(output_dir: Path | None = None):
     positive = alphas[alphas > 0]
     x = np.where(alphas > 0, alphas, positive.min() / 10)
 
-    INK, MUTED, GRID = "#0b0b0b", "#52514e", "#d9d8d4"
-    RECON, CLASSIFY = "#2a78d6", "#eb6834"
+    from lilyvae.plotting.palette import GRID, INK, MUTED, PURPLE, TEAL
+
+    RECON, CLASSIFY = TEAL, PURPLE
 
     fig, axes = plt.subplots(2, 1, figsize=(8.4, 6.4), sharex=True,
                              gridspec_kw={"hspace": 0.18})

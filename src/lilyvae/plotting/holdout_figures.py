@@ -36,12 +36,13 @@ from lilyvae.plotting.style import apply_style
 #: Categorical slots 1-4 from the validated reference palette, plus two
 #: neutrals. Only two hues actually encode anything here: one for the
 #: measured folds and one for the no-shift reference.
-INK = "#0b0b0b"
-MUTED = "#52514e"
-GRID = "#d9d8d4"
-SERIES = "#2a78d6"      # slot 1, blue: measured borehole folds
-REFERENCE = "#eb6834"   # slot 2, orange: random-split reference
-FIT = "#0b0b0b"
+from lilyvae.plotting.palette import (
+    ACCENT, GRID, INK, MUTED, PURPLE, SEQUENTIAL, TEAL,
+)
+
+SERIES = TEAL        # the measured thing
+REFERENCE = PURPLE   # what it is being compared against
+FIT = INK
 
 #: Targets worth plotting, in the order they are shown. Chosen as those
 #: that transfer at all; a panel of noise around zero would say nothing
@@ -473,7 +474,7 @@ def plot_train_vs_heldout(
             # Printed to the right of the clipped dot; to its left it
             # collides with the property name.
             ax.text(floor + 0.030, y, f"◀ {b:.2f}", ha="left", va="center",
-                    fontsize=9.5, color=REFERENCE)
+                    fontsize=9.5, color=ACCENT)
         else:
             ax.text(b - 0.028, y, f"{b:.2f}", ha="right", va="center",
                     fontsize=9.5, color=INK)
@@ -549,9 +550,9 @@ def plot_depth_within_between(
     rows = sorted(within_pooled_heldout, key=lambda r: -r[1])
     labels = [r[0] for r in rows]
     series = [
-        ("inside one borehole", [r[1] for r in rows], SERIES),
-        ("boreholes pooled", [r[2] for r in rows], "#eda100"),
-        ("a borehole it never saw", [r[3] for r in rows], REFERENCE),
+        ("inside one borehole", [r[1] for r in rows], SEQUENTIAL[0]),
+        ("boreholes pooled", [r[2] for r in rows], SEQUENTIAL[1]),
+        ("a borehole it never saw", [r[3] for r in rows], SEQUENTIAL[2]),
     ]
 
     ys = np.arange(len(rows))
