@@ -419,7 +419,9 @@ def plot_train_vs_heldout(
     from matplotlib.lines import Line2D
 
     apply_style()
-    results_path = results_path or (RESULTS_DIR / "zeroshot_bootstrap_trainside.json")
+    # One run carries both scores: `r2_train` is written unconditionally,
+    # so this reads the same file the other holdout figures read.
+    results_path = results_path or (RESULTS_DIR / "zeroshot_bootstrap.json")
     output_dir = Path(output_dir or PAPER_DIR)
     data = json.loads(Path(results_path).read_text())
 
