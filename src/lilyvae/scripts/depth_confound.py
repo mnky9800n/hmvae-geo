@@ -25,7 +25,7 @@ import torch
 
 from lilyvae.config import BIN_SIZE_CM, CHECKPOINT_DIR, PROCESSED_DIR, RESULTS_DIR
 from lilyvae.evaluation.depth_confound import evaluate_all_depth_confound
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 
 
 def main():
@@ -110,8 +110,7 @@ def main():
         "per_variable": per_variable,
     }
 
-    with open(out_path, "w") as f:
-        json.dump(make_serializable(out), f, indent=2)
+    write_result(out_path, out)
     print(f"\nResults written to {out_path}")
 
 

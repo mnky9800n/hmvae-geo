@@ -45,7 +45,7 @@ from lilyvae.evaluation.classification import evaluate_classification
 from lilyvae.evaluation.clustering import evaluate_clustering
 from lilyvae.evaluation.folds import borehole_splits
 from lilyvae.model.vae import LilyVAE
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 from lilyvae.training.masking import LearnableMasking
 from lilyvae.training.trainer import get_device
 from sklearn.metrics import r2_score
@@ -146,8 +146,7 @@ def main() -> int:
     }
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     out = args.output or (RESULTS_DIR / "ablations.json")
-    with open(out, "w") as f:
-        json.dump(make_serializable(result), f, indent=2)
+    write_result(out, result)
     print(f"\nWritten to {out}")
     return 0
 

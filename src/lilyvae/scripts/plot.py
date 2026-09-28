@@ -16,6 +16,7 @@ ALL_FIGURES = [
     "alpha_sweep",
     "r2_unsup_vs_semi",
     "variable_correlations",
+    "sae_hypotheses",
 ]
 
 
@@ -58,6 +59,9 @@ def main():
             elif fig_name == "r2_unsup_vs_semi":
                 from lilyvae.plotting.zeroshot_figures import plot_r2_unsup_vs_semi
                 plot_r2_unsup_vs_semi(args.output_dir)
+            elif fig_name == "sae_hypotheses":
+                from lilyvae.plotting.sae_figures import plot_sae_hypotheses
+                plot_sae_hypotheses(output_dir=args.output_dir)
             elif fig_name == "variable_correlations":
                 from lilyvae.plotting.data_figures import plot_variable_correlations
                 plot_variable_correlations(args.output_dir)

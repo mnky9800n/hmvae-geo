@@ -1,0 +1,97 @@
+{
+  "_provenance": {
+    "git_sha": null,
+    "git_dirty": null,
+    "created_utc": "2026-09-23T23:24:24+00:00",
+    "note": "Predates provenance tracking. The timestamp is the file's mtime, and the commit that produced it is not recorded."
+  },
+  "config": {
+    "n_folds": 3,
+    "d_hidden": 32,
+    "n_null": 30,
+    "seed": 42
+  },
+  "results": [
+    {
+      "hypothesis": "compaction",
+      "target": "MAD_Porosity (vol%)",
+      "citation": "blum2003",
+      "statement": "Bulk density fixes porosity through the mass balance between grain, pore fluid and bulk volume, so an axis of compaction state should exist.",
+      "observed_rho": 0.616567746507326,
+      "null_rho": 0.5403234316127823,
+      "null_p95": 0.6878844476964779,
+      "excess": 0.07624431489454375,
+      "selectivity": 0.1190224214195385,
+      "selectivity_null": 0.10541125364310791,
+      "selectivity_null_p95": 0.1582428707231269,
+      "selective": false,
+      "p_value": 0.2,
+      "supported": false
+    },
+    {
+      "hypothesis": "thermal",
+      "target": "TCON_Thermal conductivity mean (W/(m*K))",
+      "citation": "goto2009relations",
+      "statement": "Conductivity mixes the solid framework with the pore water, so it should follow the same axis as porosity but not identically.",
+      "observed_rho": 0.5104210656388763,
+      "null_rho": 0.5513510412676423,
+      "null_p95": 0.6698122337453416,
+      "excess": -0.04092997562876599,
+      "selectivity": 0.15993054297836604,
+      "selectivity_null": 0.13763676505957856,
+      "selectivity_null_p95": 0.25246845700285275,
+      "selective": false,
+      "p_value": 0.8333333333333334,
+      "supported": false
+    },
+    {
+      "hypothesis": "acoustic",
+      "target": "PWC_P-wave velocity x (m/s)",
+      "citation": "hamilton1982sound",
+      "statement": "Compressional velocity in unconsolidated marine sediment follows porosity and grain size.",
+      "observed_rho": 0.47706207214928764,
+      "null_rho": 0.5178503691321465,
+      "null_p95": 0.7173135889734304,
+      "excess": -0.04078829698285891,
+      "selectivity": 0.2125574488544738,
+      "selectivity_null": 0.21251400660666023,
+      "selectivity_null_p95": 0.4092096317475411,
+      "selective": false,
+      "p_value": 0.6,
+      "supported": false
+    },
+    {
+      "hypothesis": "magnetic",
+      "target": "SRM_Intensity raw (A/m)",
+      "citation": "ellwood1980induced",
+      "statement": "Remanence and susceptibility both scale with ferrimagnetic mineral concentration, so a magnetic-concentration axis should exist separately from the compaction one.",
+      "observed_rho": 0.6240324033858422,
+      "null_rho": 0.7123553150423829,
+      "null_p95": 0.8404079997081262,
+      "excess": -0.08832291165654071,
+      "selectivity": 0.3444581112801915,
+      "selectivity_null": 0.35168396032510285,
+      "selectivity_null_p95": 0.5298184862335988,
+      "selective": false,
+      "p_value": 0.7333333333333333,
+      "supported": false
+    },
+    {
+      "hypothesis": "grain_framework",
+      "target": "MAD_Grain density (g/cm^3)",
+      "citation": "brigaud1989mineralogy",
+      "statement": "Mineralogy controls conductivity independently of porosity, so the mineral framework should be separable from pore space.",
+      "observed_rho": 0.45165769262641337,
+      "null_rho": 0.4586141945587604,
+      "null_p95": 0.4984182011474683,
+      "excess": -0.006956501932347037,
+      "selectivity": 0.12422163498987651,
+      "selectivity_null": 0.12623268076256866,
+      "selectivity_null_p95": 0.3425202463156302,
+      "selective": false,
+      "p_value": 0.6,
+      "supported": false
+    }
+  ],
+  "elapsed_seconds": 1927.0652329921722
+}

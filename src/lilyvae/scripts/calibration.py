@@ -24,7 +24,7 @@ import torch
 from lilyvae.config import CHECKPOINT_DIR, PROCESSED_DIR, RESULTS_DIR
 from lilyvae.evaluation.calibration import calibration_from_model, clamp_sweep
 from lilyvae.model.vae import LilyVAE
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 
 
 def _load_vae(name: str) -> LilyVAE:
@@ -84,8 +84,7 @@ def main():
             features, labels, num_epochs=args.sweep_epochs, device=args.device
         )
 
-    with open(output_path, "w") as f:
-        json.dump(make_serializable(results), f, indent=2)
+    write_result(output_path, results)
     print(f"\nResults written to {output_path}")
 
 

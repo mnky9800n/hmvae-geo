@@ -1,0 +1,34 @@
+{
+  "_provenance": {
+    "git_sha": null,
+    "git_dirty": null,
+    "created_utc": "2026-07-25T23:44:29+00:00",
+    "note": "Predates provenance tracking. The timestamp is the file's mtime, and the commit that produced it is not recorded."
+  },
+  "unsupervised": {
+    "nll_heteroscedastic": -2.015317916870117,
+    "nll_homoscedastic_same_means": -2.299434185028076,
+    "nll_reduction_from_learned_variance": -0.284116268157959,
+    "per_variable_nll_heteroscedastic": {
+      "bulk_density": -1.9893567562103271,
+      "magnetic_susceptibility": -2.00925612449646,
+      "NGR": -2.000446319580078,
+      "R": -2.022494316101074,
+      "G": -2.036135673522949,
+      "B": -2.034217357635498
+    }
+  },
+  "semi_supervised": {
+    "nll_heteroscedastic": -2.0182394981384277,
+    "nll_homoscedastic_same_means": -2.1941535472869873,
+    "nll_reduction_from_learned_variance": -0.17591404914855957,
+    "per_variable_nll_heteroscedastic": {
+      "bulk_density": -1.9825032949447632,
+      "magnetic_susceptibility": -1.971034049987793,
+      "NGR": -2.026134490966797,
+      "R": -2.041382074356079,
+      "G": -2.0383520126342773,
+      "B": -2.0500307083129883
+    }
+  }
+}

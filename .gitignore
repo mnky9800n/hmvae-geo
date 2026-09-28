@@ -1,4 +1,10 @@
-/data/
+/data/*
+# Result files are the evidence behind every number in the manuscript, so
+# they are tracked. They are small JSON. Everything else under data/ is
+# raw downloads, tensors and checkpoints, which are not.
+!/data/results/
+/data/results/*
+!/data/results/*.json
 *.pt
 *.pkl
 __pycache__/

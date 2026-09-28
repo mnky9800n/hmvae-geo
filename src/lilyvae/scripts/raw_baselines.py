@@ -22,7 +22,7 @@ import json
 from lilyvae.config import RESULTS_DIR
 from lilyvae.evaluation.raw_baselines import DEFAULT_ARMS, run_raw_baselines
 from lilyvae.evaluation.targets import REPORTED_TIERS
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 
 
 def main():
@@ -61,8 +61,7 @@ def main():
         include_supervised=not args.no_supervised,
     )
 
-    with open(output_path, "w") as f:
-        json.dump(make_serializable(result), f, indent=2)
+    write_result(output_path, result)
 
     print(f"\nResults written to {output_path}")
     print(f"Total wall-clock time: {result['elapsed_seconds']/60:.1f} minutes")

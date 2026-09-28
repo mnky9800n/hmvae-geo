@@ -10,7 +10,7 @@ import json
 
 from lilyvae.config import RESULTS_DIR
 from lilyvae.evaluation.per_class import run_per_class
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 
 
 def main():
@@ -33,8 +33,7 @@ def main():
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     out = args.output or (RESULTS_DIR / "per_class.json")
-    with open(out, "w") as f:
-        json.dump(make_serializable(result), f, indent=2)
+    write_result(out, result)
     print(f"\nWritten to {out}")
 
 

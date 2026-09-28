@@ -1,0 +1,271 @@
+[
+  {
+    "doi": "10.2973/odp.tn.26.1997",
+    "claimed_title": "Physical Properties Handbook: A Guide to the Shipboard Measurement of Physical Properties of Deep-Sea Cores",
+    "mechanism": "porosity",
+    "note": "Defines the shipboard GRA and MAD measurements themselves and the mass-balance relation between bulk density, grain density and porosity in saturated sediment.",
+    "status": "validated",
+    "crossref_title": "Physical Properties Handbook: A Guide to the Shipboard Measurement of Physical Properties of Deep-Sea Cores",
+    "authors": [
+      "P. Blum"
+    ],
+    "year": 1997,
+    "container": "Ocean Drilling Program Technical Notes",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1121/1.388539",
+    "claimed_title": "Sound velocity and related properties of marine sediments",
+    "mechanism": "p_wave",
+    "note": "Regression of compressional velocity on porosity and grain size across ocean basins; the standard statement that velocity follows porosity in unconsolidated marine sediment.",
+    "status": "validated",
+    "crossref_title": "Sound velocity and related properties of marine sediments",
+    "authors": [
+      "Edwin L. Hamilton",
+      "Richard T. Bachman"
+    ],
+    "year": 1982,
+    "container": "The Journal of the Acoustical Society of America",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1029/2019EA000656",
+    "claimed_title": "Measurement and Modeling of High-Frequency Acoustic Properties in Fine Sandy Sediments",
+    "mechanism": "p_wave",
+    "note": "Modern confirmation of the velocity-porosity coupling, with the frequency dependence that limits how tightly it holds.",
+    "status": "validated",
+    "crossref_title": "Measurement and Modeling of High\u2010Frequency Acoustic Properties in Fine Sandy Sediments",
+    "authors": [
+      "G. Li",
+      "J. Wang",
+      "B. Liu",
+      "X. Meng",
+      "G. Kan",
+      "Y. Pei"
+    ],
+    "year": 2019,
+    "container": "Earth and Space Science",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1186/BF03353197",
+    "claimed_title": "Relations between the thermal properties and porosity of sediments in the eastern flank of the Juan de Fuca Ridge",
+    "mechanism": "thermal_conductivity",
+    "note": "Thermal conductivity of marine sediment as a geometric mean of matrix and pore-water conductivity, fitted on IODP-style cores.",
+    "status": "validated",
+    "crossref_title": "Relations between the thermal properties and porosity of sediments in the eastern flank of the Juan de Fuca Ridge",
+    "authors": [
+      "Shusaku Goto",
+      "Osamu Matsubayashi"
+    ],
+    "year": 2009,
+    "container": "Earth, Planets and Space",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1111/j.1365-246X.1989.tb02287.x",
+    "claimed_title": "Mineralogy, porosity and fluid control on thermal conductivity of sedimentary rocks",
+    "mechanism": "thermal_conductivity",
+    "note": "Separates the mineralogical and porosity controls, which is why colour and NGR add to density in predicting conductivity.",
+    "status": "validated",
+    "crossref_title": "Mineralogy, porosity and fluid control on thermal conductivity of sedimentary rocks",
+    "authors": [
+      "Fr\u00e9d\u00e9ric Brigaud",
+      "Guy Vasseur"
+    ],
+    "year": 1989,
+    "container": "Geophysical Journal International",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1002/2015WR017236",
+    "claimed_title": "Thermal conductivity in porous media: Percolation-based effective-medium approximation",
+    "mechanism": "thermal_conductivity",
+    "note": "Why the porosity-conductivity relation is nonlinear, which is the part a linear model would miss.",
+    "status": "validated",
+    "crossref_title": "Thermal conductivity in porous media: Percolation\u2010based effective\u2010medium approximation",
+    "authors": [
+      "Behzad Ghanbarian",
+      "Hugh Daigle"
+    ],
+    "year": 2016,
+    "container": "Water Resources Research",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1016/0025-3227(80)90061-4",
+    "claimed_title": "Induced and remanent magnetic properties of marine sediments as indicators of depositional processes",
+    "mechanism": "magnetisation",
+    "note": "Remanence and susceptibility both scale with ferrimagnetic mineral concentration, which is why the loop susceptibility input carries information about remanent intensity.",
+    "status": "validated",
+    "crossref_title": "Induced and remanent magnetic properties of marine sediments as indicators of depositional processes",
+    "authors": [
+      "Brooks B. Ellwood"
+    ],
+    "year": 1980,
+    "container": "Marine Geology",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1002/2016GC006715",
+    "claimed_title": "Quantifying K, U, and Th contents of marine sediments using shipboard natural gamma radiation spectra",
+    "mechanism": "ngr_clay",
+    "note": "Shipboard NGR resolves into K, U and Th, tying the signal to clay and terrigenous input rather than to organic content.",
+    "status": "validated",
+    "crossref_title": "Quantifying <scp>K</scp>, <scp>U</scp>, and <scp>T</scp>h contents of marine sediments using shipboard natural gamma radiation spectra measured on <scp>DV</scp><scp><i>JOIDES</i></scp><scp><i>R</i></scp><i>esolution</i>",
+    "authors": [
+      "David De Vleeschouwer",
+      "Ann G. Dunlea",
+      "Gerald Auer",
+      "Chloe H. Anderson",
+      "Hans Brumsack",
+      "Aaron de Loach",
+      "Michael Gurnis",
+      "Youngsook Huh",
+      "Takeshige Ishiwa",
+      "Kwangchul Jang",
+      "Michelle A. Kominz",
+      "Christian M\u00e4rz",
+      "Bernhard Schnetger",
+      "Richard W. Murray",
+      "Heiko P\u00e4like",
+      ""
+    ],
+    "year": 2017,
+    "container": "Geochemistry, Geophysics, Geosystems",
+    "title_similarity": 0.8497854077253219,
+    "message": ""
+  },
+  {
+    "doi": "10.1111/ecog.02881",
+    "claimed_title": "Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure",
+    "mechanism": "evaluation_protocol",
+    "note": "Why a random split over autocorrelated samples overstates performance, and why blocking by borehole is the correct unit.",
+    "status": "validated",
+    "crossref_title": "Cross\u2010validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure",
+    "authors": [
+      "David R. Roberts",
+      "Volker Bahn",
+      "Simone Ciuti",
+      "Mark S. Boyce",
+      "Jane Elith",
+      "Gurutzeta Guillera\u2010Arroita",
+      "Severin Hauenstein",
+      "Jos\u00e9 J. Lahoz\u2010Monfort",
+      "Boris Schr\u00f6der",
+      "Wilfried Thuiller",
+      "David I. Warton",
+      "Brendan A. Wintle",
+      "Florian Hartig",
+      "Carsten F. Dormann"
+    ],
+    "year": 2017,
+    "container": "Ecography",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1038/s41467-020-18321-y",
+    "claimed_title": "Spatial validation reveals poor predictive performance of large-scale ecological mapping models",
+    "mechanism": "evaluation_protocol",
+    "note": "Demonstrates the size of the gap between random and spatially blocked validation on real data.",
+    "status": "validated",
+    "crossref_title": "Spatial validation reveals poor predictive performance of large-scale ecological mapping models",
+    "authors": [
+      "Pierre Ploton",
+      "Fr\u00e9d\u00e9ric Mortier",
+      "Maxime R\u00e9jou-M\u00e9chain",
+      "Nicolas Barbier",
+      "Nicolas Picard",
+      "Vivien Rossi",
+      "Carsten Dormann",
+      "Guillaume Cornu",
+      "Ga\u00eblle Viennois",
+      "Nicolas Bayol",
+      "Alexei Lyapustin",
+      "Sylvie Gourlet-Fleury",
+      "Rapha\u00ebl P\u00e9lissier"
+    ],
+    "year": 2020,
+    "container": "Nature Communications",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1111/j.1365-246X.1989.tb02294.x",
+    "claimed_title": "Drilling-induced remanent magnetization in basalt drill cores",
+    "mechanism": "drilling_overprint",
+    "note": "Identifies the steep, drill-string-parallel remanence imparted during coring, which is why inclination in this release is dominated by a positive bias.",
+    "status": "validated",
+    "crossref_title": "Drilling-induced remanent magnetization in basalt drill cores",
+    "authors": [
+      "Haraldur Audunsson",
+      "Shaul Levi"
+    ],
+    "year": 1989,
+    "container": "Geophysical Journal International",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1016/S0926-9851(00)00039-2",
+    "claimed_title": "Recognition of drilling-induced remanent magnetization by Q-factor analysis: a case study from the KTB-drillholes",
+    "mechanism": "drilling_overprint",
+    "note": "Method for separating drilling-induced from natural remanence, confirming the overprint is systematic rather than incidental.",
+    "status": "validated",
+    "crossref_title": "Recognition of drilling-induced remanent magnetization by Q-factor analysis: a case study from the KTB-drillholes",
+    "authors": [
+      "Helga de Wall",
+      "Horst-Ulrich Worm"
+    ],
+    "year": 2001,
+    "container": "Journal of Applied Geophysics",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1016/S0025-3227(99)00037-7",
+    "claimed_title": "Evaluating optical lightness as a proxy for carbonate content in marine sediment cores",
+    "mechanism": "colour_carbonate",
+    "note": "Establishes core lightness as a proxy for relative carbonate content, which is the physical basis for the RGB inputs carrying lithological information.",
+    "status": "validated",
+    "crossref_title": "Evaluating optical lightness as a proxy for carbonate content in marine sediment cores",
+    "authors": [
+      "William L Balsam",
+      "Bobby C Deaton",
+      "John E Damuth"
+    ],
+    "year": 1999,
+    "container": "Marine Geology",
+    "title_similarity": 1.0,
+    "message": ""
+  },
+  {
+    "doi": "10.1029/2019GC008212",
+    "claimed_title": "Deciphering Color Reflectance Data of a 520-kyr Sediment Core From the Southern Ocean: Method Application and Paleoenvironmental Implications",
+    "mechanism": "colour_carbonate",
+    "note": "Shows which mineral components drive reflectance, and the ambiguity that limits colour as a single-component proxy.",
+    "status": "validated",
+    "crossref_title": "Deciphering Color Reflectance Data of a 520\u2010kyr Sediment Core From the Southern Ocean: Method Application and Paleoenvironmental Implications",
+    "authors": [
+      "Li Wu",
+      "Rujian Wang",
+      "Wout Krijgsman",
+      "Zhihua Chen",
+      "Wenshen Xiao",
+      "Shulan Ge",
+      "Jiawang Wu"
+    ],
+    "year": 2019,
+    "container": "Geochemistry, Geophysics, Geosystems",
+    "title_similarity": 1.0,
+    "message": ""
+  }
+]

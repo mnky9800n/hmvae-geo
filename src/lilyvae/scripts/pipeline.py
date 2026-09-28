@@ -41,7 +41,7 @@ from lilyvae.config import (
     PROCESSED_DIR,
     RESULTS_DIR,
 )
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 
 
 def _exists(path: Path) -> bool:
@@ -101,8 +101,7 @@ def _step_bootstrap(
         n_iterations=iterations,
         device=device,
     )
-    with open(out_path, "w") as f:
-        json.dump(make_serializable(result), f, indent=2)
+    write_result(out_path, result)
     print(f"[done] bootstrap written to {out_path}")
 
 
@@ -117,8 +116,7 @@ def _step_single_point(force: bool, device: str) -> None:
     print(f"\n[run]  single-point full-data evaluation (baselines + ablations)")
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     result = run_single_point_eval(device=device, include_zeroshot=True)
-    with open(out_path, "w") as f:
-        json.dump(make_serializable(result), f, indent=2)
+    write_result(out_path, result)
     print(f"[done] single-point written to {out_path}")
 
 
@@ -171,8 +169,7 @@ def _step_zeroshot(force: bool) -> None:
         )
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
-        json.dump(make_serializable(all_results), f, indent=2)
+    write_result(out_path, all_results)
     print(f"[done] zero-shot written to {out_path}")
 
 

@@ -1,0 +1,542 @@
+{
+  "_provenance": {
+    "git_sha": null,
+    "git_dirty": null,
+    "created_utc": "2026-04-11T10:01:53+00:00",
+    "note": "Predates provenance tracking. The timestamp is the file's mtime, and the commit that produced it is not recorded."
+  },
+  "unsupervised": {
+    "r2_avg": 0.8214670505398108,
+    "n_variables": 64,
+    "per_variable": {
+      "AVS_Vane shear strength (kN/m^2)": {
+        "r2": 0.9263555859672145,
+        "n_samples": 1323
+      },
+      "AVS_Max torque angle (deg)": {
+        "r2": 0.8673119356031065,
+        "n_samples": 1323
+      },
+      "MAD_Moisture dry (wt%)": {
+        "r2": 0.8418876076670808,
+        "n_samples": 14862
+      },
+      "MAD_Moisture wet (wt%)": {
+        "r2": 0.8359456989754875,
+        "n_samples": 14862
+      },
+      "MAD_Bulk density (g/cm^3)": {
+        "r2": 0.8354342427941966,
+        "n_samples": 14862
+      },
+      "MAD_Dry density (g/cm^3)": {
+        "r2": 0.8376064311430542,
+        "n_samples": 14862
+      },
+      "MAD_Grain density (g/cm^3)": {
+        "r2": 0.6018285958576016,
+        "n_samples": 14862
+      },
+      "MAD_Porosity (vol%)": {
+        "r2": 0.830197028736632,
+        "n_samples": 14861
+      },
+      "MAD_Void ratio": {
+        "r2": 0.8401520541024725,
+        "n_samples": 14862
+      },
+      "MAD_Mass wet sample (g)": {
+        "r2": 0.592892634000812,
+        "n_samples": 14862
+      },
+      "MAD_Mass dried sample (g)": {
+        "r2": 0.7186639302493252,
+        "n_samples": 14862
+      },
+      "MAD_Mass porewater (g)": {
+        "r2": 0.7256436610032938,
+        "n_samples": 14862
+      },
+      "MAD_Mass salt (g)": {
+        "r2": 0.7256139843404257,
+        "n_samples": 14862
+      },
+      "MAD_Mass solids (g)": {
+        "r2": 0.723396684654324,
+        "n_samples": 14862
+      },
+      "MAD_Vol wet sample (cm^3)": {
+        "r2": 0.5696002027430267,
+        "n_samples": 14862
+      },
+      "MAD_Vol dried sample (cm^3)": {
+        "r2": 0.6938348488959496,
+        "n_samples": 14862
+      },
+      "MAD_Vol porewater (cm^3)": {
+        "r2": 0.7249663052356692,
+        "n_samples": 14862
+      },
+      "MAD_Vol salt (cm^3)": {
+        "r2": 0.7258161646003869,
+        "n_samples": 14862
+      },
+      "MAD_Vol solids (cm^3)": {
+        "r2": 0.698661176528858,
+        "n_samples": 14862
+      },
+      "MSP": {
+        "r2": 0.9645706658018098,
+        "n_samples": 229764
+      },
+      "PEN": {
+        "r2": 0.9953292806522399,
+        "n_samples": 1834
+      },
+      "PWB_P-wave velocity y (m/s)": {
+        "r2": 0.9924076915638619,
+        "n_samples": 394
+      },
+      "PWB_P-wave velocity z (m/s)": {
+        "r2": 0.9809674087666859,
+        "n_samples": 1732
+      },
+      "PWB_Caliper separation (mm)": {
+        "r2": 0.9852260186374577,
+        "n_samples": 1971
+      },
+      "PWB_P-wave velocity y [manual] (m/s)": {
+        "r2": 0.9940128299593888,
+        "n_samples": 363
+      },
+      "PWB_P-wave velocity z [manual] (m/s)": {
+        "r2": 0.9565740285860252,
+        "n_samples": 1362
+      },
+      "PWC_P-wave velocity x (m/s)": {
+        "r2": 0.9960588736771754,
+        "n_samples": 11097
+      },
+      "PWC_P-wave velocity x [manual] (m/s)": {
+        "r2": 0.9918082325583822,
+        "n_samples": 7278
+      },
+      "PWL_P-wave velocity xy (m/s)": {
+        "r2": 0.6397274353199793,
+        "n_samples": 111401
+      },
+      "PWL_Caliper separation (mm)": {
+        "r2": 0.9844184870607697,
+        "n_samples": 111401
+      },
+      "PWL_Sonic traveltime (microsecond)": {
+        "r2": 0.6511094871415385,
+        "n_samples": 111401
+      },
+      "RSC_Reflectance L*": {
+        "r2": 0.9147339331642439,
+        "n_samples": 234766
+      },
+      "RSC_Reflectance a*": {
+        "r2": 0.8488796285146369,
+        "n_samples": 234766
+      },
+      "RSC_Reflectance b*": {
+        "r2": 0.8381481862041594,
+        "n_samples": 234766
+      },
+      "RSC_Tristimulus X": {
+        "r2": 0.938287037793046,
+        "n_samples": 234766
+      },
+      "RSC_Tristimulus Y": {
+        "r2": 0.9378593227217124,
+        "n_samples": 234766
+      },
+      "RSC_Tristimulus Z": {
+        "r2": 0.9314212656628544,
+        "n_samples": 234766
+      },
+      "RSC_Normalized spectral data link": {
+        "r2": 0.854118511233527,
+        "n_samples": 39721
+      },
+      "RSC_Unnormalized spectral data link": {
+        "r2": 0.8532352398227301,
+        "n_samples": 39711
+      },
+      "SRMD_Demag level (mT)": {
+        "r2": 0.9600569468169001,
+        "n_samples": 1177
+      },
+      "SRMD_Magnetic moment x (Am^2)": {
+        "r2": 0.9818595188071134,
+        "n_samples": 2449
+      },
+      "SRMD_Magnetic moment y (Am^2)": {
+        "r2": 0.9836003520771696,
+        "n_samples": 2449
+      },
+      "SRMD_Magnetic moment z (Am^2)": {
+        "r2": 0.9802996487346319,
+        "n_samples": 2449
+      },
+      "SRMD_Inclination raw (deg)": {
+        "r2": 0.7754765787568793,
+        "n_samples": 2449
+      },
+      "SRMD_Declination raw (deg)": {
+        "r2": 0.727116483101017,
+        "n_samples": 2449
+      },
+      "SRMD_Intensity raw (A/m)": {
+        "r2": 0.9807914588474758,
+        "n_samples": 2449
+      },
+      "SRMD_Inclination background & drift corrected (deg)": {
+        "r2": 0.7663354366405413,
+        "n_samples": 2449
+      },
+      "SRMD_Declination background & drift corrected (deg)": {
+        "r2": 0.6945752633376254,
+        "n_samples": 2449
+      },
+      "SRMD_Intensity background & drift corrected (A/m)": {
+        "r2": 0.9809935162087526,
+        "n_samples": 2449
+      },
+      "SRMD_Raw data": {
+        "r2": 0.9699822991554565,
+        "n_samples": 2449
+      },
+      "SRM_Demag level (mT)": {
+        "r2": 0.6605939387299431,
+        "n_samples": 196743
+      },
+      "SRM_Magnetic moment x (Am^2)": {
+        "r2": 0.7088126913549021,
+        "n_samples": 196743
+      },
+      "SRM_Magnetic moment y (Am^2)": {
+        "r2": 0.9999358955575909,
+        "n_samples": 196743
+      },
+      "SRM_Magnetic moment z (Am^2)": {
+        "r2": 0.7515372013009365,
+        "n_samples": 196743
+      },
+      "SRM_Inclination raw (deg)": {
+        "r2": 0.4673869040090435,
+        "n_samples": 196743
+      },
+      "SRM_Declination raw (deg)": {
+        "r2": 0.08335140647703576,
+        "n_samples": 196743
+      },
+      "SRM_Intensity raw (A/m)": {
+        "r2": 0.9999358955575969,
+        "n_samples": 196743
+      },
+      "SRM_Inclination background & drift corrected (deg)": {
+        "r2": 0.4736931465230675,
+        "n_samples": 196743
+      },
+      "SRM_Declination background & drift corrected (deg)": {
+        "r2": 0.07882845530372151,
+        "n_samples": 196743
+      },
+      "SRM_Intensity background & drift corrected (A/m)": {
+        "r2": NaN,
+        "n_samples": 196743,
+        "error": "catboost/libs/model/model.cpp:699: Invalid bias[0] : inf"
+      },
+      "TCON_Thermal conductivity mean (W/(m*K))": {
+        "r2": 0.9960537880819381,
+        "n_samples": 5134
+      },
+      "TCON_Conductivity std dev (W/(m*K))": {
+        "r2": 0.9923287756104486,
+        "n_samples": 5101
+      },
+      "TCON_Thermal conductivity observations (W/(m*K))": {
+        "r2": 0.9971022373435405,
+        "n_samples": 5077
+      },
+      "TCON_Calculated TCON value (W/(m*K))": {
+        "r2": 0.9996413529339043,
+        "n_samples": 1997
+      },
+      "TOR": {
+        "r2": 0.9988997053395224,
+        "n_samples": 607
+      }
+    }
+  },
+  "semi_supervised": {
+    "r2_avg": 0.8236226421821851,
+    "n_variables": 64,
+    "per_variable": {
+      "AVS_Vane shear strength (kN/m^2)": {
+        "r2": 0.9190438992596905,
+        "n_samples": 1323
+      },
+      "AVS_Max torque angle (deg)": {
+        "r2": 0.8638324862372294,
+        "n_samples": 1323
+      },
+      "MAD_Moisture dry (wt%)": {
+        "r2": 0.8433042717230861,
+        "n_samples": 14862
+      },
+      "MAD_Moisture wet (wt%)": {
+        "r2": 0.8374932807153667,
+        "n_samples": 14862
+      },
+      "MAD_Bulk density (g/cm^3)": {
+        "r2": 0.8347172255650229,
+        "n_samples": 14862
+      },
+      "MAD_Dry density (g/cm^3)": {
+        "r2": 0.8360169007709373,
+        "n_samples": 14862
+      },
+      "MAD_Grain density (g/cm^3)": {
+        "r2": 0.5986625670263828,
+        "n_samples": 14862
+      },
+      "MAD_Porosity (vol%)": {
+        "r2": 0.830186121751264,
+        "n_samples": 14861
+      },
+      "MAD_Void ratio": {
+        "r2": 0.8360254246073278,
+        "n_samples": 14862
+      },
+      "MAD_Mass wet sample (g)": {
+        "r2": 0.5953762128217019,
+        "n_samples": 14862
+      },
+      "MAD_Mass dried sample (g)": {
+        "r2": 0.7212001088829014,
+        "n_samples": 14862
+      },
+      "MAD_Mass porewater (g)": {
+        "r2": 0.7298958755590934,
+        "n_samples": 14862
+      },
+      "MAD_Mass salt (g)": {
+        "r2": 0.7307245283503906,
+        "n_samples": 14862
+      },
+      "MAD_Mass solids (g)": {
+        "r2": 0.7277894805546705,
+        "n_samples": 14862
+      },
+      "MAD_Vol wet sample (cm^3)": {
+        "r2": 0.5718250493619941,
+        "n_samples": 14862
+      },
+      "MAD_Vol dried sample (cm^3)": {
+        "r2": 0.6942012838673377,
+        "n_samples": 14862
+      },
+      "MAD_Vol porewater (cm^3)": {
+        "r2": 0.7297435481869181,
+        "n_samples": 14862
+      },
+      "MAD_Vol salt (cm^3)": {
+        "r2": 0.729900236762165,
+        "n_samples": 14862
+      },
+      "MAD_Vol solids (cm^3)": {
+        "r2": 0.7003018846408555,
+        "n_samples": 14862
+      },
+      "MSP": {
+        "r2": 0.9643343740773357,
+        "n_samples": 229764
+      },
+      "PEN": {
+        "r2": 0.9953592801939011,
+        "n_samples": 1834
+      },
+      "PWB_P-wave velocity y (m/s)": {
+        "r2": 0.9895071559757624,
+        "n_samples": 394
+      },
+      "PWB_P-wave velocity z (m/s)": {
+        "r2": 0.9826491035337065,
+        "n_samples": 1732
+      },
+      "PWB_Caliper separation (mm)": {
+        "r2": 0.9875348896616828,
+        "n_samples": 1971
+      },
+      "PWB_P-wave velocity y [manual] (m/s)": {
+        "r2": 0.9933635293014357,
+        "n_samples": 363
+      },
+      "PWB_P-wave velocity z [manual] (m/s)": {
+        "r2": 0.9566933287649945,
+        "n_samples": 1362
+      },
+      "PWC_P-wave velocity x (m/s)": {
+        "r2": 0.9969606041370008,
+        "n_samples": 11097
+      },
+      "PWC_P-wave velocity x [manual] (m/s)": {
+        "r2": 0.9936665488930942,
+        "n_samples": 7278
+      },
+      "PWL_P-wave velocity xy (m/s)": {
+        "r2": 0.6489454382371711,
+        "n_samples": 111401
+      },
+      "PWL_Caliper separation (mm)": {
+        "r2": 0.9871635613652743,
+        "n_samples": 111401
+      },
+      "PWL_Sonic traveltime (microsecond)": {
+        "r2": 0.6568281946078227,
+        "n_samples": 111401
+      },
+      "RSC_Reflectance L*": {
+        "r2": 0.9147547181059916,
+        "n_samples": 234766
+      },
+      "RSC_Reflectance a*": {
+        "r2": 0.8480745805213478,
+        "n_samples": 234766
+      },
+      "RSC_Reflectance b*": {
+        "r2": 0.8406857038673736,
+        "n_samples": 234766
+      },
+      "RSC_Tristimulus X": {
+        "r2": 0.9383643911867866,
+        "n_samples": 234766
+      },
+      "RSC_Tristimulus Y": {
+        "r2": 0.937947190313192,
+        "n_samples": 234766
+      },
+      "RSC_Tristimulus Z": {
+        "r2": 0.9318138414835477,
+        "n_samples": 234766
+      },
+      "RSC_Normalized spectral data link": {
+        "r2": 0.8621019066093174,
+        "n_samples": 39721
+      },
+      "RSC_Unnormalized spectral data link": {
+        "r2": 0.8607580250451359,
+        "n_samples": 39711
+      },
+      "SRMD_Demag level (mT)": {
+        "r2": 0.9644260292834115,
+        "n_samples": 1177
+      },
+      "SRMD_Magnetic moment x (Am^2)": {
+        "r2": 0.9801907560467642,
+        "n_samples": 2449
+      },
+      "SRMD_Magnetic moment y (Am^2)": {
+        "r2": 0.9866629995964952,
+        "n_samples": 2449
+      },
+      "SRMD_Magnetic moment z (Am^2)": {
+        "r2": 0.9811375962793273,
+        "n_samples": 2449
+      },
+      "SRMD_Inclination raw (deg)": {
+        "r2": 0.7728503869208859,
+        "n_samples": 2449
+      },
+      "SRMD_Declination raw (deg)": {
+        "r2": 0.7095583775995892,
+        "n_samples": 2449
+      },
+      "SRMD_Intensity raw (A/m)": {
+        "r2": 0.9842352369087288,
+        "n_samples": 2449
+      },
+      "SRMD_Inclination background & drift corrected (deg)": {
+        "r2": 0.7665274707632735,
+        "n_samples": 2449
+      },
+      "SRMD_Declination background & drift corrected (deg)": {
+        "r2": 0.6778239960533068,
+        "n_samples": 2449
+      },
+      "SRMD_Intensity background & drift corrected (A/m)": {
+        "r2": 0.983330822511405,
+        "n_samples": 2449
+      },
+      "SRMD_Raw data": {
+        "r2": 0.9751577822497673,
+        "n_samples": 2449
+      },
+      "SRM_Demag level (mT)": {
+        "r2": 0.6673732930458289,
+        "n_samples": 196743
+      },
+      "SRM_Magnetic moment x (Am^2)": {
+        "r2": 0.7645062349779302,
+        "n_samples": 196743
+      },
+      "SRM_Magnetic moment y (Am^2)": {
+        "r2": 0.9999042537852164,
+        "n_samples": 196743
+      },
+      "SRM_Magnetic moment z (Am^2)": {
+        "r2": 0.7854413518446681,
+        "n_samples": 196743
+      },
+      "SRM_Inclination raw (deg)": {
+        "r2": 0.4666592234584809,
+        "n_samples": 196743
+      },
+      "SRM_Declination raw (deg)": {
+        "r2": 0.08495397721130049,
+        "n_samples": 196743
+      },
+      "SRM_Intensity raw (A/m)": {
+        "r2": 0.9999042537852206,
+        "n_samples": 196743
+      },
+      "SRM_Inclination background & drift corrected (deg)": {
+        "r2": 0.47445284063174986,
+        "n_samples": 196743
+      },
+      "SRM_Declination background & drift corrected (deg)": {
+        "r2": 0.0793864030733531,
+        "n_samples": 196743
+      },
+      "SRM_Intensity background & drift corrected (A/m)": {
+        "r2": NaN,
+        "n_samples": 196743,
+        "error": "catboost/libs/model/model.cpp:699: Invalid bias[0] : inf"
+      },
+      "TCON_Thermal conductivity mean (W/(m*K))": {
+        "r2": 0.9946902292467585,
+        "n_samples": 5134
+      },
+      "TCON_Conductivity std dev (W/(m*K))": {
+        "r2": 0.9974116983882482,
+        "n_samples": 5101
+      },
+      "TCON_Thermal conductivity observations (W/(m*K))": {
+        "r2": 0.998139777339006,
+        "n_samples": 5077
+      },
+      "TCON_Calculated TCON value (W/(m*K))": {
+        "r2": 0.9999421408432482,
+        "n_samples": 1997
+      },
+      "TOR": {
+        "r2": 0.9994352152896803,
+        "n_samples": 607
+      }
+    }
+  }
+}

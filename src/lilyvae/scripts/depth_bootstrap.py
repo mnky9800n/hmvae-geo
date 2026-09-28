@@ -18,7 +18,7 @@ from lilyvae.evaluation.depth_bootstrap import (
     run_depth_input_ablation,
 )
 from lilyvae.evaluation.targets import HEADLINE_TIERS
-from lilyvae.scripts import make_serializable
+from lilyvae.scripts import write_result
 
 
 def main():
@@ -47,8 +47,7 @@ def main():
         default = RESULTS_DIR / "depth_bootstrap.json"
 
     out = args.output or default
-    with open(out, "w") as f:
-        json.dump(make_serializable(result), f, indent=2)
+    write_result(out, result)
     print(f"\nResults written to {out}")
 
 
