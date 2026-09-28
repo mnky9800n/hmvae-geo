@@ -50,6 +50,15 @@ def run_provenance() -> dict:
 
     sha = git("rev-parse", "HEAD")
     status = git("status", "--porcelain")
+    deployed = root / ".deployed_sha"
+
+    # A deployed copy carries no .git, so a run on the GPU box would
+    # record no commit at all. The deploy writes the SHA it shipped and
+    # we read it here, which is the point of deploying a clean tree.
+    if sha is None and deployed.exists():
+        sha = deployed.read_text().strip() or None
+        status = ""
+
     return {
         "git_sha": sha,
         "git_dirty": bool(status) if status is not None else None,
