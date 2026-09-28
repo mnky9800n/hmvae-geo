@@ -32,6 +32,7 @@ lilyvae-search = "lilyvae.scripts.search:main"
 lilyvae-literature = "lilyvae.scripts.literature:main"
 lilyvae-alpha-sweep = "lilyvae.scripts.alpha_sweep:main"
 lilyvae-per-class = "lilyvae.scripts.per_class:main"
+lilyvae-sae-hypotheses = "lilyvae.scripts.sae_hypotheses:main"
 lilyvae-plot = "lilyvae.scripts.plot:main"
 
 [project.optional-dependencies]
