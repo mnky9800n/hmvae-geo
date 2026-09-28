@@ -126,4 +126,34 @@ def check_floats_are_referenced(tex: str) -> int:
 
 
 fail |= check_floats_are_referenced(tex)
+
+
+
+def check_citations_resolve(tex_path) -> int:
+    """Every \\cite key must exist in the bibliography.
+
+    BibTeX reports this too, but only after a full four-pass build, and
+    the message is easy to miss among its other warnings. Checking the
+    source directly gives the answer immediately and names the key.
+    """
+    import re
+    from pathlib import Path
+
+    bib = Path(tex_path).parent / "references.bib"
+    if not bib.exists():
+        return 0
+    known = set(re.findall(r"@\w+\s*\{\s*([^,\s]+)\s*,", bib.read_text()))
+    cited = set()
+    for group in re.findall(r"\\cite[A-Za-z]*\*?(?:\[[^\]]*\])*\{([^}]+)\}", tex):
+        cited.update(k.strip() for k in group.split(","))
+    missing = sorted(cited - known)
+    if missing:
+        print(f"FAIL: cited keys absent from references.bib: {missing}")
+        return 1
+    if cited:
+        print(f"Citations: all {len(cited)} cited key(s) present in the bib  ok")
+    return 0
+
+
+fail |= check_citations_resolve(path)
 sys.exit(fail)

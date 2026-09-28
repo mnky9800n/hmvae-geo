@@ -61,6 +61,19 @@ report "undefined references" "$LOG" "Reference .* undefined"
 report "undefined labels"     "$LOG" "LaTeX Warning: There were undefined references"
 report "bibtex errors"        "$BLG" "I (was|couldn't)|Warning--(I didn't|empty)"
 
+# A line that runs into the margin is visible on the page, and in draft
+# mode the class draws a black rule beside it. Small overshoots are not
+# worth chasing, so only report the ones a reader would see.
+worst=$(grep -oE 'Overfull \\hbox \(([0-9.]+)pt too wide' "$LOG" 2>/dev/null \
+        | grep -oE '[0-9.]+' | sort -gr | head -1)
+if [ -n "$worst" ] && [ "$(printf '%.0f' "$worst")" -ge 5 ]; then
+    echo
+    echo "FAIL: text runs into the margin, worst line ${worst}pt too wide"
+    grep -E 'Overfull \\hbox \([0-9]{2,}\.?[0-9]*pt too wide' "$LOG" \
+        | sed 's/^/    /' | head -10
+    status=1
+fi
+
 # A stray `\\cite` renders as a line break plus literal text, which no
 # LaTeX warning reports. Catch it in the source instead.
 if grep -n '\\\\cite' "$PAPER_DIR/$MAIN.tex" >/dev/null 2>&1; then

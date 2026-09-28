@@ -36,7 +36,8 @@ TRAINING_FILES = {
 #: negative values and 59 above 3.0 g/cm^3, against a sediment median of
 #: 1.71 and a maximum plausible value near 2.9 for dense basalt.
 #:
-#: They are rare, 0.755% of the column, and their effect is not. Extreme
+#: They are rare, 133 of 237,096 rows or 0.056% of the column, and their
+#: effect is not. Extreme
 #: values dominate the sum of squares, so reconstruction R^2 collapses on
 #: any fold that holds them out: two of thirty bootstrap folds scored
 #: -615,160 and -81.9 while the median stayed at 0.997 and hid them.
