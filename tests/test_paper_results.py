@@ -292,17 +292,26 @@ class TestZeroShot:
         from lilyvae.evaluation.zeroshot import evaluate_all_zeroshot
         return evaluate_all_zeroshot(unsup_embeddings, zeroshot_targets)
 
+    # These bounds were written against the pre-curation data, where
+    # thermal conductivity and velocity both scored above 0.99 in
+    # sample. That is the number Section 4.6 now calls an artefact: the
+    # curation dropped values that cannot be measurements (131 rows of
+    # discrete velocity, 9 of conductivity, and the 133 impossible bulk
+    # densities), and extreme values are what carried those scores.
+    # Measured 2026-09-29: conductivity 0.825, velocity 0.848, porosity
+    # 0.826. The bounds sit below those to catch a regression without
+    # re-encoding the artefact.
     def test_thermal_conductivity(self, unsup_zeroshot_results):
         r2 = unsup_zeroshot_results["TCON_Thermal conductivity mean (W/(m*K))"]["r2"]
-        assert r2 > 0.99
+        assert r2 > 0.75
 
     def test_porosity(self, unsup_zeroshot_results):
         r2 = unsup_zeroshot_results["MAD_Porosity (vol%)"]["r2"]
-        assert r2 > 0.80
+        assert r2 > 0.75
 
     def test_pwc_velocity(self, unsup_zeroshot_results):
         r2 = unsup_zeroshot_results["PWC_P-wave velocity x (m/s)"]["r2"]
-        assert r2 > 0.99
+        assert r2 > 0.75
 
     def test_reflectance_l_star(self, unsup_zeroshot_results):
         r2 = unsup_zeroshot_results["RSC_Reflectance L* (234766 samples)".replace(" (234766 samples)", "")]["r2"]
