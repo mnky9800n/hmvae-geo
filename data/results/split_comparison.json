@@ -1,0 +1,2426 @@
+{
+  "_provenance": {
+    "git_sha": "55ef9e961531026d39df0211c8a2a2e735941b8c",
+    "git_dirty": false,
+    "created_utc": "2026-09-29T11:34:21+00:00",
+    "host": "lambda-scalar",
+    "command": "/home/mnky9800n/repos/lilyvae/.venv/bin/lilyvae-split-comparison --iterations 30",
+    "python": "3.14.4"
+  },
+  "config": {
+    "n_iterations": 30,
+    "test_fraction": 0.1,
+    "tiers": [
+      "independent"
+    ],
+    "encoder": "unsupervised, fixed"
+  },
+  "per_iteration": [
+    {
+      "iteration": 0,
+      "n_holdout_rows": 18398,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.2453002012765393,
+          "n_train_sample_split": 1230,
+          "n_test_sample_split": 92,
+          "borehole_split": -0.359179504547152,
+          "n_train_borehole_split": 1052,
+          "n_test_borehole_split": 270
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7459869443016518,
+          "n_train_sample_split": 13687,
+          "n_test_sample_split": 1093,
+          "borehole_split": 0.7659232171527213,
+          "n_train_borehole_split": 13188,
+          "n_test_borehole_split": 1592
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3991712569165865,
+          "n_train_sample_split": 13682,
+          "n_test_sample_split": 1094,
+          "borehole_split": 0.13240612485996506,
+          "n_train_borehole_split": 13185,
+          "n_test_borehole_split": 1591
+        },
+        "PEN": {
+          "sample_split": 0.7938783459333073,
+          "n_train_sample_split": 1692,
+          "n_test_sample_split": 140,
+          "borehole_split": -18.72908262918597,
+          "n_train_borehole_split": 1478,
+          "n_test_borehole_split": 354
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6558113238870297,
+          "n_train_sample_split": 10019,
+          "n_test_sample_split": 886,
+          "borehole_split": -0.26535390170187245,
+          "n_train_borehole_split": 10068,
+          "n_test_borehole_split": 837
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4812289809601368,
+          "n_train_sample_split": 100271,
+          "n_test_sample_split": 8556,
+          "borehole_split": 0.07854331392691705,
+          "n_train_borehole_split": 101206,
+          "n_test_borehole_split": 7621
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5140297695092857,
+          "n_train_sample_split": 2256,
+          "n_test_sample_split": 187,
+          "borehole_split": -3101.8174653846545,
+          "n_train_borehole_split": 2075,
+          "n_test_borehole_split": 368
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6950360919432537,
+          "n_train_sample_split": 180506,
+          "n_test_sample_split": 15105,
+          "borehole_split": 0.6013419769182211,
+          "n_train_borehole_split": 178424,
+          "n_test_borehole_split": 17187
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.3977187518959272,
+          "n_train_sample_split": 4702,
+          "n_test_sample_split": 410,
+          "borehole_split": 0.5147986540330012,
+          "n_train_borehole_split": 4587,
+          "n_test_borehole_split": 525
+        }
+      }
+    },
+    {
+      "iteration": 1,
+      "n_holdout_rows": 21635,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.27233468154833806,
+          "n_train_sample_split": 1209,
+          "n_test_sample_split": 113,
+          "borehole_split": 0.0985438853930839,
+          "n_train_borehole_split": 1217,
+          "n_test_borehole_split": 105
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7237347480653039,
+          "n_train_sample_split": 13463,
+          "n_test_sample_split": 1317,
+          "borehole_split": 0.48354570744838987,
+          "n_train_borehole_split": 13476,
+          "n_test_borehole_split": 1304
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3809027598399215,
+          "n_train_sample_split": 13461,
+          "n_test_sample_split": 1315,
+          "borehole_split": -0.0012043356801576532,
+          "n_train_borehole_split": 13472,
+          "n_test_borehole_split": 1304
+        },
+        "PEN": {
+          "sample_split": 0.5770034884668975,
+          "n_train_sample_split": 1638,
+          "n_test_sample_split": 194,
+          "borehole_split": 0.060522377478458234,
+          "n_train_borehole_split": 1638,
+          "n_test_borehole_split": 194
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7124133083314466,
+          "n_train_sample_split": 9967,
+          "n_test_sample_split": 938,
+          "borehole_split": 0.22515385243225372,
+          "n_train_borehole_split": 10281,
+          "n_test_borehole_split": 624
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4602864579332602,
+          "n_train_sample_split": 98785,
+          "n_test_sample_split": 10042,
+          "borehole_split": -0.05959865070923698,
+          "n_train_borehole_split": 95827,
+          "n_test_borehole_split": 13000
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5976300953186069,
+          "n_train_sample_split": 2221,
+          "n_test_sample_split": 222,
+          "borehole_split": -0.17425502264396742,
+          "n_train_borehole_split": 2112,
+          "n_test_borehole_split": 331
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6998943600539809,
+          "n_train_sample_split": 177709,
+          "n_test_sample_split": 17902,
+          "borehole_split": 0.6038755159569855,
+          "n_train_borehole_split": 180141,
+          "n_test_borehole_split": 15470
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4731441195582937,
+          "n_train_sample_split": 4618,
+          "n_test_sample_split": 494,
+          "borehole_split": 0.1874672873203208,
+          "n_train_borehole_split": 4568,
+          "n_test_borehole_split": 544
+        }
+      }
+    },
+    {
+      "iteration": 2,
+      "n_holdout_rows": 30972,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.38663555899039714,
+          "n_train_sample_split": 1150,
+          "n_test_sample_split": 172,
+          "borehole_split": 0.4050715977981795,
+          "n_train_borehole_split": 1166,
+          "n_test_borehole_split": 156
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7548108867143681,
+          "n_train_sample_split": 12934,
+          "n_test_sample_split": 1846,
+          "borehole_split": 0.48569666822182567,
+          "n_train_borehole_split": 12596,
+          "n_test_borehole_split": 2184
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4257290128394926,
+          "n_train_sample_split": 12932,
+          "n_test_sample_split": 1844,
+          "borehole_split": 0.0015297912375437095,
+          "n_train_borehole_split": 12593,
+          "n_test_borehole_split": 2183
+        },
+        "PEN": {
+          "sample_split": 0.48916615895191196,
+          "n_train_sample_split": 1599,
+          "n_test_sample_split": 233,
+          "borehole_split": -0.6649067382469125,
+          "n_train_borehole_split": 1614,
+          "n_test_borehole_split": 218
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7244355729457859,
+          "n_train_sample_split": 9443,
+          "n_test_sample_split": 1462,
+          "borehole_split": 0.4867577093865427,
+          "n_train_borehole_split": 8872,
+          "n_test_borehole_split": 2033
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5009018770598119,
+          "n_train_sample_split": 94637,
+          "n_test_sample_split": 14190,
+          "borehole_split": -0.0152036209756794,
+          "n_train_borehole_split": 98121,
+          "n_test_borehole_split": 10706
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5385541096158755,
+          "n_train_sample_split": 2119,
+          "n_test_sample_split": 324,
+          "borehole_split": -205.6482515464305,
+          "n_train_borehole_split": 2357,
+          "n_test_borehole_split": 86
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7068927171221406,
+          "n_train_sample_split": 170087,
+          "n_test_sample_split": 25524,
+          "borehole_split": 0.057780957886769846,
+          "n_train_borehole_split": 170657,
+          "n_test_borehole_split": 24954
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.477433010186608,
+          "n_train_sample_split": 4463,
+          "n_test_sample_split": 649,
+          "borehole_split": 0.2900488609124874,
+          "n_train_borehole_split": 4600,
+          "n_test_borehole_split": 512
+        }
+      }
+    },
+    {
+      "iteration": 3,
+      "n_holdout_rows": 25003,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.41142569879707114,
+          "n_train_sample_split": 1181,
+          "n_test_sample_split": 141,
+          "borehole_split": -0.5397399727316479,
+          "n_train_borehole_split": 1216,
+          "n_test_borehole_split": 106
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7328323142890155,
+          "n_train_sample_split": 13255,
+          "n_test_sample_split": 1525,
+          "borehole_split": 0.49712789123430257,
+          "n_train_borehole_split": 13520,
+          "n_test_borehole_split": 1260
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4232862930866551,
+          "n_train_sample_split": 13250,
+          "n_test_sample_split": 1526,
+          "borehole_split": -0.07732419584171657,
+          "n_train_borehole_split": 13516,
+          "n_test_borehole_split": 1260
+        },
+        "PEN": {
+          "sample_split": 0.7251819098144893,
+          "n_train_sample_split": 1630,
+          "n_test_sample_split": 202,
+          "borehole_split": -1.4858022590327682,
+          "n_train_borehole_split": 1527,
+          "n_test_borehole_split": 305
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7072560280334624,
+          "n_train_sample_split": 9777,
+          "n_test_sample_split": 1128,
+          "borehole_split": 0.27430155373664034,
+          "n_train_borehole_split": 10193,
+          "n_test_borehole_split": 712
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4765687818413312,
+          "n_train_sample_split": 97330,
+          "n_test_sample_split": 11497,
+          "borehole_split": -0.1389903099223171,
+          "n_train_borehole_split": 95785,
+          "n_test_borehole_split": 13042
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5853002196643682,
+          "n_train_sample_split": 2172,
+          "n_test_sample_split": 271,
+          "borehole_split": -13.142135799116966,
+          "n_train_borehole_split": 2206,
+          "n_test_borehole_split": 237
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6982008493450427,
+          "n_train_sample_split": 174972,
+          "n_test_sample_split": 20639,
+          "borehole_split": 0.40842814682113515,
+          "n_train_borehole_split": 173595,
+          "n_test_borehole_split": 22016
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4585367933879687,
+          "n_train_sample_split": 4557,
+          "n_test_sample_split": 555,
+          "borehole_split": 0.292706510243982,
+          "n_train_borehole_split": 4563,
+          "n_test_borehole_split": 549
+        }
+      }
+    },
+    {
+      "iteration": 4,
+      "n_holdout_rows": 25508,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.2546214606098953,
+          "n_train_sample_split": 1196,
+          "n_test_sample_split": 126,
+          "borehole_split": -0.20870360509701658,
+          "n_train_borehole_split": 1174,
+          "n_test_borehole_split": 148
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7205623255214608,
+          "n_train_sample_split": 13212,
+          "n_test_sample_split": 1568,
+          "borehole_split": 0.5844643099212823,
+          "n_train_borehole_split": 13204,
+          "n_test_borehole_split": 1576
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4022725192012335,
+          "n_train_sample_split": 13207,
+          "n_test_sample_split": 1569,
+          "borehole_split": 0.21265680393699848,
+          "n_train_borehole_split": 13199,
+          "n_test_borehole_split": 1577
+        },
+        "PEN": {
+          "sample_split": 0.2553081854056456,
+          "n_train_sample_split": 1641,
+          "n_test_sample_split": 191,
+          "borehole_split": -18.72908262918597,
+          "n_train_borehole_split": 1478,
+          "n_test_borehole_split": 354
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7025936104266148,
+          "n_train_sample_split": 9753,
+          "n_test_sample_split": 1152,
+          "borehole_split": 0.3456586986246719,
+          "n_train_borehole_split": 9836,
+          "n_test_borehole_split": 1069
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.490010929768793,
+          "n_train_sample_split": 96998,
+          "n_test_sample_split": 11829,
+          "borehole_split": 0.0016340679919745194,
+          "n_train_borehole_split": 99797,
+          "n_test_borehole_split": 9030
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.36252824706833076,
+          "n_train_sample_split": 2196,
+          "n_test_sample_split": 247,
+          "borehole_split": -620.3353128032121,
+          "n_train_borehole_split": 2248,
+          "n_test_borehole_split": 195
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.716754040311628,
+          "n_train_sample_split": 174606,
+          "n_test_sample_split": 21005,
+          "borehole_split": 0.7753510032519444,
+          "n_train_borehole_split": 176698,
+          "n_test_borehole_split": 18913
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.48215146154638,
+          "n_train_sample_split": 4536,
+          "n_test_sample_split": 576,
+          "borehole_split": 0.1309440917288176,
+          "n_train_borehole_split": 4663,
+          "n_test_borehole_split": 449
+        }
+      }
+    },
+    {
+      "iteration": 5,
+      "n_holdout_rows": 20482,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.41920879357244434,
+          "n_train_sample_split": 1202,
+          "n_test_sample_split": 120,
+          "borehole_split": -0.12991457574422527,
+          "n_train_borehole_split": 1172,
+          "n_test_borehole_split": 150
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.740554421205891,
+          "n_train_sample_split": 13532,
+          "n_test_sample_split": 1248,
+          "borehole_split": 0.2453097396790772,
+          "n_train_borehole_split": 13476,
+          "n_test_borehole_split": 1304
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.37702772596859935,
+          "n_train_sample_split": 13528,
+          "n_test_sample_split": 1248,
+          "borehole_split": -0.2331041442602193,
+          "n_train_borehole_split": 13472,
+          "n_test_borehole_split": 1304
+        },
+        "PEN": {
+          "sample_split": -0.0801666005460393,
+          "n_train_sample_split": 1683,
+          "n_test_sample_split": 149,
+          "borehole_split": NaN,
+          "n_train_borehole_split": 1829,
+          "n_test_borehole_split": 3
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6832408642584704,
+          "n_train_sample_split": 9964,
+          "n_test_sample_split": 941,
+          "borehole_split": -0.17722678624618915,
+          "n_train_borehole_split": 10037,
+          "n_test_borehole_split": 868
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.42806042976335856,
+          "n_train_sample_split": 99506,
+          "n_test_sample_split": 9321,
+          "borehole_split": 0.11197354319527952,
+          "n_train_borehole_split": 95803,
+          "n_test_borehole_split": 13024
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5749418806986306,
+          "n_train_sample_split": 2229,
+          "n_test_sample_split": 214,
+          "borehole_split": -906.7390179965764,
+          "n_train_borehole_split": 2335,
+          "n_test_borehole_split": 108
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7222845071276276,
+          "n_train_sample_split": 178678,
+          "n_test_sample_split": 16933,
+          "borehole_split": 0.070215540509724,
+          "n_train_borehole_split": 178052,
+          "n_test_borehole_split": 17559
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5599888928128653,
+          "n_train_sample_split": 4659,
+          "n_test_sample_split": 453,
+          "borehole_split": 0.26383608470406006,
+          "n_train_borehole_split": 4755,
+          "n_test_borehole_split": 357
+        }
+      }
+    },
+    {
+      "iteration": 6,
+      "n_holdout_rows": 31205,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.38904531936659537,
+          "n_train_sample_split": 1143,
+          "n_test_sample_split": 179,
+          "borehole_split": 0.06425937362438328,
+          "n_train_borehole_split": 1245,
+          "n_test_borehole_split": 77
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7285572669419982,
+          "n_train_sample_split": 12912,
+          "n_test_sample_split": 1868,
+          "borehole_split": 0.518458426712616,
+          "n_train_borehole_split": 12466,
+          "n_test_borehole_split": 2314
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3806379205846918,
+          "n_train_sample_split": 12908,
+          "n_test_sample_split": 1868,
+          "borehole_split": 0.1488171028273918,
+          "n_train_borehole_split": 12463,
+          "n_test_borehole_split": 2313
+        },
+        "PEN": {
+          "sample_split": 0.7123056527673272,
+          "n_train_sample_split": 1576,
+          "n_test_sample_split": 256,
+          "borehole_split": -0.7463471590104018,
+          "n_train_borehole_split": 1679,
+          "n_test_borehole_split": 153
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6721942496398841,
+          "n_train_sample_split": 9464,
+          "n_test_sample_split": 1441,
+          "borehole_split": 0.05937815886571152,
+          "n_train_borehole_split": 8722,
+          "n_test_borehole_split": 2183
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4983319697754267,
+          "n_train_sample_split": 94491,
+          "n_test_sample_split": 14336,
+          "borehole_split": 0.03004591066567619,
+          "n_train_borehole_split": 97320,
+          "n_test_borehole_split": 11507
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5631498134793345,
+          "n_train_sample_split": 2111,
+          "n_test_sample_split": 332,
+          "borehole_split": 0.6852111059513957,
+          "n_train_borehole_split": 2318,
+          "n_test_borehole_split": 125
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7208486402874484,
+          "n_train_sample_split": 169868,
+          "n_test_sample_split": 25743,
+          "borehole_split": 0.12354254557875943,
+          "n_train_borehole_split": 168338,
+          "n_test_borehole_split": 27273
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5723291004329369,
+          "n_train_sample_split": 4399,
+          "n_test_sample_split": 713,
+          "borehole_split": 0.4060740887446095,
+          "n_train_borehole_split": 4485,
+          "n_test_borehole_split": 627
+        }
+      }
+    },
+    {
+      "iteration": 7,
+      "n_holdout_rows": 22988,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.3612318877516517,
+          "n_train_sample_split": 1205,
+          "n_test_sample_split": 117,
+          "borehole_split": 0.4240192751068398,
+          "n_train_borehole_split": 1229,
+          "n_test_borehole_split": 93
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7554646127783406,
+          "n_train_sample_split": 13304,
+          "n_test_sample_split": 1476,
+          "borehole_split": 0.4254623782867154,
+          "n_train_borehole_split": 13546,
+          "n_test_borehole_split": 1234
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4232667176803978,
+          "n_train_sample_split": 13301,
+          "n_test_sample_split": 1475,
+          "borehole_split": -0.005414531206678674,
+          "n_train_borehole_split": 13544,
+          "n_test_borehole_split": 1232
+        },
+        "PEN": {
+          "sample_split": 0.4438108218358061,
+          "n_train_sample_split": 1655,
+          "n_test_sample_split": 177,
+          "borehole_split": -554.9682443408849,
+          "n_train_borehole_split": 1749,
+          "n_test_borehole_split": 83
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7011037404242388,
+          "n_train_sample_split": 9910,
+          "n_test_sample_split": 995,
+          "borehole_split": 0.4646833445242836,
+          "n_train_borehole_split": 9085,
+          "n_test_borehole_split": 1820
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4466020838945146,
+          "n_train_sample_split": 98292,
+          "n_test_sample_split": 10535,
+          "borehole_split": 0.0035509470451954295,
+          "n_train_borehole_split": 99570,
+          "n_test_borehole_split": 9257
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.3143018373370411,
+          "n_train_sample_split": 2207,
+          "n_test_sample_split": 236,
+          "borehole_split": 0.07392036240563982,
+          "n_train_borehole_split": 2213,
+          "n_test_borehole_split": 230
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6876991393076766,
+          "n_train_sample_split": 176615,
+          "n_test_sample_split": 18996,
+          "borehole_split": 0.23803205146047113,
+          "n_train_borehole_split": 175885,
+          "n_test_borehole_split": 19726
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.40474218006015894,
+          "n_train_sample_split": 4609,
+          "n_test_sample_split": 503,
+          "borehole_split": 0.37764430154821826,
+          "n_train_borehole_split": 4514,
+          "n_test_borehole_split": 598
+        }
+      }
+    },
+    {
+      "iteration": 8,
+      "n_holdout_rows": 23620,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.2345118530564516,
+          "n_train_sample_split": 1186,
+          "n_test_sample_split": 136,
+          "borehole_split": 0.24748043454804713,
+          "n_train_borehole_split": 1180,
+          "n_test_borehole_split": 142
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7060946911384112,
+          "n_train_sample_split": 13345,
+          "n_test_sample_split": 1435,
+          "borehole_split": 0.45718066037468064,
+          "n_train_borehole_split": 13615,
+          "n_test_borehole_split": 1165
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.41648686548311464,
+          "n_train_sample_split": 13341,
+          "n_test_sample_split": 1435,
+          "borehole_split": 0.10982581887323828,
+          "n_train_borehole_split": 13610,
+          "n_test_borehole_split": 1166
+        },
+        "PEN": {
+          "sample_split": 0.486753426416512,
+          "n_train_sample_split": 1648,
+          "n_test_sample_split": 184,
+          "borehole_split": -1.8825011193620629,
+          "n_train_borehole_split": 1599,
+          "n_test_borehole_split": 233
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7320104671753012,
+          "n_train_sample_split": 9862,
+          "n_test_sample_split": 1043,
+          "borehole_split": 0.4564119611862574,
+          "n_train_borehole_split": 10201,
+          "n_test_borehole_split": 704
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5280867673582943,
+          "n_train_sample_split": 98047,
+          "n_test_sample_split": 10780,
+          "borehole_split": -0.03847325982044647,
+          "n_train_borehole_split": 96515,
+          "n_test_borehole_split": 12312
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.6440867814634047,
+          "n_train_sample_split": 2186,
+          "n_test_sample_split": 257,
+          "borehole_split": 0.6802689330551493,
+          "n_train_borehole_split": 2385,
+          "n_test_borehole_split": 58
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7077329162750634,
+          "n_train_sample_split": 176068,
+          "n_test_sample_split": 19543,
+          "borehole_split": 0.7522722161452495,
+          "n_train_borehole_split": 177828,
+          "n_test_borehole_split": 17783
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5705341125652403,
+          "n_train_sample_split": 4637,
+          "n_test_sample_split": 475,
+          "borehole_split": 0.27702844677954064,
+          "n_train_borehole_split": 4740,
+          "n_test_borehole_split": 372
+        }
+      }
+    },
+    {
+      "iteration": 9,
+      "n_holdout_rows": 27419,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.4381975724294106,
+          "n_train_sample_split": 1183,
+          "n_test_sample_split": 139,
+          "borehole_split": 0.005741600671031577,
+          "n_train_borehole_split": 1256,
+          "n_test_borehole_split": 66
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7497207205126403,
+          "n_train_sample_split": 13100,
+          "n_test_sample_split": 1680,
+          "borehole_split": 0.35711816237732363,
+          "n_train_borehole_split": 12982,
+          "n_test_borehole_split": 1798
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3524098078834099,
+          "n_train_sample_split": 13095,
+          "n_test_sample_split": 1681,
+          "borehole_split": 0.0765003763418145,
+          "n_train_borehole_split": 12979,
+          "n_test_borehole_split": 1797
+        },
+        "PEN": {
+          "sample_split": 0.6390263082237677,
+          "n_train_sample_split": 1611,
+          "n_test_sample_split": 221,
+          "borehole_split": 0.4409232899532154,
+          "n_train_borehole_split": 1489,
+          "n_test_borehole_split": 343
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6601131454811051,
+          "n_train_sample_split": 9651,
+          "n_test_sample_split": 1254,
+          "borehole_split": 0.44552896600159864,
+          "n_train_borehole_split": 9332,
+          "n_test_borehole_split": 1573
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5082548871607043,
+          "n_train_sample_split": 96145,
+          "n_test_sample_split": 12682,
+          "borehole_split": 0.16656444944863635,
+          "n_train_borehole_split": 101042,
+          "n_test_borehole_split": 7785
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.2440770241628465,
+          "n_train_sample_split": 2153,
+          "n_test_sample_split": 290,
+          "borehole_split": -0.1282187606117966,
+          "n_train_borehole_split": 2286,
+          "n_test_borehole_split": 157
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7072983457210597,
+          "n_train_sample_split": 173028,
+          "n_test_sample_split": 22583,
+          "borehole_split": 0.08219940999595854,
+          "n_train_borehole_split": 175353,
+          "n_test_borehole_split": 20258
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5146227153795049,
+          "n_train_sample_split": 4503,
+          "n_test_sample_split": 609,
+          "borehole_split": 0.24728528162061603,
+          "n_train_borehole_split": 4530,
+          "n_test_borehole_split": 582
+        }
+      }
+    },
+    {
+      "iteration": 10,
+      "n_holdout_rows": 21438,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.4694274514920257,
+          "n_train_sample_split": 1195,
+          "n_test_sample_split": 127,
+          "borehole_split": 0.18533226970873384,
+          "n_train_borehole_split": 1182,
+          "n_test_borehole_split": 140
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7439144524245234,
+          "n_train_sample_split": 13497,
+          "n_test_sample_split": 1283,
+          "borehole_split": 0.6004128600245019,
+          "n_train_borehole_split": 13319,
+          "n_test_borehole_split": 1461
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.42772552508788575,
+          "n_train_sample_split": 13493,
+          "n_test_sample_split": 1283,
+          "borehole_split": 0.15204873073855507,
+          "n_train_borehole_split": 13314,
+          "n_test_borehole_split": 1462
+        },
+        "PEN": {
+          "sample_split": 0.5946915192983331,
+          "n_train_sample_split": 1676,
+          "n_test_sample_split": 156,
+          "borehole_split": -0.644552522391785,
+          "n_train_borehole_split": 1799,
+          "n_test_borehole_split": 33
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6542408745526268,
+          "n_train_sample_split": 9886,
+          "n_test_sample_split": 1019,
+          "borehole_split": 0.4660738170749724,
+          "n_train_borehole_split": 9489,
+          "n_test_borehole_split": 1416
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5320285444619166,
+          "n_train_sample_split": 99010,
+          "n_test_sample_split": 9817,
+          "borehole_split": -0.2874020266967592,
+          "n_train_borehole_split": 99049,
+          "n_test_borehole_split": 9778
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.547804627355476,
+          "n_train_sample_split": 2227,
+          "n_test_sample_split": 216,
+          "borehole_split": -468.69688290667744,
+          "n_train_borehole_split": 2244,
+          "n_test_borehole_split": 199
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6752512617531607,
+          "n_train_sample_split": 177906,
+          "n_test_sample_split": 17705,
+          "borehole_split": 0.5744556380193495,
+          "n_train_borehole_split": 175676,
+          "n_test_borehole_split": 19935
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.48532588877363414,
+          "n_train_sample_split": 4633,
+          "n_test_sample_split": 479,
+          "borehole_split": 0.1017944255440909,
+          "n_train_borehole_split": 4621,
+          "n_test_borehole_split": 491
+        }
+      }
+    },
+    {
+      "iteration": 11,
+      "n_holdout_rows": 17130,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.33204962068403354,
+          "n_train_sample_split": 1233,
+          "n_test_sample_split": 89,
+          "borehole_split": 0.31212807369142737,
+          "n_train_borehole_split": 1249,
+          "n_test_borehole_split": 73
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7131826655879742,
+          "n_train_sample_split": 13690,
+          "n_test_sample_split": 1090,
+          "borehole_split": 0.5340115045326639,
+          "n_train_borehole_split": 14019,
+          "n_test_borehole_split": 761
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.45050075758534835,
+          "n_train_sample_split": 13685,
+          "n_test_sample_split": 1091,
+          "borehole_split": -0.12207070920242757,
+          "n_train_borehole_split": 14015,
+          "n_test_borehole_split": 761
+        },
+        "PEN": {
+          "sample_split": 0.36953882183764264,
+          "n_train_sample_split": 1703,
+          "n_test_sample_split": 129,
+          "borehole_split": -7.641017789424053,
+          "n_train_borehole_split": 1802,
+          "n_test_borehole_split": 30
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6804081655297161,
+          "n_train_sample_split": 10113,
+          "n_test_sample_split": 792,
+          "borehole_split": 0.36738285290912975,
+          "n_train_borehole_split": 10239,
+          "n_test_borehole_split": 666
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4369941810844563,
+          "n_train_sample_split": 100998,
+          "n_test_sample_split": 7829,
+          "borehole_split": 0.5349054906965187,
+          "n_train_borehole_split": 99268,
+          "n_test_borehole_split": 9559
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.3843725226160719,
+          "n_train_sample_split": 2255,
+          "n_test_sample_split": 188,
+          "borehole_split": -2.5187972134444694,
+          "n_train_borehole_split": 2307,
+          "n_test_borehole_split": 136
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6870879143657641,
+          "n_train_sample_split": 181483,
+          "n_test_sample_split": 14128,
+          "borehole_split": 0.5291972090286816,
+          "n_train_borehole_split": 182961,
+          "n_test_borehole_split": 12650
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4187366071819507,
+          "n_train_sample_split": 4742,
+          "n_test_sample_split": 370,
+          "borehole_split": 0.47461278234433013,
+          "n_train_borehole_split": 4772,
+          "n_test_borehole_split": 340
+        }
+      }
+    },
+    {
+      "iteration": 12,
+      "n_holdout_rows": 27986,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.39969892450459366,
+          "n_train_sample_split": 1164,
+          "n_test_sample_split": 158,
+          "borehole_split": -0.2923637035275286,
+          "n_train_borehole_split": 1170,
+          "n_test_borehole_split": 152
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7545423032642027,
+          "n_train_sample_split": 13085,
+          "n_test_sample_split": 1695,
+          "borehole_split": 0.34290589827177,
+          "n_train_borehole_split": 12929,
+          "n_test_borehole_split": 1851
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.401062078011033,
+          "n_train_sample_split": 13080,
+          "n_test_sample_split": 1696,
+          "borehole_split": -0.011876092768420499,
+          "n_train_borehole_split": 12924,
+          "n_test_borehole_split": 1852
+        },
+        "PEN": {
+          "sample_split": 0.7749484638014864,
+          "n_train_sample_split": 1614,
+          "n_test_sample_split": 218,
+          "borehole_split": 0.7798982027958447,
+          "n_train_borehole_split": 1523,
+          "n_test_borehole_split": 309
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6887523684852648,
+          "n_train_sample_split": 9586,
+          "n_test_sample_split": 1319,
+          "borehole_split": 0.45852699290942855,
+          "n_train_borehole_split": 10064,
+          "n_test_borehole_split": 841
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.45642855733484233,
+          "n_train_sample_split": 95872,
+          "n_test_sample_split": 12955,
+          "borehole_split": 0.3871730335355178,
+          "n_train_borehole_split": 98637,
+          "n_test_borehole_split": 10190
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.04654034810498675,
+          "n_train_sample_split": 2184,
+          "n_test_sample_split": 259,
+          "borehole_split": -5.020797271442336,
+          "n_train_borehole_split": 1935,
+          "n_test_borehole_split": 508
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7058069629236012,
+          "n_train_sample_split": 172491,
+          "n_test_sample_split": 23120,
+          "borehole_split": 0.34549792140387625,
+          "n_train_borehole_split": 169704,
+          "n_test_borehole_split": 25907
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.48545645381024827,
+          "n_train_sample_split": 4505,
+          "n_test_sample_split": 607,
+          "borehole_split": -0.2979214299171633,
+          "n_train_borehole_split": 4589,
+          "n_test_borehole_split": 523
+        }
+      }
+    },
+    {
+      "iteration": 13,
+      "n_holdout_rows": 24930,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.39622895052509877,
+          "n_train_sample_split": 1181,
+          "n_test_sample_split": 141,
+          "borehole_split": 0.21714054521988768,
+          "n_train_borehole_split": 1118,
+          "n_test_borehole_split": 204
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7465919784611742,
+          "n_train_sample_split": 13238,
+          "n_test_sample_split": 1542,
+          "borehole_split": 0.6488581462675964,
+          "n_train_borehole_split": 13417,
+          "n_test_borehole_split": 1363
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.37465934745784213,
+          "n_train_sample_split": 13234,
+          "n_test_sample_split": 1542,
+          "borehole_split": 0.15394653485914234,
+          "n_train_borehole_split": 13412,
+          "n_test_borehole_split": 1364
+        },
+        "PEN": {
+          "sample_split": -0.07455067904697699,
+          "n_train_sample_split": 1661,
+          "n_test_sample_split": 171,
+          "borehole_split": -35.056238759865174,
+          "n_train_borehole_split": 1692,
+          "n_test_borehole_split": 140
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6557457742063388,
+          "n_train_sample_split": 9756,
+          "n_test_sample_split": 1149,
+          "borehole_split": 0.5536262915775318,
+          "n_train_borehole_split": 9585,
+          "n_test_borehole_split": 1320
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5017034206232582,
+          "n_train_sample_split": 97353,
+          "n_test_sample_split": 11474,
+          "borehole_split": -0.19320631444817238,
+          "n_train_borehole_split": 96035,
+          "n_test_borehole_split": 12792
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": -0.5089409401028935,
+          "n_train_sample_split": 2172,
+          "n_test_sample_split": 271,
+          "borehole_split": -1.0995994611717292,
+          "n_train_borehole_split": 2056,
+          "n_test_borehole_split": 387
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6872655018557798,
+          "n_train_sample_split": 175065,
+          "n_test_sample_split": 20546,
+          "borehole_split": 0.6956620487078178,
+          "n_train_borehole_split": 176864,
+          "n_test_borehole_split": 18747
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.3540906417710121,
+          "n_train_sample_split": 4568,
+          "n_test_sample_split": 544,
+          "borehole_split": 0.19687968862796845,
+          "n_train_borehole_split": 4622,
+          "n_test_borehole_split": 490
+        }
+      }
+    },
+    {
+      "iteration": 14,
+      "n_holdout_rows": 22567,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.32931197177145444,
+          "n_train_sample_split": 1199,
+          "n_test_sample_split": 123,
+          "borehole_split": -0.4578038256705934,
+          "n_train_borehole_split": 1180,
+          "n_test_borehole_split": 142
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.718571276140181,
+          "n_train_sample_split": 13363,
+          "n_test_sample_split": 1417,
+          "borehole_split": 0.5017490545247933,
+          "n_train_borehole_split": 13166,
+          "n_test_borehole_split": 1614
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3792623817526817,
+          "n_train_sample_split": 13359,
+          "n_test_sample_split": 1417,
+          "borehole_split": 0.055698864251218394,
+          "n_train_borehole_split": 13160,
+          "n_test_borehole_split": 1616
+        },
+        "PEN": {
+          "sample_split": 0.5472282787857037,
+          "n_train_sample_split": 1624,
+          "n_test_sample_split": 208,
+          "borehole_split": -0.7594969894592836,
+          "n_train_borehole_split": 1647,
+          "n_test_borehole_split": 185
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7085203081358618,
+          "n_train_sample_split": 9869,
+          "n_test_sample_split": 1036,
+          "borehole_split": 0.5347803745941846,
+          "n_train_borehole_split": 9480,
+          "n_test_borehole_split": 1425
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5417146171480149,
+          "n_train_sample_split": 98461,
+          "n_test_sample_split": 10366,
+          "borehole_split": 0.44634490511761804,
+          "n_train_borehole_split": 101978,
+          "n_test_borehole_split": 6849
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.45249771757737367,
+          "n_train_sample_split": 2201,
+          "n_test_sample_split": 242,
+          "borehole_split": 0.3103139326715071,
+          "n_train_borehole_split": 2023,
+          "n_test_borehole_split": 420
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6813471690938522,
+          "n_train_sample_split": 177096,
+          "n_test_sample_split": 18515,
+          "borehole_split": 0.5741535629821642,
+          "n_train_borehole_split": 176311,
+          "n_test_borehole_split": 19300
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5085420631388327,
+          "n_train_sample_split": 4641,
+          "n_test_sample_split": 471,
+          "borehole_split": 0.32638396153722105,
+          "n_train_borehole_split": 4627,
+          "n_test_borehole_split": 485
+        }
+      }
+    },
+    {
+      "iteration": 15,
+      "n_holdout_rows": 19085,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.1302571914069819,
+          "n_train_sample_split": 1220,
+          "n_test_sample_split": 102,
+          "borehole_split": 0.04043722805654004,
+          "n_train_borehole_split": 1129,
+          "n_test_borehole_split": 193
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.769777894620904,
+          "n_train_sample_split": 13623,
+          "n_test_sample_split": 1157,
+          "borehole_split": 0.7206617687752408,
+          "n_train_borehole_split": 13522,
+          "n_test_borehole_split": 1258
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.42119031186401323,
+          "n_train_sample_split": 13619,
+          "n_test_sample_split": 1157,
+          "borehole_split": 0.16313371337881122,
+          "n_train_borehole_split": 13518,
+          "n_test_borehole_split": 1258
+        },
+        "PEN": {
+          "sample_split": 0.5835196799539881,
+          "n_train_sample_split": 1684,
+          "n_test_sample_split": 148,
+          "borehole_split": 0.41673454403006027,
+          "n_train_borehole_split": 1508,
+          "n_test_borehole_split": 324
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6821482803102576,
+          "n_train_sample_split": 9983,
+          "n_test_sample_split": 922,
+          "borehole_split": 0.403270726057657,
+          "n_train_borehole_split": 9950,
+          "n_test_borehole_split": 955
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4869646566542255,
+          "n_train_sample_split": 100059,
+          "n_test_sample_split": 8768,
+          "borehole_split": -0.04577191513191248,
+          "n_train_borehole_split": 99984,
+          "n_test_borehole_split": 8843
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5109804900139552,
+          "n_train_sample_split": 2228,
+          "n_test_sample_split": 215,
+          "borehole_split": 0.05617029117888128,
+          "n_train_borehole_split": 2034,
+          "n_test_borehole_split": 409
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.698070883410842,
+          "n_train_sample_split": 179877,
+          "n_test_sample_split": 15734,
+          "borehole_split": 0.5064297963255133,
+          "n_train_borehole_split": 180540,
+          "n_test_borehole_split": 15071
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4365539837590908,
+          "n_train_sample_split": 4672,
+          "n_test_sample_split": 440,
+          "borehole_split": 0.08979454910007856,
+          "n_train_borehole_split": 4534,
+          "n_test_borehole_split": 578
+        }
+      }
+    },
+    {
+      "iteration": 16,
+      "n_holdout_rows": 14698,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.47066877185412315,
+          "n_train_sample_split": 1233,
+          "n_test_sample_split": 89,
+          "borehole_split": -0.07978364166649077,
+          "n_train_borehole_split": 1132,
+          "n_test_borehole_split": 190
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7309050787839253,
+          "n_train_sample_split": 13850,
+          "n_test_sample_split": 930,
+          "borehole_split": 0.28390847372113104,
+          "n_train_borehole_split": 13488,
+          "n_test_borehole_split": 1292
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4077158433015957,
+          "n_train_sample_split": 13848,
+          "n_test_sample_split": 928,
+          "borehole_split": 0.07791688903708349,
+          "n_train_borehole_split": 13486,
+          "n_test_borehole_split": 1290
+        },
+        "PEN": {
+          "sample_split": 0.7714051157662742,
+          "n_train_sample_split": 1713,
+          "n_test_sample_split": 119,
+          "borehole_split": -0.46434004287561415,
+          "n_train_borehole_split": 1516,
+          "n_test_borehole_split": 316
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6381041367140486,
+          "n_train_sample_split": 10221,
+          "n_test_sample_split": 684,
+          "borehole_split": -1.991590006538114,
+          "n_train_borehole_split": 10299,
+          "n_test_borehole_split": 606
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.46304113910827416,
+          "n_train_sample_split": 102101,
+          "n_test_sample_split": 6726,
+          "borehole_split": -0.17555021805954008,
+          "n_train_borehole_split": 100273,
+          "n_test_borehole_split": 8554
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5456896188679161,
+          "n_train_sample_split": 2293,
+          "n_test_sample_split": 150,
+          "borehole_split": -1.3825199151982157,
+          "n_train_borehole_split": 2069,
+          "n_test_borehole_split": 374
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7103957532799532,
+          "n_train_sample_split": 183457,
+          "n_test_sample_split": 12154,
+          "borehole_split": 0.5250766647891463,
+          "n_train_borehole_split": 184097,
+          "n_test_borehole_split": 11514
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4744116489365987,
+          "n_train_sample_split": 4776,
+          "n_test_sample_split": 336,
+          "borehole_split": 0.18348986620746388,
+          "n_train_borehole_split": 4695,
+          "n_test_borehole_split": 417
+        }
+      }
+    },
+    {
+      "iteration": 17,
+      "n_holdout_rows": 27314,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.4245396312456208,
+          "n_train_sample_split": 1162,
+          "n_test_sample_split": 160,
+          "borehole_split": 0.2980498785413297,
+          "n_train_borehole_split": 1149,
+          "n_test_borehole_split": 173
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7417942580310599,
+          "n_train_sample_split": 13123,
+          "n_test_sample_split": 1657,
+          "borehole_split": 0.6636500885906984,
+          "n_train_borehole_split": 12764,
+          "n_test_borehole_split": 2016
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4282078789510929,
+          "n_train_sample_split": 13119,
+          "n_test_sample_split": 1657,
+          "borehole_split": 0.09385392601550291,
+          "n_train_borehole_split": 12759,
+          "n_test_borehole_split": 2017
+        },
+        "PEN": {
+          "sample_split": 0.6038385575670655,
+          "n_train_sample_split": 1637,
+          "n_test_sample_split": 195,
+          "borehole_split": -52.64664459668658,
+          "n_train_borehole_split": 1620,
+          "n_test_borehole_split": 212
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6933586317469431,
+          "n_train_sample_split": 9631,
+          "n_test_sample_split": 1274,
+          "borehole_split": 0.36985374878630917,
+          "n_train_borehole_split": 9629,
+          "n_test_borehole_split": 1276
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4759304782740541,
+          "n_train_sample_split": 96170,
+          "n_test_sample_split": 12657,
+          "borehole_split": 0.3887926560274084,
+          "n_train_borehole_split": 100110,
+          "n_test_borehole_split": 8717
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.4321988910544694,
+          "n_train_sample_split": 2179,
+          "n_test_sample_split": 264,
+          "borehole_split": -0.40939528095156175,
+          "n_train_borehole_split": 2074,
+          "n_test_borehole_split": 369
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6863735926295269,
+          "n_train_sample_split": 173065,
+          "n_test_sample_split": 22546,
+          "borehole_split": 0.5962733314144132,
+          "n_train_borehole_split": 170488,
+          "n_test_borehole_split": 25123
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4356611895048862,
+          "n_train_sample_split": 4507,
+          "n_test_sample_split": 605,
+          "borehole_split": 0.3843250074096307,
+          "n_train_borehole_split": 4316,
+          "n_test_borehole_split": 796
+        }
+      }
+    },
+    {
+      "iteration": 18,
+      "n_holdout_rows": 26110,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.23579772564470636,
+          "n_train_sample_split": 1159,
+          "n_test_sample_split": 163,
+          "borehole_split": 0.2996852342108972,
+          "n_train_borehole_split": 1240,
+          "n_test_borehole_split": 82
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7423425706883033,
+          "n_train_sample_split": 13160,
+          "n_test_sample_split": 1620,
+          "borehole_split": 0.4933172317835747,
+          "n_train_borehole_split": 12715,
+          "n_test_borehole_split": 2065
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3952354372380493,
+          "n_train_sample_split": 13157,
+          "n_test_sample_split": 1619,
+          "borehole_split": 0.16483988849548414,
+          "n_train_borehole_split": 12711,
+          "n_test_borehole_split": 2065
+        },
+        "PEN": {
+          "sample_split": 0.4900109271677926,
+          "n_train_sample_split": 1617,
+          "n_test_sample_split": 215,
+          "borehole_split": -1006.5670240363587,
+          "n_train_borehole_split": 1689,
+          "n_test_borehole_split": 143
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6872081760546589,
+          "n_train_sample_split": 9687,
+          "n_test_sample_split": 1218,
+          "borehole_split": -0.2490513126164613,
+          "n_train_borehole_split": 9182,
+          "n_test_borehole_split": 1723
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4926671725599452,
+          "n_train_sample_split": 96850,
+          "n_test_sample_split": 11977,
+          "borehole_split": -0.2280515647974859,
+          "n_train_borehole_split": 97679,
+          "n_test_borehole_split": 11148
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.3299164248267221,
+          "n_train_sample_split": 2191,
+          "n_test_sample_split": 252,
+          "borehole_split": -0.13053226145211783,
+          "n_train_borehole_split": 1927,
+          "n_test_borehole_split": 516
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.702385746618783,
+          "n_train_sample_split": 174033,
+          "n_test_sample_split": 21578,
+          "borehole_split": 0.5797420046314636,
+          "n_train_borehole_split": 176302,
+          "n_test_borehole_split": 19309
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5079844335854335,
+          "n_train_sample_split": 4583,
+          "n_test_sample_split": 529,
+          "borehole_split": 0.3719166104612037,
+          "n_train_borehole_split": 4465,
+          "n_test_borehole_split": 647
+        }
+      }
+    },
+    {
+      "iteration": 19,
+      "n_holdout_rows": 16450,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.15793901347214867,
+          "n_train_sample_split": 1231,
+          "n_test_sample_split": 91,
+          "borehole_split": NaN,
+          "n_train_borehole_split": 1313,
+          "n_test_borehole_split": 9
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7421230156447787,
+          "n_train_sample_split": 13743,
+          "n_test_sample_split": 1037,
+          "borehole_split": 0.3843705243131834,
+          "n_train_borehole_split": 13437,
+          "n_test_borehole_split": 1343
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4331756717803924,
+          "n_train_sample_split": 13739,
+          "n_test_sample_split": 1037,
+          "borehole_split": -0.08734115314903668,
+          "n_train_borehole_split": 13433,
+          "n_test_borehole_split": 1343
+        },
+        "PEN": {
+          "sample_split": 0.2873776838796076,
+          "n_train_sample_split": 1701,
+          "n_test_sample_split": 131,
+          "borehole_split": NaN,
+          "n_train_borehole_split": 1831,
+          "n_test_borehole_split": 1
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7370804181662269,
+          "n_train_sample_split": 10117,
+          "n_test_sample_split": 788,
+          "borehole_split": 0.2608111579141509,
+          "n_train_borehole_split": 9718,
+          "n_test_borehole_split": 1187
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.45174743254316807,
+          "n_train_sample_split": 101169,
+          "n_test_sample_split": 7658,
+          "borehole_split": 0.31455772478217003,
+          "n_train_borehole_split": 100844,
+          "n_test_borehole_split": 7983
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5656414931553058,
+          "n_train_sample_split": 2255,
+          "n_test_sample_split": 188,
+          "borehole_split": -156473.16343418238,
+          "n_train_borehole_split": 2322,
+          "n_test_borehole_split": 121
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6862514055266247,
+          "n_train_sample_split": 182078,
+          "n_test_sample_split": 13533,
+          "borehole_split": 0.5829427798997959,
+          "n_train_borehole_split": 182610,
+          "n_test_borehole_split": 13001
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4488449661305911,
+          "n_train_sample_split": 4797,
+          "n_test_sample_split": 315,
+          "borehole_split": 0.25496280888737866,
+          "n_train_borehole_split": 4705,
+          "n_test_borehole_split": 407
+        }
+      }
+    },
+    {
+      "iteration": 20,
+      "n_holdout_rows": 21403,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.3210019731111785,
+          "n_train_sample_split": 1225,
+          "n_test_sample_split": 97,
+          "borehole_split": 0.12515987460259015,
+          "n_train_borehole_split": 1096,
+          "n_test_borehole_split": 226
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.715900879650047,
+          "n_train_sample_split": 13419,
+          "n_test_sample_split": 1361,
+          "borehole_split": 0.6882526592819843,
+          "n_train_borehole_split": 13134,
+          "n_test_borehole_split": 1646
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3242392650216481,
+          "n_train_sample_split": 13415,
+          "n_test_sample_split": 1361,
+          "borehole_split": 0.29848460854637804,
+          "n_train_borehole_split": 13130,
+          "n_test_borehole_split": 1646
+        },
+        "PEN": {
+          "sample_split": 0.3651669803862676,
+          "n_train_sample_split": 1639,
+          "n_test_sample_split": 193,
+          "borehole_split": 0.10718057138678994,
+          "n_train_borehole_split": 1638,
+          "n_test_borehole_split": 194
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7656365722495027,
+          "n_train_sample_split": 9942,
+          "n_test_sample_split": 963,
+          "borehole_split": 0.6071815272308321,
+          "n_train_borehole_split": 9461,
+          "n_test_borehole_split": 1444
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.452677597690625,
+          "n_train_sample_split": 98967,
+          "n_test_sample_split": 9860,
+          "borehole_split": 0.37122917075962203,
+          "n_train_borehole_split": 97715,
+          "n_test_borehole_split": 11112
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.2130449048641141,
+          "n_train_sample_split": 2227,
+          "n_test_sample_split": 216,
+          "borehole_split": -0.4443016003353657,
+          "n_train_borehole_split": 2110,
+          "n_test_borehole_split": 333
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6834976352136768,
+          "n_train_sample_split": 177878,
+          "n_test_sample_split": 17733,
+          "borehole_split": 0.5836174634317469,
+          "n_train_borehole_split": 181204,
+          "n_test_borehole_split": 14407
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.44375954360314473,
+          "n_train_sample_split": 4628,
+          "n_test_sample_split": 484,
+          "borehole_split": 0.4153938349513917,
+          "n_train_borehole_split": 4641,
+          "n_test_borehole_split": 471
+        }
+      }
+    },
+    {
+      "iteration": 21,
+      "n_holdout_rows": 19150,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.35387996310842473,
+          "n_train_sample_split": 1213,
+          "n_test_sample_split": 109,
+          "borehole_split": -0.39905423661097417,
+          "n_train_borehole_split": 1073,
+          "n_test_borehole_split": 249
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7687867976057386,
+          "n_train_sample_split": 13574,
+          "n_test_sample_split": 1206,
+          "borehole_split": 0.5359084654470533,
+          "n_train_borehole_split": 13070,
+          "n_test_borehole_split": 1710
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.44367418830864425,
+          "n_train_sample_split": 13570,
+          "n_test_sample_split": 1206,
+          "borehole_split": 0.1227092920321341,
+          "n_train_borehole_split": 13068,
+          "n_test_borehole_split": 1708
+        },
+        "PEN": {
+          "sample_split": 0.492947085376263,
+          "n_train_sample_split": 1677,
+          "n_test_sample_split": 155,
+          "borehole_split": 0.6333716897148132,
+          "n_train_borehole_split": 1540,
+          "n_test_borehole_split": 292
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6545855571785801,
+          "n_train_sample_split": 10025,
+          "n_test_sample_split": 880,
+          "borehole_split": 0.013136253048193547,
+          "n_train_borehole_split": 9736,
+          "n_test_borehole_split": 1169
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5094612721885687,
+          "n_train_sample_split": 100101,
+          "n_test_sample_split": 8726,
+          "borehole_split": 0.43596262734230085,
+          "n_train_borehole_split": 100519,
+          "n_test_borehole_split": 8308
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5228264656703165,
+          "n_train_sample_split": 2211,
+          "n_test_sample_split": 232,
+          "borehole_split": -0.02489997680329159,
+          "n_train_borehole_split": 2272,
+          "n_test_borehole_split": 171
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7035093260015763,
+          "n_train_sample_split": 179772,
+          "n_test_sample_split": 15839,
+          "borehole_split": 0.4945596271695617,
+          "n_train_borehole_split": 180832,
+          "n_test_borehole_split": 14779
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4530473572003193,
+          "n_train_sample_split": 4714,
+          "n_test_sample_split": 398,
+          "borehole_split": 0.4189137096747252,
+          "n_train_borehole_split": 4606,
+          "n_test_borehole_split": 506
+        }
+      }
+    },
+    {
+      "iteration": 22,
+      "n_holdout_rows": 23854,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.37805643230335007,
+          "n_train_sample_split": 1174,
+          "n_test_sample_split": 148,
+          "borehole_split": -0.04614483889933174,
+          "n_train_borehole_split": 1107,
+          "n_test_borehole_split": 215
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7312048549906273,
+          "n_train_sample_split": 13311,
+          "n_test_sample_split": 1469,
+          "borehole_split": 0.6542184673147351,
+          "n_train_borehole_split": 12872,
+          "n_test_borehole_split": 1908
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.30065621083811056,
+          "n_train_sample_split": 13305,
+          "n_test_sample_split": 1471,
+          "borehole_split": 0.021048747743488416,
+          "n_train_borehole_split": 12871,
+          "n_test_borehole_split": 1905
+        },
+        "PEN": {
+          "sample_split": 0.6806135796019208,
+          "n_train_sample_split": 1638,
+          "n_test_sample_split": 194,
+          "borehole_split": -2145.24083217559,
+          "n_train_borehole_split": 1675,
+          "n_test_borehole_split": 157
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6860038718395722,
+          "n_train_sample_split": 9871,
+          "n_test_sample_split": 1034,
+          "borehole_split": 0.40491833088399853,
+          "n_train_borehole_split": 8961,
+          "n_test_borehole_split": 1944
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.4577384752288812,
+          "n_train_sample_split": 97858,
+          "n_test_sample_split": 10969,
+          "borehole_split": 0.14516306146631763,
+          "n_train_borehole_split": 99853,
+          "n_test_borehole_split": 8974
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.5229748853499647,
+          "n_train_sample_split": 2207,
+          "n_test_sample_split": 236,
+          "borehole_split": 0.19139425739393334,
+          "n_train_borehole_split": 2238,
+          "n_test_borehole_split": 205
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6955906411006934,
+          "n_train_sample_split": 175933,
+          "n_test_sample_split": 19678,
+          "borehole_split": 0.5750420965299587,
+          "n_train_borehole_split": 175468,
+          "n_test_borehole_split": 20143
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.49386647727515565,
+          "n_train_sample_split": 4589,
+          "n_test_sample_split": 523,
+          "borehole_split": 0.0710829323645994,
+          "n_train_borehole_split": 4400,
+          "n_test_borehole_split": 712
+        }
+      }
+    },
+    {
+      "iteration": 23,
+      "n_holdout_rows": 16269,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.46910778798875385,
+          "n_train_sample_split": 1229,
+          "n_test_sample_split": 93,
+          "borehole_split": 0.23800449134716883,
+          "n_train_borehole_split": 1271,
+          "n_test_borehole_split": 51
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7254212321728175,
+          "n_train_sample_split": 13757,
+          "n_test_sample_split": 1023,
+          "borehole_split": 0.5382850141228415,
+          "n_train_borehole_split": 13760,
+          "n_test_borehole_split": 1020
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3508724966772929,
+          "n_train_sample_split": 13754,
+          "n_test_sample_split": 1022,
+          "borehole_split": -0.12598171245466872,
+          "n_train_borehole_split": 13756,
+          "n_test_borehole_split": 1020
+        },
+        "PEN": {
+          "sample_split": 0.464734019760511,
+          "n_train_sample_split": 1708,
+          "n_test_sample_split": 124,
+          "borehole_split": NaN,
+          "n_train_borehole_split": 1812,
+          "n_test_borehole_split": 20
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7098544344710446,
+          "n_train_sample_split": 10161,
+          "n_test_sample_split": 744,
+          "borehole_split": 0.5981124700044995,
+          "n_train_borehole_split": 10441,
+          "n_test_borehole_split": 464
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5088219838992998,
+          "n_train_sample_split": 101243,
+          "n_test_sample_split": 7584,
+          "borehole_split": 0.5432036545112693,
+          "n_train_borehole_split": 100265,
+          "n_test_borehole_split": 8562
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.618151093883688,
+          "n_train_sample_split": 2265,
+          "n_test_sample_split": 178,
+          "borehole_split": -7632.306803532817,
+          "n_train_borehole_split": 2350,
+          "n_test_borehole_split": 93
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6899443856429568,
+          "n_train_sample_split": 182114,
+          "n_test_sample_split": 13497,
+          "borehole_split": 0.4428627955425073,
+          "n_train_borehole_split": 183908,
+          "n_test_borehole_split": 11703
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5874001440258656,
+          "n_train_sample_split": 4750,
+          "n_test_sample_split": 362,
+          "borehole_split": 0.5472361306862981,
+          "n_train_borehole_split": 4773,
+          "n_test_borehole_split": 339
+        }
+      }
+    },
+    {
+      "iteration": 24,
+      "n_holdout_rows": 22795,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.14275100047224987,
+          "n_train_sample_split": 1179,
+          "n_test_sample_split": 143,
+          "borehole_split": -0.07194732346279142,
+          "n_train_borehole_split": 1159,
+          "n_test_borehole_split": 163
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7496251294060139,
+          "n_train_sample_split": 13321,
+          "n_test_sample_split": 1459,
+          "borehole_split": 0.4300553211601268,
+          "n_train_borehole_split": 13665,
+          "n_test_borehole_split": 1115
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4560166794371546,
+          "n_train_sample_split": 13317,
+          "n_test_sample_split": 1459,
+          "borehole_split": 0.00947674490468109,
+          "n_train_borehole_split": 13662,
+          "n_test_borehole_split": 1114
+        },
+        "PEN": {
+          "sample_split": 0.28006863072502863,
+          "n_train_sample_split": 1654,
+          "n_test_sample_split": 178,
+          "borehole_split": -1.0620738587066003,
+          "n_train_borehole_split": 1746,
+          "n_test_borehole_split": 86
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6973857327642153,
+          "n_train_sample_split": 9826,
+          "n_test_sample_split": 1079,
+          "borehole_split": 0.26125978138525197,
+          "n_train_borehole_split": 10123,
+          "n_test_borehole_split": 782
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.48469094427494264,
+          "n_train_sample_split": 98290,
+          "n_test_sample_split": 10537,
+          "borehole_split": 0.20313877482130305,
+          "n_train_borehole_split": 100718,
+          "n_test_borehole_split": 8109
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.35006164480523594,
+          "n_train_sample_split": 2209,
+          "n_test_sample_split": 234,
+          "borehole_split": 0.31088534707918913,
+          "n_train_borehole_split": 2218,
+          "n_test_borehole_split": 225
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7057912572383687,
+          "n_train_sample_split": 176793,
+          "n_test_sample_split": 18818,
+          "borehole_split": 0.6363101412833507,
+          "n_train_borehole_split": 175831,
+          "n_test_borehole_split": 19780
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.41244927411946186,
+          "n_train_sample_split": 4596,
+          "n_test_sample_split": 516,
+          "borehole_split": -0.2403404964762128,
+          "n_train_borehole_split": 4610,
+          "n_test_borehole_split": 502
+        }
+      }
+    },
+    {
+      "iteration": 25,
+      "n_holdout_rows": 23528,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.2835508295187231,
+          "n_train_sample_split": 1178,
+          "n_test_sample_split": 144,
+          "borehole_split": -0.32414900162312876,
+          "n_train_borehole_split": 1240,
+          "n_test_borehole_split": 82
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.74733953222965,
+          "n_train_sample_split": 13360,
+          "n_test_sample_split": 1420,
+          "borehole_split": 0.6721226745218234,
+          "n_train_borehole_split": 12953,
+          "n_test_borehole_split": 1827
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.37957792912319477,
+          "n_train_sample_split": 13357,
+          "n_test_sample_split": 1419,
+          "borehole_split": 0.22490574834332366,
+          "n_train_borehole_split": 12949,
+          "n_test_borehole_split": 1827
+        },
+        "PEN": {
+          "sample_split": 0.3058777057684283,
+          "n_train_sample_split": 1655,
+          "n_test_sample_split": 177,
+          "borehole_split": 0.5940442383273536,
+          "n_train_borehole_split": 1669,
+          "n_test_borehole_split": 163
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6746550506204102,
+          "n_train_sample_split": 9799,
+          "n_test_sample_split": 1106,
+          "borehole_split": 0.5789321753850459,
+          "n_train_borehole_split": 9339,
+          "n_test_borehole_split": 1566
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.44600159747558754,
+          "n_train_sample_split": 97982,
+          "n_test_sample_split": 10845,
+          "borehole_split": 0.33926098555263795,
+          "n_train_borehole_split": 98783,
+          "n_test_borehole_split": 10044
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.48606843555380197,
+          "n_train_sample_split": 2183,
+          "n_test_sample_split": 260,
+          "borehole_split": -17199.019614518267,
+          "n_train_borehole_split": 2337,
+          "n_test_borehole_split": 106
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6999339020246124,
+          "n_train_sample_split": 176124,
+          "n_test_sample_split": 19487,
+          "borehole_split": 0.6472055838405035,
+          "n_train_borehole_split": 174281,
+          "n_test_borehole_split": 21330
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.47968397712434296,
+          "n_train_sample_split": 4630,
+          "n_test_sample_split": 482,
+          "borehole_split": 0.4791696551971669,
+          "n_train_borehole_split": 4444,
+          "n_test_borehole_split": 668
+        }
+      }
+    },
+    {
+      "iteration": 26,
+      "n_holdout_rows": 18119,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.3107076740580851,
+          "n_train_sample_split": 1211,
+          "n_test_sample_split": 111,
+          "borehole_split": 0.13561627713432667,
+          "n_train_borehole_split": 1198,
+          "n_test_borehole_split": 124
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7394094353032776,
+          "n_train_sample_split": 13625,
+          "n_test_sample_split": 1155,
+          "borehole_split": 0.7001983844427571,
+          "n_train_borehole_split": 13700,
+          "n_test_borehole_split": 1080
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3373921692727314,
+          "n_train_sample_split": 13622,
+          "n_test_sample_split": 1154,
+          "borehole_split": -0.0656769205844212,
+          "n_train_borehole_split": 13696,
+          "n_test_borehole_split": 1080
+        },
+        "PEN": {
+          "sample_split": 0.5195803550613532,
+          "n_train_sample_split": 1695,
+          "n_test_sample_split": 137,
+          "borehole_split": -4.71330273140021,
+          "n_train_borehole_split": 1695,
+          "n_test_borehole_split": 137
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.7649790850753301,
+          "n_train_sample_split": 10091,
+          "n_test_sample_split": 814,
+          "borehole_split": 0.47174584451617363,
+          "n_train_borehole_split": 10381,
+          "n_test_borehole_split": 524
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5089176497786964,
+          "n_train_sample_split": 100610,
+          "n_test_sample_split": 8217,
+          "borehole_split": 0.4739452885005109,
+          "n_train_borehole_split": 97952,
+          "n_test_borehole_split": 10875
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.3235132347619145,
+          "n_train_sample_split": 2279,
+          "n_test_sample_split": 164,
+          "borehole_split": -91.35549369371779,
+          "n_train_borehole_split": 2260,
+          "n_test_borehole_split": 183
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6875163941426651,
+          "n_train_sample_split": 180700,
+          "n_test_sample_split": 14911,
+          "borehole_split": 0.32962486511597067,
+          "n_train_borehole_split": 178957,
+          "n_test_borehole_split": 16654
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.46474671052944794,
+          "n_train_sample_split": 4726,
+          "n_test_sample_split": 386,
+          "borehole_split": 0.47388785552684454,
+          "n_train_borehole_split": 4719,
+          "n_test_borehole_split": 393
+        }
+      }
+    },
+    {
+      "iteration": 27,
+      "n_holdout_rows": 25046,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.22588146953197075,
+          "n_train_sample_split": 1185,
+          "n_test_sample_split": 137,
+          "borehole_split": 0.28515266784706594,
+          "n_train_borehole_split": 1219,
+          "n_test_borehole_split": 103
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7182374065081696,
+          "n_train_sample_split": 13256,
+          "n_test_sample_split": 1524,
+          "borehole_split": 0.6506040643726145,
+          "n_train_borehole_split": 13222,
+          "n_test_borehole_split": 1558
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.3951432543388116,
+          "n_train_sample_split": 13254,
+          "n_test_sample_split": 1522,
+          "borehole_split": 0.20162928342034214,
+          "n_train_borehole_split": 13217,
+          "n_test_borehole_split": 1559
+        },
+        "PEN": {
+          "sample_split": 0.6079808260597364,
+          "n_train_sample_split": 1640,
+          "n_test_sample_split": 192,
+          "borehole_split": -16.429736003563836,
+          "n_train_borehole_split": 1796,
+          "n_test_borehole_split": 36
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6936462947467574,
+          "n_train_sample_split": 9726,
+          "n_test_sample_split": 1179,
+          "borehole_split": 0.4851298490624256,
+          "n_train_borehole_split": 9991,
+          "n_test_borehole_split": 914
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.5021195969965917,
+          "n_train_sample_split": 97286,
+          "n_test_sample_split": 11541,
+          "borehole_split": 0.2050909542806847,
+          "n_train_borehole_split": 96533,
+          "n_test_borehole_split": 12294
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.32231864684147593,
+          "n_train_sample_split": 2197,
+          "n_test_sample_split": 246,
+          "borehole_split": 0.8292666851225245,
+          "n_train_borehole_split": 2359,
+          "n_test_borehole_split": 84
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7041459239956711,
+          "n_train_sample_split": 174952,
+          "n_test_sample_split": 20659,
+          "borehole_split": 0.5112735364998218,
+          "n_train_borehole_split": 174793,
+          "n_test_borehole_split": 20818
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.5009920400155776,
+          "n_train_sample_split": 4571,
+          "n_test_sample_split": 541,
+          "borehole_split": 0.3049708537648702,
+          "n_train_borehole_split": 4586,
+          "n_test_borehole_split": 526
+        }
+      }
+    },
+    {
+      "iteration": 28,
+      "n_holdout_rows": 23461,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.4827027570336824,
+          "n_train_sample_split": 1212,
+          "n_test_sample_split": 110,
+          "borehole_split": -0.17320017813587296,
+          "n_train_borehole_split": 1281,
+          "n_test_borehole_split": 41
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.733486895206733,
+          "n_train_sample_split": 13322,
+          "n_test_sample_split": 1458,
+          "borehole_split": 0.5289351112446719,
+          "n_train_borehole_split": 13515,
+          "n_test_borehole_split": 1265
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.4126344165142941,
+          "n_train_sample_split": 13315,
+          "n_test_sample_split": 1461,
+          "borehole_split": 0.15125708456615028,
+          "n_train_borehole_split": 13511,
+          "n_test_borehole_split": 1265
+        },
+        "PEN": {
+          "sample_split": 0.4519449095955548,
+          "n_train_sample_split": 1636,
+          "n_test_sample_split": 196,
+          "borehole_split": NaN,
+          "n_train_borehole_split": 1826,
+          "n_test_borehole_split": 6
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.70945240123817,
+          "n_train_sample_split": 9847,
+          "n_test_sample_split": 1058,
+          "borehole_split": 0.6167358909472043,
+          "n_train_borehole_split": 9690,
+          "n_test_borehole_split": 1215
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.47564539109879156,
+          "n_train_sample_split": 98114,
+          "n_test_sample_split": 10713,
+          "borehole_split": 0.468843154223475,
+          "n_train_borehole_split": 96345,
+          "n_test_borehole_split": 12482
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.4368007741781704,
+          "n_train_sample_split": 2213,
+          "n_test_sample_split": 230,
+          "borehole_split": -1817.9625259351515,
+          "n_train_borehole_split": 2035,
+          "n_test_borehole_split": 408
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.6997662002631686,
+          "n_train_sample_split": 176236,
+          "n_test_sample_split": 19375,
+          "borehole_split": 0.5619379808691025,
+          "n_train_borehole_split": 174621,
+          "n_test_borehole_split": 20990
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.4617209969332605,
+          "n_train_sample_split": 4602,
+          "n_test_sample_split": 510,
+          "borehole_split": 0.2697054452418479,
+          "n_train_borehole_split": 4653,
+          "n_test_borehole_split": 459
+        }
+      }
+    },
+    {
+      "iteration": 29,
+      "n_holdout_rows": 24788,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "sample_split": 0.2895046663114226,
+          "n_train_sample_split": 1179,
+          "n_test_sample_split": 143,
+          "borehole_split": -0.17705976595534056,
+          "n_train_borehole_split": 1152,
+          "n_test_borehole_split": 170
+        },
+        "MAD_Porosity (vol%)": {
+          "sample_split": 0.7100506531279343,
+          "n_train_sample_split": 13213,
+          "n_test_sample_split": 1567,
+          "borehole_split": 0.8045410462062861,
+          "n_train_borehole_split": 13400,
+          "n_test_borehole_split": 1380
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "sample_split": 0.37440853009198294,
+          "n_train_sample_split": 13212,
+          "n_test_sample_split": 1564,
+          "borehole_split": -0.025644794182615227,
+          "n_train_borehole_split": 13396,
+          "n_test_borehole_split": 1380
+        },
+        "PEN": {
+          "sample_split": 0.6764874760032697,
+          "n_train_sample_split": 1633,
+          "n_test_sample_split": 199,
+          "borehole_split": 0.11147046309033182,
+          "n_train_borehole_split": 1519,
+          "n_test_borehole_split": 313
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "sample_split": 0.6832860922725694,
+          "n_train_sample_split": 9744,
+          "n_test_sample_split": 1161,
+          "borehole_split": 0.3647144599930012,
+          "n_train_borehole_split": 10353,
+          "n_test_borehole_split": 552
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "sample_split": 0.506836962379311,
+          "n_train_sample_split": 97498,
+          "n_test_sample_split": 11329,
+          "borehole_split": 0.18419819823497718,
+          "n_train_borehole_split": 99809,
+          "n_test_borehole_split": 9018
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "sample_split": 0.28888052943238596,
+          "n_train_sample_split": 2181,
+          "n_test_sample_split": 262,
+          "borehole_split": 0.22363710191022335,
+          "n_train_borehole_split": 2181,
+          "n_test_borehole_split": 262
+        },
+        "SRM_Intensity raw (A/m)": {
+          "sample_split": 0.7068934576555328,
+          "n_train_sample_split": 175088,
+          "n_test_sample_split": 20523,
+          "borehole_split": 0.5985667719540797,
+          "n_train_borehole_split": 177840,
+          "n_test_borehole_split": 17771
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "sample_split": 0.42508141614979666,
+          "n_train_sample_split": 4579,
+          "n_test_sample_split": 533,
+          "borehole_split": 0.5305655439242154,
+          "n_train_borehole_split": 4525,
+          "n_test_borehole_split": 587
+        }
+      }
+    }
+  ],
+  "summary": {
+    "AVS_Vane shear strength (kN/m^2)": {
+      "label": "Vane shear strength",
+      "sample_split": 0.34296479189622914,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.04043722805654004,
+      "n_folds_borehole_split": 29
+    },
+    "MAD_Porosity (vol%)": {
+      "label": "Porosity",
+      "sample_split": 0.7399819282545843,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.5314733078886679,
+      "n_folds_borehole_split": 30
+    },
+    "MAD_Grain density (g/cm^3)": {
+      "label": "Grain density",
+      "sample_split": 0.40011666746380975,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.077208632689449,
+      "n_folds_borehole_split": 30
+    },
+    "PEN": {
+      "label": "Penetration resistance",
+      "sample_split": 0.506263720218808,
+      "n_folds_sample_split": 30,
+      "borehole_split": -0.9107854240829419,
+      "n_folds_borehole_split": 26
+    },
+    "PWC_P-wave velocity x (m/s)": {
+      "label": "P-wave velocity (discrete)",
+      "sample_split": 0.691055500116104,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.4040945284708278,
+      "n_folds_borehole_split": 30
+    },
+    "PWL_P-wave velocity xy (m/s)": {
+      "label": "P-wave velocity (whole core)",
+      "sample_split": 0.48582780046458407,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.155863755457477,
+      "n_folds_borehole_split": 30
+    },
+    "SRMD_Intensity raw (A/m)": {
+      "label": "Magnetisation (discrete)",
+      "sample_split": 0.4692830765655878,
+      "n_folds_sample_split": 30,
+      "borehole_split": -0.7719505307535475,
+      "n_folds_borehole_split": 30
+    },
+    "SRM_Intensity raw (A/m)": {
+      "label": "Magnetisation (whole core)",
+      "sample_split": 0.6998302801585747,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.5680457719256333,
+      "n_folds_borehole_split": 30
+    },
+    "TCON_Thermal conductivity mean (W/(m*K))": {
+      "label": "Thermal conductivity",
+      "sample_split": 0.4737778842474462,
+      "n_folds_sample_split": 30,
+      "borehole_split": 0.2913776855782347,
+      "n_folds_borehole_split": 30
+    }
+  },
+  "elapsed_seconds": 489.98711943626404
+}
