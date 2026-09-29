@@ -17,6 +17,7 @@ ALL_FIGURES = [
     "r2_unsup_vs_semi",
     "variable_correlations",
     "sae_hypotheses",
+    "depth_within_between",
 ]
 
 
@@ -62,6 +63,9 @@ def main():
             elif fig_name == "sae_hypotheses":
                 from lilyvae.plotting.sae_figures import plot_sae_hypotheses
                 plot_sae_hypotheses(output_dir=args.output_dir)
+            elif fig_name == "depth_within_between":
+                from lilyvae.plotting.holdout_figures import plot_depth_within_between
+                plot_depth_within_between(output_dir=args.output_dir)
             elif fig_name == "variable_correlations":
                 from lilyvae.plotting.data_figures import plot_variable_correlations
                 plot_variable_correlations(args.output_dir)

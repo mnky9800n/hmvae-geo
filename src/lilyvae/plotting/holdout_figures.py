@@ -500,8 +500,43 @@ def plot_train_vs_heldout(
     return out
 
 
+def _depth_rows_from_results(
+    within_path: Path | None = None, heldout_path: Path | None = None
+) -> list[tuple[str, float, float, float]]:
+    """Assemble (label, within, pooled, held-out) from the result files.
+
+    The first two come from `depth_within`, the third from the depth
+    bootstrap's depth_only arm. This figure used to be drawn from
+    numbers passed in by hand, which meant the only copy of them was the
+    caption, and nothing in the repository could redraw it.
+    """
+    within = json.loads(Path(
+        within_path or RESULTS_DIR / "depth_within.json").read_text())
+    held = json.loads(Path(
+        heldout_path or RESULTS_DIR / "depth_bootstrap.json").read_text())
+
+    heldout_median: dict[str, list[float]] = {}
+    for it in held["per_iteration"]:
+        for name, r in (it.get("per_variable") or {}).items():
+            v = r.get("depth_only")
+            if v is not None and np.isfinite(v):
+                heldout_median.setdefault(name, []).append(v)
+
+    rows = []
+    for name, entry in within["per_target"].items():
+        if name not in heldout_median:
+            continue
+        rows.append((
+            entry["label"],
+            entry["within_borehole"],
+            entry["pooled"],
+            float(np.median(heldout_median[name])),
+        ))
+    return rows
+
+
 def plot_depth_within_between(
-    within_pooled_heldout: list[tuple[str, float, float, float]],
+    within_pooled_heldout: list[tuple[str, float, float, float]] | None = None,
     output_dir: Path | None = None,
 ) -> Path:
     """Depth explains a borehole and does not travel between boreholes.
@@ -511,12 +546,17 @@ def plot_depth_within_between(
     seen. The collapse from left to right is the argument, and it is the
     reason the six measurements are worth having even though depth beats
     them comfortably within any one hole.
+
+    Reads the result files when given nothing, so the figure can be
+    redrawn from the repository rather than from remembered numbers.
     """
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
 
     apply_style()
     output_dir = Path(output_dir or PAPER_DIR)
+    if within_pooled_heldout is None:
+        within_pooled_heldout = _depth_rows_from_results()
     rows = sorted(within_pooled_heldout, key=lambda r: -r[1])
     labels = [r[0] for r in rows]
     series = [
@@ -529,19 +569,28 @@ def plot_depth_within_between(
     height = 0.26
     fig, ax = plt.subplots(figsize=(9.4, 0.62 * len(rows) + 2.8))
 
+    # Depth on an unseen borehole can be far below zero (penetration
+    # resistance reaches -3.5), and one such bar would set the scale for
+    # every other. Draw those at the floor with the true number beside
+    # them, as the train-versus-held-out figure does.
+    floor = -0.30
     for k, (name, values, colour) in enumerate(series):
         offset = (1 - k) * height
-        ax.barh(ys + offset, values, height=height * 0.92, color=colour,
+        drawn = [max(v, floor) for v in values]
+        ax.barh(ys + offset, drawn, height=height * 0.92, color=colour,
                 edgecolor="white", linewidth=1.2, zorder=3, label=name)
-        for y, v in zip(ys + offset, values):
-            ax.text(v + 0.015 if v >= 0 else v - 0.015, y, f"{v:.2f}",
-                    va="center", ha="left" if v >= 0 else "right",
-                    fontsize=8.2, color=INK)
+        for y, v, d in zip(ys + offset, values, drawn):
+            clipped = v < floor
+            ax.text(d + 0.015 if d >= 0 else d - 0.015, y, f"{v:.2f}",
+                    va="center", ha="left" if d >= 0 else "right",
+                    fontsize=8.2, color=ACCENT if clipped else INK)
+            if clipped:
+                ax.plot(floor, y, marker="<", ms=5, color=ACCENT, zorder=4)
 
     ax.axvline(0.0, color=MUTED, lw=0.9, zorder=2)
     ax.set_yticks(ys)
     ax.set_yticklabels(labels, fontsize=10, color=INK)
-    ax.set_xlim(-0.18, 1.12)
+    ax.set_xlim(floor - 0.14, 1.12)
     ax.set_xlabel("$R^2$", fontsize=11, color=MUTED)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)

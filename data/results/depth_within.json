@@ -1,0 +1,87 @@
+{
+  "_provenance": {
+    "git_sha": "34b5f37a643063d4a7df658ac03665584e92b232",
+    "git_dirty": true,
+    "created_utc": "2026-09-29T11:21:50+00:00",
+    "host": "Mac.home",
+    "command": "/Users/mnky9800n/repos/jenniferprojects/lilyvae/.venv/bin/lilyvae-depth-within",
+    "python": "3.14.3"
+  },
+  "config": {
+    "tiers": [
+      "independent"
+    ],
+    "min_borehole_rows": 60
+  },
+  "per_target": {
+    "AVS_Vane shear strength (kN/m^2)": {
+      "label": "Vane shear strength",
+      "within_borehole": 0.9916196145674501,
+      "pooled": 0.3077230124822573,
+      "n_boreholes_fitted": 5,
+      "n_rows": 1322
+    },
+    "MAD_Porosity (vol%)": {
+      "label": "Porosity",
+      "within_borehole": 0.9821839569087005,
+      "pooled": 0.36182273193042525,
+      "n_boreholes_fitted": 92,
+      "n_rows": 14780
+    },
+    "MAD_Grain density (g/cm^3)": {
+      "label": "Grain density",
+      "within_borehole": 0.9587352759475665,
+      "pooled": 0.0210701881557831,
+      "n_boreholes_fitted": 92,
+      "n_rows": 14776
+    },
+    "PEN": {
+      "label": "Penetration resistance",
+      "within_borehole": 0.9791260564194861,
+      "pooled": 0.1963993304749757,
+      "n_boreholes_fitted": 12,
+      "n_rows": 1832
+    },
+    "PWC_P-wave velocity x (m/s)": {
+      "label": "P-wave velocity (discrete)",
+      "within_borehole": 0.9822585827454952,
+      "pooled": 0.5171545671283408,
+      "n_boreholes_fitted": 55,
+      "n_rows": 10905
+    },
+    "PWL_P-wave velocity xy (m/s)": {
+      "label": "P-wave velocity (whole core)",
+      "within_borehole": 0.7148475610267256,
+      "pooled": 0.3313895105659169,
+      "n_boreholes_fitted": 178,
+      "n_rows": 108827
+    },
+    "SRMD_Intensity raw (A/m)": {
+      "label": "Magnetisation (discrete)",
+      "within_borehole": 0.9861136746097389,
+      "pooled": 0.235273808016625,
+      "n_boreholes_fitted": 10,
+      "n_rows": 2443
+    },
+    "SRM_Intensity raw (A/m)": {
+      "label": "Magnetisation (whole core)",
+      "within_borehole": 0.7694645541292924,
+      "pooled": 0.0012639293972304122,
+      "n_boreholes_fitted": 228,
+      "n_rows": 195611
+    },
+    "TCON_Thermal conductivity mean (W/(m*K))": {
+      "label": "Thermal conductivity",
+      "within_borehole": 0.9781147062347291,
+      "pooled": 0.15943905426684435,
+      "n_boreholes_fitted": 18,
+      "n_rows": 5112
+    }
+  },
+  "summary": {
+    "within_borehole_median": 0.9791260564194861,
+    "pooled_median": 0.235273808016625,
+    "n_targets": 9
+  },
+  "elapsed_seconds": 46.73667931556702
+}
