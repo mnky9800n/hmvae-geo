@@ -20,8 +20,18 @@ MAIN="${1:-jgr_ml}"
 cd "$PAPER_DIR" || { echo "no paper directory at $PAPER_DIR"; exit 1; }
 [ -f "$MAIN.tex" ] || { echo "no such file: $PAPER_DIR/$MAIN.tex"; exit 1; }
 
-BUILD="$(mktemp -d)"
-trap 'rm -rf "$BUILD"' EXIT
+# Build into the paper's own build/ rather than a temp directory. A
+# temp build verifies the source and leaves the PDF people actually open
+# untouched, so build/jgr_ml.pdf sat five days stale while this script
+# reported "builds clean" every time. build/ is gitignored.
+BUILD="$PAPER_DIR/build"
+mkdir -p "$BUILD"
+# Clear the intermediates first. A temp build was clean by construction;
+# a persistent one is not, and a stale .bbl left from an earlier run
+# would satisfy citations that the current source no longer resolves,
+# which would make this check quietly weaker than it was. The PDF is
+# left alone because the build overwrites it.
+rm -f "$BUILD/$MAIN".{aux,bbl,blg,log,out,toc}
 
 run_tex() {
     pdflatex -interaction=nonstopmode -halt-on-error \
@@ -111,5 +121,6 @@ if [ "$status" -eq 0 ]; then
              | grep -oE '[0-9]+ pages' | tail -1 || echo "? pages")
     cites=$(grep -c '^\\bibitem' "$BUILD/$MAIN.bbl" 2>/dev/null || echo 0)
     echo "OK: $MAIN.tex builds clean, $pages, $cites references resolved"
+    echo "    $BUILD/$MAIN.pdf"
 fi
 exit "$status"
