@@ -29,7 +29,10 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 echo "deploying $BRANCH $SHA to $HOST"
 
 ssh "$HOST" "mkdir -p ~/repos/lilyvae"
-rsync -az --delete-excluded \
+# --delete, never --delete-excluded. The latter deletes the excluded
+# paths on the receiver too, which wiped data/results/ and logs/ on the
+# box on every deploy, once while a run was writing to a log there.
+rsync -az --delete \
     --exclude 'data/raw' --exclude 'data/results' --exclude '.git' \
     --exclude '__pycache__' --exclude '.venv' --exclude 'logs' \
     --exclude 'an-unsupervised-embeddings-model-for-ocean-crust-lithology' \
