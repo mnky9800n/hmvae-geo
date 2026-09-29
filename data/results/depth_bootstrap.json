@@ -1,0 +1,2762 @@
+{
+  "_provenance": {
+    "git_sha": "32fa0ed97950d5f93e3b7b8b354778229bca535e",
+    "git_dirty": false,
+    "created_utc": "2026-09-28T23:29:02+00:00",
+    "host": "lambda-scalar",
+    "command": "/home/mnky9800n/repos/lilyvae/.venv/bin/lilyvae-depth-bootstrap",
+    "python": "3.14.4"
+  },
+  "config": {
+    "n_iterations": 30,
+    "test_fraction": 0.1,
+    "tiers": [
+      "independent"
+    ],
+    "feature_sets": [
+      "depth_only",
+      "embedding",
+      "embedding_resid",
+      "embedding_depth"
+    ],
+    "targets": [
+      "AVS_Vane shear strength (kN/m^2)",
+      "MAD_Porosity (vol%)",
+      "MAD_Grain density (g/cm^3)",
+      "PEN",
+      "PWC_P-wave velocity x (m/s)",
+      "PWL_P-wave velocity xy (m/s)",
+      "SRMD_Intensity raw (A/m)",
+      "SRM_Intensity raw (A/m)",
+      "TCON_Thermal conductivity mean (W/(m*K))"
+    ],
+    "seed": 42
+  },
+  "per_iteration": [
+    {
+      "iteration": 0,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1052,
+          "n_test": 270,
+          "depth_only": 0.220595261141995,
+          "embedding": -0.1342493055367644,
+          "embedding_resid": -0.008562295258000452,
+          "embedding_depth": 0.1713780305111854
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13188,
+          "n_test": 1592,
+          "depth_only": 0.09763797506722538,
+          "embedding": 0.7121243944944061,
+          "embedding_resid": 0.6542620286731786,
+          "embedding_depth": 0.7537952492001573
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13185,
+          "n_test": 1591,
+          "depth_only": -0.0655381187887647,
+          "embedding": 0.07890193972692772,
+          "embedding_resid": 0.04364030504339578,
+          "embedding_depth": 0.09725708659982357
+        },
+        "PEN": {
+          "n_train": 1478,
+          "n_test": 354,
+          "depth_only": -328.72389188339037,
+          "embedding": -31.581907808750664,
+          "embedding_resid": -0.35489576677797285,
+          "embedding_depth": -13.954108310654382
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10068,
+          "n_test": 837,
+          "depth_only": -0.07432489947947807,
+          "embedding": -0.1901418862935229,
+          "embedding_resid": 0.03234866621047805,
+          "embedding_depth": 0.13272963413998962
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 101206,
+          "n_test": 7621,
+          "depth_only": 0.27574641996507887,
+          "embedding": 0.09208195625756366,
+          "embedding_resid": -0.021101971806019693,
+          "embedding_depth": 0.24556282951233943
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2075,
+          "n_test": 368,
+          "depth_only": -4390.219281992586,
+          "embedding": -1450.4770817159047,
+          "embedding_resid": -0.45996284877856186,
+          "embedding_depth": -1199.2939361522797
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 178424,
+          "n_test": 17187,
+          "depth_only": -0.07691720212419773,
+          "embedding": 0.5585202752989185,
+          "embedding_resid": 0.5168668686356916,
+          "embedding_depth": 0.6427203751215538
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4587,
+          "n_test": 525,
+          "depth_only": 0.08913319753858606,
+          "embedding": 0.5088666090775004,
+          "embedding_resid": 0.2852922339873981,
+          "embedding_depth": 0.44634152747373645
+        }
+      },
+      "elapsed_seconds": 341.9808979034424
+    },
+    {
+      "iteration": 1,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1217,
+          "n_test": 105,
+          "depth_only": -1.0672699666508305,
+          "embedding": 0.16386507033239983,
+          "embedding_resid": 0.21063315447842546,
+          "embedding_depth": 0.06845953760722867
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13476,
+          "n_test": 1304,
+          "depth_only": 0.3418608359938212,
+          "embedding": 0.47189910479397623,
+          "embedding_resid": 0.44049989687359137,
+          "embedding_depth": 0.7129909472538851
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13472,
+          "n_test": 1304,
+          "depth_only": -0.08200964855303372,
+          "embedding": -0.02719059379159372,
+          "embedding_resid": -0.01444524219898824,
+          "embedding_depth": 0.05516662056583732
+        },
+        "PEN": {
+          "n_train": 1638,
+          "n_test": 194,
+          "depth_only": -0.16612656610593546,
+          "embedding": 0.047135902599836466,
+          "embedding_resid": 0.04224411213153012,
+          "embedding_depth": 0.03934703062793188
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10281,
+          "n_test": 624,
+          "depth_only": -0.5406195873284334,
+          "embedding": 0.2914516843929108,
+          "embedding_resid": 0.29459754359851986,
+          "embedding_depth": 0.34658486571831015
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 95827,
+          "n_test": 13000,
+          "depth_only": -0.34638529100250137,
+          "embedding": -0.16363248422971677,
+          "embedding_resid": 0.11067284674409439,
+          "embedding_depth": 0.053083479290014224
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2112,
+          "n_test": 331,
+          "depth_only": -0.5624451440900116,
+          "embedding": -0.1609140946214609,
+          "embedding_resid": -0.16045358363551565,
+          "embedding_depth": -0.16030547103318238
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 180141,
+          "n_test": 15470,
+          "depth_only": -0.08730496912130681,
+          "embedding": 0.6228676679034697,
+          "embedding_resid": 0.611132882088848,
+          "embedding_depth": 0.694069199767703
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4568,
+          "n_test": 544,
+          "depth_only": 0.11541294807767055,
+          "embedding": 0.1981849113420584,
+          "embedding_resid": 0.16790539717413977,
+          "embedding_depth": 0.31746039971851403
+        }
+      },
+      "elapsed_seconds": 317.3390407562256
+    },
+    {
+      "iteration": 2,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1166,
+          "n_test": 156,
+          "depth_only": -0.2673268331929759,
+          "embedding": 0.5656857767720316,
+          "embedding_resid": 0.6447432073208237,
+          "embedding_depth": 0.6679382404803691
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12596,
+          "n_test": 2184,
+          "depth_only": 0.19270173621936382,
+          "embedding": 0.41474118470844845,
+          "embedding_resid": 0.2112157481792699,
+          "embedding_depth": 0.5366187119640782
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12593,
+          "n_test": 2183,
+          "depth_only": -0.057880025467019536,
+          "embedding": 0.03145516518909186,
+          "embedding_resid": 0.0892966261002961,
+          "embedding_depth": 0.155004976260259
+        },
+        "PEN": {
+          "n_train": 1614,
+          "n_test": 218,
+          "depth_only": -0.036929989816274045,
+          "embedding": -1.1882277781039834,
+          "embedding_resid": -0.543705009959355,
+          "embedding_depth": -0.43169499228020936
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 8872,
+          "n_test": 2033,
+          "depth_only": 0.33158808711205445,
+          "embedding": 0.4801179901491306,
+          "embedding_resid": 0.12256993927757798,
+          "embedding_depth": 0.48696812755839647
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 98121,
+          "n_test": 10706,
+          "depth_only": 0.03393277612996659,
+          "embedding": -0.02788538810032315,
+          "embedding_resid": 0.03190592730059927,
+          "embedding_depth": 0.1161376007773548
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2357,
+          "n_test": 86,
+          "depth_only": -11366.405273219392,
+          "embedding": -567.2479249933518,
+          "embedding_resid": -0.03643267217252233,
+          "embedding_depth": -234.15076171183685
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 170657,
+          "n_test": 24954,
+          "depth_only": 0.013817508975556114,
+          "embedding": -0.005662402342423656,
+          "embedding_resid": 0.22704230231353362,
+          "embedding_depth": -0.013102257295114494
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4600,
+          "n_test": 512,
+          "depth_only": 0.056336266834245974,
+          "embedding": 0.32637468892651234,
+          "embedding_resid": 0.24643017683040047,
+          "embedding_depth": 0.43732340042689966
+        }
+      },
+      "elapsed_seconds": 285.6588501930237
+    },
+    {
+      "iteration": 3,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1216,
+          "n_test": 106,
+          "depth_only": -0.4040356397220728,
+          "embedding": -0.813534619979678,
+          "embedding_resid": -0.01342849752610098,
+          "embedding_depth": -0.4601855413318341
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13520,
+          "n_test": 1260,
+          "depth_only": 0.29243024651391925,
+          "embedding": 0.5194383784846915,
+          "embedding_resid": 0.4616614182430947,
+          "embedding_depth": 0.6762574819147202
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13516,
+          "n_test": 1260,
+          "depth_only": -0.03882294648333717,
+          "embedding": -0.08917652786245234,
+          "embedding_resid": -0.10095177487998086,
+          "embedding_depth": -0.06655442346227924
+        },
+        "PEN": {
+          "n_train": 1527,
+          "n_test": 305,
+          "depth_only": -508.8863365303006,
+          "embedding": -1.7099727131202402,
+          "embedding_resid": -0.2880910888126398,
+          "embedding_depth": -7.091872728156094
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10193,
+          "n_test": 712,
+          "depth_only": 0.17032008777541385,
+          "embedding": 0.23604452446911528,
+          "embedding_resid": 0.4355322095042574,
+          "embedding_depth": 0.5598562322439554
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 95785,
+          "n_test": 13042,
+          "depth_only": 0.19653375168419318,
+          "embedding": -0.11350775650850276,
+          "embedding_resid": -0.21291958432574254,
+          "embedding_depth": 0.04991440231657429
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2206,
+          "n_test": 237,
+          "depth_only": -2.3027674921448855,
+          "embedding": -6.809875911023073,
+          "embedding_resid": -1.08713802083913,
+          "embedding_depth": -8.499393015115107
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 173595,
+          "n_test": 22016,
+          "depth_only": 0.011629223776749464,
+          "embedding": 0.38598059367763815,
+          "embedding_resid": 0.4119815017683105,
+          "embedding_depth": 0.40167987214839784
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4563,
+          "n_test": 549,
+          "depth_only": -0.021723428812225665,
+          "embedding": 0.19243543684725717,
+          "embedding_resid": 0.35751849199503505,
+          "embedding_depth": 0.49270375077408635
+        }
+      },
+      "elapsed_seconds": 295.9916944503784
+    },
+    {
+      "iteration": 4,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1174,
+          "n_test": 148,
+          "depth_only": -0.0046265989850757805,
+          "embedding": 0.045055548610690166,
+          "embedding_resid": 0.2117527296222772,
+          "embedding_depth": 0.17192511274327216
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13204,
+          "n_test": 1576,
+          "depth_only": 0.3867612661362154,
+          "embedding": 0.5974323806126705,
+          "embedding_resid": 0.21533991955375953,
+          "embedding_depth": 0.6641197275346624
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13199,
+          "n_test": 1577,
+          "depth_only": -0.10377983423533288,
+          "embedding": 0.2477508499571376,
+          "embedding_resid": 0.21616278802131728,
+          "embedding_depth": 0.27221894570330296
+        },
+        "PEN": {
+          "n_train": 1478,
+          "n_test": 354,
+          "depth_only": -328.72389188339037,
+          "embedding": -30.647118094061035,
+          "embedding_resid": -0.3763432323486102,
+          "embedding_depth": -20.080595856670264
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9836,
+          "n_test": 1069,
+          "depth_only": 0.26650929013064417,
+          "embedding": 0.517716264231572,
+          "embedding_resid": -0.4595596846504171,
+          "embedding_depth": 0.22631357529920448
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99797,
+          "n_test": 9030,
+          "depth_only": 0.03421017236625801,
+          "embedding": 0.014203817766008542,
+          "embedding_resid": 0.04195987803957857,
+          "embedding_depth": 0.08692322855430923
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2248,
+          "n_test": 195,
+          "depth_only": -354.51553485952,
+          "embedding": -843.4225253136175,
+          "embedding_resid": -2.258867726293214,
+          "embedding_depth": -561.3923572531921
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 176698,
+          "n_test": 18913,
+          "depth_only": 0.4648995954909396,
+          "embedding": 0.7566127166448924,
+          "embedding_resid": 0.29645539195992243,
+          "embedding_depth": 0.7419754956077497
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4663,
+          "n_test": 449,
+          "depth_only": -0.14212700962593772,
+          "embedding": 0.15128974090049718,
+          "embedding_resid": 0.07403274967147622,
+          "embedding_depth": 0.1325853943662182
+        }
+      },
+      "elapsed_seconds": 293.47189497947693
+    },
+    {
+      "iteration": 5,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1172,
+          "n_test": 150,
+          "depth_only": -0.032855312140865456,
+          "embedding": -0.18120127861790314,
+          "embedding_resid": -0.14210738846483006,
+          "embedding_depth": 0.0954934437976791
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13476,
+          "n_test": 1304,
+          "depth_only": 0.21231261561543313,
+          "embedding": 0.21002395193043388,
+          "embedding_resid": 0.16248950623998315,
+          "embedding_depth": 0.5715150357704518
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13472,
+          "n_test": 1304,
+          "depth_only": -0.1365096337134053,
+          "embedding": -0.12068416432416385,
+          "embedding_resid": -0.21219668679697024,
+          "embedding_depth": 0.1335876450070741
+        },
+        "PEN": {
+          "n_train": 1829,
+          "n_test": 3
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10037,
+          "n_test": 868,
+          "depth_only": 0.29015600552371856,
+          "embedding": -0.36400814499654155,
+          "embedding_resid": -0.15708560031353924,
+          "embedding_depth": 0.3953409834458209
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 95803,
+          "n_test": 13024,
+          "depth_only": -0.04333932729664847,
+          "embedding": 0.14519030657669196,
+          "embedding_resid": 0.10482080442228714,
+          "embedding_depth": 0.20145758776192302
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2335,
+          "n_test": 108,
+          "depth_only": -447.90959182394624,
+          "embedding": -460.6054371503186,
+          "embedding_resid": -1.359432405795289,
+          "embedding_depth": -199.4676608447637
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 178052,
+          "n_test": 17559,
+          "depth_only": -0.21890905841436448,
+          "embedding": 0.033865587077689274,
+          "embedding_resid": -0.07480511038321613,
+          "embedding_depth": 0.04972672305768011
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4755,
+          "n_test": 357,
+          "depth_only": -0.08547786927818257,
+          "embedding": 0.27141715553899926,
+          "embedding_resid": 0.14451773643807797,
+          "embedding_depth": 0.08199561802499777
+        }
+      },
+      "elapsed_seconds": 297.0978436470032
+    },
+    {
+      "iteration": 6,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1245,
+          "n_test": 77,
+          "depth_only": -0.16394258508826098,
+          "embedding": -0.007847862062304145,
+          "embedding_resid": -0.4348139371869475,
+          "embedding_depth": 0.3619803011487328
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12466,
+          "n_test": 2314,
+          "depth_only": 0.4706079100126771,
+          "embedding": 0.5135575140407294,
+          "embedding_resid": 0.3862652695195039,
+          "embedding_depth": 0.6983384487618935
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12463,
+          "n_test": 2313,
+          "depth_only": -0.04816892520545668,
+          "embedding": 0.16990406389880197,
+          "embedding_resid": 0.1710883629275628,
+          "embedding_depth": 0.2734821368656021
+        },
+        "PEN": {
+          "n_train": 1679,
+          "n_test": 153,
+          "depth_only": -93.86781336464463,
+          "embedding": -0.44650269989665703,
+          "embedding_resid": -0.1579198312013821,
+          "embedding_depth": 0.0010341206126489588
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 8722,
+          "n_test": 2183,
+          "depth_only": 0.22512787739401807,
+          "embedding": 0.18713322481452443,
+          "embedding_resid": -0.17371006415059442,
+          "embedding_depth": 0.08397313641428872
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 97320,
+          "n_test": 11507,
+          "depth_only": 0.14106867852204152,
+          "embedding": 0.0404931326800545,
+          "embedding_resid": 0.014080516284911138,
+          "embedding_depth": 0.1834669000062501
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2318,
+          "n_test": 125,
+          "depth_only": -0.3046140976174039,
+          "embedding": 0.3395568320710143,
+          "embedding_resid": 0.2877958036533249,
+          "embedding_depth": 0.1935362294463202
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 168338,
+          "n_test": 27273,
+          "depth_only": -0.12015612416155208,
+          "embedding": 0.21162346627501094,
+          "embedding_resid": 0.39703704655476324,
+          "embedding_depth": 0.16738834652193113
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4485,
+          "n_test": 627,
+          "depth_only": -0.09599118054440736,
+          "embedding": 0.39097158514811114,
+          "embedding_resid": 0.24416499735660213,
+          "embedding_depth": 0.44210262900456243
+        }
+      },
+      "elapsed_seconds": 283.91911363601685
+    },
+    {
+      "iteration": 7,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1229,
+          "n_test": 93,
+          "depth_only": 0.07420746101351605,
+          "embedding": 0.2799087969872708,
+          "embedding_resid": 0.17061668826122323,
+          "embedding_depth": 0.49021611970259515
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13546,
+          "n_test": 1234,
+          "depth_only": 0.3840412884195483,
+          "embedding": 0.4105415848149945,
+          "embedding_resid": 0.2677520694558311,
+          "embedding_depth": 0.6090030071773125
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13544,
+          "n_test": 1232,
+          "depth_only": -0.08234198631610545,
+          "embedding": 0.04188986723594723,
+          "embedding_resid": 0.08780337367689361,
+          "embedding_depth": 0.3132595803009848
+        },
+        "PEN": {
+          "n_train": 1749,
+          "n_test": 83,
+          "depth_only": -62.57635099596391,
+          "embedding": -487.2577692319633,
+          "embedding_resid": -7.893962504057297,
+          "embedding_depth": -289.13145691757256
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9085,
+          "n_test": 1820,
+          "depth_only": 0.44311123973001754,
+          "embedding": 0.40878860317645827,
+          "embedding_resid": 0.19381478358683568,
+          "embedding_depth": 0.6575002433018136
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99570,
+          "n_test": 9257,
+          "depth_only": 0.07423212634168364,
+          "embedding": 0.008114173503975475,
+          "embedding_resid": 0.03330614593903214,
+          "embedding_depth": 0.13287609483046436
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2213,
+          "n_test": 230,
+          "depth_only": -0.26182401127155863,
+          "embedding": 0.027700097281832203,
+          "embedding_resid": -0.0023516843762276807,
+          "embedding_depth": -0.023722362558664
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 175885,
+          "n_test": 19726,
+          "depth_only": 0.2887039086049178,
+          "embedding": 0.14641573395194052,
+          "embedding_resid": -0.11519538461132761,
+          "embedding_depth": -0.0376524106832723
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4514,
+          "n_test": 598,
+          "depth_only": 0.11275102442493135,
+          "embedding": 0.31543840912042476,
+          "embedding_resid": 0.31354282525658284,
+          "embedding_depth": 0.39754137747319884
+        }
+      },
+      "elapsed_seconds": 300.0296154022217
+    },
+    {
+      "iteration": 8,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1180,
+          "n_test": 142,
+          "depth_only": -0.0942155443865802,
+          "embedding": 0.28906601691536804,
+          "embedding_resid": 0.16987272267611897,
+          "embedding_depth": 0.48754153609873196
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13615,
+          "n_test": 1165,
+          "depth_only": 0.4552497459674334,
+          "embedding": 0.4608551997684214,
+          "embedding_resid": 0.4720066020636621,
+          "embedding_depth": 0.7694577295207585
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13610,
+          "n_test": 1166,
+          "depth_only": -0.04802219686426357,
+          "embedding": 0.13044901422793187,
+          "embedding_resid": 0.1494997872581092,
+          "embedding_depth": 0.19144196750302245
+        },
+        "PEN": {
+          "n_train": 1599,
+          "n_test": 233,
+          "depth_only": -5.965866681773557,
+          "embedding": -1.3163803346200522,
+          "embedding_resid": -0.3140950144719721,
+          "embedding_depth": -17.682098462018487
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10201,
+          "n_test": 704,
+          "depth_only": 0.39403817199789193,
+          "embedding": 0.459654197777872,
+          "embedding_resid": -0.05398019848237423,
+          "embedding_depth": 0.5224090046211136
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 96515,
+          "n_test": 12312,
+          "depth_only": 0.04449757812875732,
+          "embedding": -0.005048645481803948,
+          "embedding_resid": -0.008833753979234471,
+          "embedding_depth": 0.1385226572250331
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2385,
+          "n_test": 58,
+          "depth_only": -0.15399676801307471,
+          "embedding": 0.6525359351296388,
+          "embedding_resid": 0.4419223393752334,
+          "embedding_depth": 0.37831763816622976
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 177828,
+          "n_test": 17783,
+          "depth_only": -0.01007543739370309,
+          "embedding": 0.7453705770598495,
+          "embedding_resid": 0.6949401968365422,
+          "embedding_depth": 0.7838925777240866
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4740,
+          "n_test": 372,
+          "depth_only": 0.15040757723146025,
+          "embedding": 0.27186369096126606,
+          "embedding_resid": 0.16141543819309734,
+          "embedding_depth": 0.3461825247973752
+        }
+      },
+      "elapsed_seconds": 292.1467022895813
+    },
+    {
+      "iteration": 9,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1256,
+          "n_test": 66,
+          "depth_only": -0.08505419588507901,
+          "embedding": 0.01456448394465315,
+          "embedding_resid": 0.2831929945028161,
+          "embedding_depth": 0.0007911287234091402
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12982,
+          "n_test": 1798,
+          "depth_only": 0.3520294124697556,
+          "embedding": 0.3196072191700817,
+          "embedding_resid": 0.3007358227057486,
+          "embedding_depth": 0.5597830195186504
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12979,
+          "n_test": 1797,
+          "depth_only": -0.0397572030061355,
+          "embedding": 0.012087672406127403,
+          "embedding_resid": 0.04821213886115794,
+          "embedding_depth": 0.23290373326071123
+        },
+        "PEN": {
+          "n_train": 1489,
+          "n_test": 343,
+          "depth_only": -0.7066724865712848,
+          "embedding": 0.3521218643949686,
+          "embedding_resid": 0.07775296116671682,
+          "embedding_depth": 0.4348845303088439
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9332,
+          "n_test": 1573,
+          "depth_only": 0.37732778954404744,
+          "embedding": 0.36786780179292256,
+          "embedding_resid": -0.09231540465600552,
+          "embedding_depth": 0.40778481405678824
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 101042,
+          "n_test": 7785,
+          "depth_only": 0.13741544036033126,
+          "embedding": 0.166451690117298,
+          "embedding_resid": 0.1449574959643516,
+          "embedding_depth": 0.26324530634370624
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2286,
+          "n_test": 157,
+          "depth_only": -0.45129975842267855,
+          "embedding": 0.028136556168533167,
+          "embedding_resid": -0.08185279899828646,
+          "embedding_depth": 0.010733008074426231
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 175353,
+          "n_test": 20258,
+          "depth_only": -0.016836127359191044,
+          "embedding": 0.03472520607220386,
+          "embedding_resid": 0.3311249386418983,
+          "embedding_depth": -0.1042244020045282
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4530,
+          "n_test": 582,
+          "depth_only": 0.04511054425130723,
+          "embedding": 0.20473725804103393,
+          "embedding_resid": 0.1373523521264831,
+          "embedding_depth": 0.27532782011064827
+        }
+      },
+      "elapsed_seconds": 293.5939693450928
+    },
+    {
+      "iteration": 10,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1182,
+          "n_test": 140,
+          "depth_only": -0.12283672822012615,
+          "embedding": 0.2565565612615528,
+          "embedding_resid": -0.0032600834974338966,
+          "embedding_depth": 0.2964531931088039
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13319,
+          "n_test": 1461,
+          "depth_only": 0.036697340965697434,
+          "embedding": 0.6003256103589917,
+          "embedding_resid": 0.5516755929630335,
+          "embedding_depth": 0.6835250336162851
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13314,
+          "n_test": 1462,
+          "depth_only": -0.015023210991643943,
+          "embedding": 0.17235935336037,
+          "embedding_resid": 0.1850244765031792,
+          "embedding_depth": 0.17498493362687373
+        },
+        "PEN": {
+          "n_train": 1799,
+          "n_test": 33,
+          "depth_only": 0.1077870960188283,
+          "embedding": -0.20394797840757484,
+          "embedding_resid": -0.7809394824333074,
+          "embedding_depth": 0.1258306679881115
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9489,
+          "n_test": 1416,
+          "depth_only": 0.5199405310155432,
+          "embedding": 0.4115887454332736,
+          "embedding_resid": -0.21946705988474968,
+          "embedding_depth": 0.6093736985435559
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99049,
+          "n_test": 9778,
+          "depth_only": 0.20284037891517914,
+          "embedding": -0.14210079041148282,
+          "embedding_resid": -0.3203799001996268,
+          "embedding_depth": 0.0837594270402352
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2244,
+          "n_test": 199,
+          "depth_only": -72.63749735294236,
+          "embedding": -322.55254722081935,
+          "embedding_resid": -4.5913827411189345,
+          "embedding_depth": -630.5885451024748
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 175676,
+          "n_test": 19935,
+          "depth_only": -0.03941534110440714,
+          "embedding": 0.6122293751459327,
+          "embedding_resid": 0.5559275792880233,
+          "embedding_depth": 0.6341192319534297
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4621,
+          "n_test": 491,
+          "depth_only": -0.1478601733750715,
+          "embedding": 0.18878499923625158,
+          "embedding_resid": 0.30211089111364664,
+          "embedding_depth": 0.4859982750328833
+        }
+      },
+      "elapsed_seconds": 294.7304952144623
+    },
+    {
+      "iteration": 11,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1249,
+          "n_test": 73,
+          "depth_only": -0.3480540513802888,
+          "embedding": 0.2485604854927984,
+          "embedding_resid": 0.40571196548339494,
+          "embedding_depth": 0.2491724461652809
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 14019,
+          "n_test": 761,
+          "depth_only": 0.3325393663618629,
+          "embedding": 0.5496084840029563,
+          "embedding_resid": 0.5361000488885259,
+          "embedding_depth": 0.7379632169785731
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 14015,
+          "n_test": 761,
+          "depth_only": -0.03666594763404252,
+          "embedding": 0.001505687210003992,
+          "embedding_resid": 1.3765484325523047e-05,
+          "embedding_depth": 0.02175384754688059
+        },
+        "PEN": {
+          "n_train": 1802,
+          "n_test": 30,
+          "depth_only": -4.297318967808757,
+          "embedding": -1.4026304080390508,
+          "embedding_resid": -0.877621055677007,
+          "embedding_depth": -1.593504370803545
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10239,
+          "n_test": 666,
+          "depth_only": 0.19417848282337458,
+          "embedding": 0.35526318936346113,
+          "embedding_resid": 0.3840896357243968,
+          "embedding_depth": 0.4824091836842206
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99268,
+          "n_test": 9559,
+          "depth_only": 0.14422455487633012,
+          "embedding": 0.34507511046372685,
+          "embedding_resid": 0.33395673917671187,
+          "embedding_depth": 0.42836060869705295
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2307,
+          "n_test": 136,
+          "depth_only": -2.041111416050408,
+          "embedding": -3.5588443229138607,
+          "embedding_resid": -0.7824789359555289,
+          "embedding_depth": -2.1852505055306093
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 182961,
+          "n_test": 12650,
+          "depth_only": 0.0134082891970424,
+          "embedding": 0.5284174692245387,
+          "embedding_resid": 0.4414949807115711,
+          "embedding_depth": 0.5865942281162488
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4772,
+          "n_test": 340,
+          "depth_only": -0.06104652192049542,
+          "embedding": 0.4739410012613875,
+          "embedding_resid": 0.4262503208759989,
+          "embedding_depth": 0.4660100211292709
+        }
+      },
+      "elapsed_seconds": 306.34362745285034
+    },
+    {
+      "iteration": 12,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1170,
+          "n_test": 152,
+          "depth_only": -0.02803608590391926,
+          "embedding": -0.09547365098001825,
+          "embedding_resid": 0.025122047566543793,
+          "embedding_depth": 0.27389362752919877
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12929,
+          "n_test": 1851,
+          "depth_only": 0.12034409294966442,
+          "embedding": 0.3874753606396458,
+          "embedding_resid": 0.49178469780734724,
+          "embedding_depth": 0.5339289205915059
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12924,
+          "n_test": 1852,
+          "depth_only": -0.02288666739918166,
+          "embedding": 0.014078497603900897,
+          "embedding_resid": -0.019943037156309185,
+          "embedding_depth": 0.03841494369053511
+        },
+        "PEN": {
+          "n_train": 1523,
+          "n_test": 309,
+          "depth_only": -0.7311950703251664,
+          "embedding": 0.6385528637919624,
+          "embedding_resid": 0.33025654650520897,
+          "embedding_depth": 0.698567591719749
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10064,
+          "n_test": 841,
+          "depth_only": 0.34504882955267147,
+          "embedding": 0.4991732909067307,
+          "embedding_resid": 0.5320879053825275,
+          "embedding_depth": 0.6528357449414166
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 98637,
+          "n_test": 10190,
+          "depth_only": 0.10856503156079844,
+          "embedding": 0.3524404469124718,
+          "embedding_resid": 0.23779379165987835,
+          "embedding_depth": 0.4275219370947685
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 1935,
+          "n_test": 508,
+          "depth_only": -23.96159776533047,
+          "embedding": -3.0162664607905114,
+          "embedding_resid": -0.18841755976495733,
+          "embedding_depth": -0.7179435051471228
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 169704,
+          "n_test": 25907,
+          "depth_only": -0.022405135248124042,
+          "embedding": 0.3592583319240129,
+          "embedding_resid": 0.2927638363006332,
+          "embedding_depth": 0.44113310777669446
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4589,
+          "n_test": 523,
+          "depth_only": 0.09044454303463778,
+          "embedding": 0.17487644420634352,
+          "embedding_resid": 0.15959764213684835,
+          "embedding_depth": 0.42201219113467925
+        }
+      },
+      "elapsed_seconds": 289.05713057518005
+    },
+    {
+      "iteration": 13,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1118,
+          "n_test": 204,
+          "depth_only": 0.11162226759332672,
+          "embedding": 0.2571496425623576,
+          "embedding_resid": 0.15472444130795282,
+          "embedding_depth": 0.39304898702641544
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13417,
+          "n_test": 1363,
+          "depth_only": 0.3000916166244979,
+          "embedding": 0.6807550334514783,
+          "embedding_resid": 0.5835693584342068,
+          "embedding_depth": 0.7963268251765836
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13412,
+          "n_test": 1364,
+          "depth_only": -0.10040218447271299,
+          "embedding": 0.2053460208136919,
+          "embedding_resid": 0.17134822505450686,
+          "embedding_depth": 0.18153000565129473
+        },
+        "PEN": {
+          "n_train": 1692,
+          "n_test": 140,
+          "depth_only": -184.1562413820153,
+          "embedding": -103.01719517434258,
+          "embedding_resid": -1.0864892361908849,
+          "embedding_depth": -432.0492268599472
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9585,
+          "n_test": 1320,
+          "depth_only": 0.324591402698179,
+          "embedding": 0.5605859873947814,
+          "embedding_resid": -0.14644740747616192,
+          "embedding_depth": 0.40848232302638443
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 96035,
+          "n_test": 12792,
+          "depth_only": -0.06683796380181262,
+          "embedding": 0.0033711323031080376,
+          "embedding_resid": -0.13327826414505517,
+          "embedding_depth": -0.03242805606454935
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2056,
+          "n_test": 387,
+          "depth_only": 0.03919013829262352,
+          "embedding": -2.1445198361110758,
+          "embedding_resid": -0.9222804353576728,
+          "embedding_depth": -1.8002301665301998
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 176864,
+          "n_test": 18747,
+          "depth_only": 0.23641641502738076,
+          "embedding": 0.6687715673037704,
+          "embedding_resid": 0.43341203343927237,
+          "embedding_depth": 0.6988485227627257
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4622,
+          "n_test": 490,
+          "depth_only": -0.37032072570333874,
+          "embedding": 0.304867308124561,
+          "embedding_resid": 0.3520970362294076,
+          "embedding_depth": 0.3559122869553851
+        }
+      },
+      "elapsed_seconds": 298.5553424358368
+    },
+    {
+      "iteration": 14,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1180,
+          "n_test": 142,
+          "depth_only": 0.06073165782628753,
+          "embedding": -0.06957186609233945,
+          "embedding_resid": 0.30338127862763464,
+          "embedding_depth": 0.3430127222899063
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13166,
+          "n_test": 1614,
+          "depth_only": 0.30771368728209214,
+          "embedding": 0.47385228169346083,
+          "embedding_resid": 0.38419503559734125,
+          "embedding_depth": 0.6601809421019331
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13160,
+          "n_test": 1616,
+          "depth_only": -0.039191666124631874,
+          "embedding": 0.08126807916876622,
+          "embedding_resid": 0.09712085901879441,
+          "embedding_depth": 0.13389850647901647
+        },
+        "PEN": {
+          "n_train": 1647,
+          "n_test": 185,
+          "depth_only": -0.016197765611918324,
+          "embedding": -0.8636199461241063,
+          "embedding_resid": -0.5065579893693033,
+          "embedding_depth": -0.7275062821841265
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9480,
+          "n_test": 1425,
+          "depth_only": 0.3184456664413611,
+          "embedding": 0.5589600102962655,
+          "embedding_resid": 0.4466511673728293,
+          "embedding_depth": 0.6768390305574494
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 101978,
+          "n_test": 6849,
+          "depth_only": 0.14015040107499344,
+          "embedding": 0.41936662406547,
+          "embedding_resid": 0.3440785596621767,
+          "embedding_depth": 0.5367547387822997
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2023,
+          "n_test": 420,
+          "depth_only": -0.16149086450284944,
+          "embedding": 0.25645374225500006,
+          "embedding_resid": 0.2339258164844248,
+          "embedding_depth": 0.36016629229672437
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 176311,
+          "n_test": 19300,
+          "depth_only": 0.11714297951460839,
+          "embedding": 0.4380072867326865,
+          "embedding_resid": 0.13320349722313574,
+          "embedding_depth": 0.2944372886644041
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4627,
+          "n_test": 485,
+          "depth_only": 0.11521848673218582,
+          "embedding": 0.29786088911483666,
+          "embedding_resid": 0.12710407069071217,
+          "embedding_depth": 0.40478447049072497
+        }
+      },
+      "elapsed_seconds": 307.23988342285156
+    },
+    {
+      "iteration": 15,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1129,
+          "n_test": 193,
+          "depth_only": 0.017148451542106535,
+          "embedding": 0.008471958827072967,
+          "embedding_resid": 0.015277930229687264,
+          "embedding_depth": 0.3406646661035707
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13522,
+          "n_test": 1258,
+          "depth_only": 0.1816749782992687,
+          "embedding": 0.7576548859016765,
+          "embedding_resid": 0.6440908814343247,
+          "embedding_depth": 0.8183367041598267
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13518,
+          "n_test": 1258,
+          "depth_only": -0.021497609017687047,
+          "embedding": 0.1282461054970826,
+          "embedding_resid": 0.12577512307097594,
+          "embedding_depth": 0.11825492873592736
+        },
+        "PEN": {
+          "n_train": 1508,
+          "n_test": 324,
+          "depth_only": -1.3116021299912792,
+          "embedding": 0.30322292334619594,
+          "embedding_resid": -0.002631984216539429,
+          "embedding_depth": 0.38634312567137485
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9950,
+          "n_test": 955,
+          "depth_only": 0.33087012376956904,
+          "embedding": 0.5363705478661851,
+          "embedding_resid": 0.5625666776507976,
+          "embedding_depth": 0.7472988450142677
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99984,
+          "n_test": 8843,
+          "depth_only": -0.0437765290699581,
+          "embedding": -0.007660339973993846,
+          "embedding_resid": 0.020124955108523523,
+          "embedding_depth": 0.06594665072837014
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2034,
+          "n_test": 409,
+          "depth_only": -0.15679862734790495,
+          "embedding": 0.1836660561752761,
+          "embedding_resid": 0.18819876400709656,
+          "embedding_depth": 0.4195934900917283
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 180540,
+          "n_test": 15071,
+          "depth_only": 0.03348028279337878,
+          "embedding": 0.5052223810208679,
+          "embedding_resid": 0.43843385761922193,
+          "embedding_depth": 0.5173753943063812
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4534,
+          "n_test": 578,
+          "depth_only": -0.036943952730584595,
+          "embedding": 0.07293956232366339,
+          "embedding_resid": 0.17176580747933723,
+          "embedding_depth": 0.26960295847914584
+        }
+      },
+      "elapsed_seconds": 304.6164367198944
+    },
+    {
+      "iteration": 16,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1132,
+          "n_test": 190,
+          "depth_only": 0.2710696775625048,
+          "embedding": -0.3173006252524855,
+          "embedding_resid": -0.38852096808182646,
+          "embedding_depth": -0.00849525473674273
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13488,
+          "n_test": 1292,
+          "depth_only": 0.09333135617238197,
+          "embedding": 0.36307268516635327,
+          "embedding_resid": 0.3839012939896893,
+          "embedding_depth": 0.49012717583062426
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13486,
+          "n_test": 1290,
+          "depth_only": -0.07782842483677022,
+          "embedding": 0.08549887652661203,
+          "embedding_resid": 0.07225596932454514,
+          "embedding_depth": 0.14444787577164486
+        },
+        "PEN": {
+          "n_train": 1516,
+          "n_test": 316,
+          "depth_only": -4.522178989049558,
+          "embedding": -0.02971573318945686,
+          "embedding_resid": -0.20448034980466834,
+          "embedding_depth": 0.22683347936220077
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10299,
+          "n_test": 606,
+          "depth_only": -2.432458674703423,
+          "embedding": -1.8863316627167865,
+          "embedding_resid": -0.1139115579382648,
+          "embedding_depth": -1.1039862177776767
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 100273,
+          "n_test": 8554,
+          "depth_only": -0.3727840064884871,
+          "embedding": -0.11064239448542867,
+          "embedding_resid": 0.0793595113922031,
+          "embedding_depth": -0.08582041815533636
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2069,
+          "n_test": 374,
+          "depth_only": 0.018748186899023245,
+          "embedding": -1.639853820309538,
+          "embedding_resid": -1.0224581569342592,
+          "embedding_depth": -0.3517995584860165
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 184097,
+          "n_test": 11514,
+          "depth_only": 0.010664261106114292,
+          "embedding": 0.5062217254970114,
+          "embedding_resid": 0.4360155674875399,
+          "embedding_depth": 0.5214290375209139
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4695,
+          "n_test": 417,
+          "depth_only": -0.24843711128216706,
+          "embedding": 0.28192373856230013,
+          "embedding_resid": 0.2550722092042391,
+          "embedding_depth": 0.31097654504827654
+        }
+      },
+      "elapsed_seconds": 303.23179626464844
+    },
+    {
+      "iteration": 17,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1149,
+          "n_test": 173,
+          "depth_only": 0.10272358083448219,
+          "embedding": 0.2581317381751722,
+          "embedding_resid": 0.23949921328687984,
+          "embedding_depth": 0.540959342294465
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12764,
+          "n_test": 2016,
+          "depth_only": 0.02476272302987592,
+          "embedding": 0.6565790365940496,
+          "embedding_resid": 0.7096324853285894,
+          "embedding_depth": 0.7232920545819106
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12759,
+          "n_test": 2017,
+          "depth_only": -0.06992579854091541,
+          "embedding": 0.10467458112776917,
+          "embedding_resid": 0.07302069824368229,
+          "embedding_depth": 0.2668293089003012
+        },
+        "PEN": {
+          "n_train": 1620,
+          "n_test": 212,
+          "depth_only": -59.073987202984085,
+          "embedding": -74.63483289850227,
+          "embedding_resid": -1.4098912769083287,
+          "embedding_depth": -791.7575288733707
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9629,
+          "n_test": 1276,
+          "depth_only": 0.10391281375127492,
+          "embedding": 0.33334772021715464,
+          "embedding_resid": 0.3011919942642286,
+          "embedding_depth": 0.3345901255291267
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 100110,
+          "n_test": 8717,
+          "depth_only": -0.09454629393512493,
+          "embedding": 0.3061889369026288,
+          "embedding_resid": 0.22732334060147985,
+          "embedding_depth": 0.22109171589880616
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2074,
+          "n_test": 369,
+          "depth_only": 0.006926756675842971,
+          "embedding": -0.4785930092420374,
+          "embedding_resid": 0.016435438165407823,
+          "embedding_depth": -0.6217583157286641
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 170488,
+          "n_test": 25123,
+          "depth_only": -0.03386447846369989,
+          "embedding": 0.5140196467301725,
+          "embedding_resid": 0.46303575721131973,
+          "embedding_depth": 0.5617549212554108
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4316,
+          "n_test": 796,
+          "depth_only": -0.016526306200637775,
+          "embedding": 0.30827107538868936,
+          "embedding_resid": 0.28734369045410457,
+          "embedding_depth": 0.2855306267817801
+        }
+      },
+      "elapsed_seconds": 295.0384609699249
+    },
+    {
+      "iteration": 18,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1240,
+          "n_test": 82,
+          "depth_only": -0.05684163600845338,
+          "embedding": 0.28712419025473435,
+          "embedding_resid": 0.3645616843009186,
+          "embedding_depth": 0.3639610785938727
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12715,
+          "n_test": 2065,
+          "depth_only": 0.09603626980820723,
+          "embedding": 0.5191438366646652,
+          "embedding_resid": 0.5043039699076963,
+          "embedding_depth": 0.6120589676108543
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12711,
+          "n_test": 2065,
+          "depth_only": -0.09855357362932171,
+          "embedding": 0.13927466252171872,
+          "embedding_resid": 0.147673914344703,
+          "embedding_depth": 0.2035298784417291
+        },
+        "PEN": {
+          "n_train": 1689,
+          "n_test": 143,
+          "depth_only": -815.2729051518082,
+          "embedding": -67.97033151247912,
+          "embedding_resid": -0.42875174366729274,
+          "embedding_depth": -5549.337612447233
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9182,
+          "n_test": 1723,
+          "depth_only": 0.11969021758380594,
+          "embedding": -0.24546442374988175,
+          "embedding_resid": -0.1915124264403727,
+          "embedding_depth": -0.2553989197355484
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 97679,
+          "n_test": 11148,
+          "depth_only": 0.11701850540045822,
+          "embedding": -0.3067040757122923,
+          "embedding_resid": -0.28784972139866993,
+          "embedding_depth": -0.18755614135738274
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 1927,
+          "n_test": 516,
+          "depth_only": -0.2131714170876906,
+          "embedding": -0.11145985130998382,
+          "embedding_resid": -0.1209250053134645,
+          "embedding_depth": -0.012205756656280986
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 176302,
+          "n_test": 19309,
+          "depth_only": 0.0070799415810055555,
+          "embedding": 0.6403979495742693,
+          "embedding_resid": 0.58509985755709,
+          "embedding_depth": 0.658064001446194
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4465,
+          "n_test": 647,
+          "depth_only": -0.07384832910652084,
+          "embedding": 0.3428961450640311,
+          "embedding_resid": 0.3336155437707219,
+          "embedding_depth": 0.42590168738229317
+        }
+      },
+      "elapsed_seconds": 287.69478368759155
+    },
+    {
+      "iteration": 19,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1313,
+          "n_test": 9
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13437,
+          "n_test": 1343,
+          "depth_only": 0.5793181256591627,
+          "embedding": 0.3697545011583716,
+          "embedding_resid": 0.15915117908214327,
+          "embedding_depth": 0.7406159626878797
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13433,
+          "n_test": 1343,
+          "depth_only": -0.15837446031994884,
+          "embedding": -0.13269350331595398,
+          "embedding_resid": -0.17632500378673077,
+          "embedding_depth": 0.021925105014152013
+        },
+        "PEN": {
+          "n_train": 1831,
+          "n_test": 1
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9718,
+          "n_test": 1187,
+          "depth_only": 0.447399805538117,
+          "embedding": 0.3657404302920386,
+          "embedding_resid": 0.3040450035699178,
+          "embedding_depth": 0.5767133425502131
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 100844,
+          "n_test": 7983,
+          "depth_only": 0.07875065408146897,
+          "embedding": 0.31068052088981646,
+          "embedding_resid": 0.12005336360419205,
+          "embedding_depth": 0.3907772525661244
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2322,
+          "n_test": 121,
+          "depth_only": -90750.89196560948,
+          "embedding": -37701.06640055062,
+          "embedding_resid": -0.5614162806817404,
+          "embedding_depth": -27546.155333370563
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 182610,
+          "n_test": 13001,
+          "depth_only": -0.6131672052032582,
+          "embedding": 0.551873944028735,
+          "embedding_resid": 0.06451939031486043,
+          "embedding_depth": 0.2589997978753833
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4705,
+          "n_test": 407,
+          "depth_only": 0.19466637517585605,
+          "embedding": 0.23124491789939228,
+          "embedding_resid": 0.2507286049477492,
+          "embedding_depth": 0.5122980096157184
+        }
+      },
+      "elapsed_seconds": 299.36897826194763
+    },
+    {
+      "iteration": 20,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1096,
+          "n_test": 226,
+          "depth_only": -0.19249680735807462,
+          "embedding": 0.26411056773100683,
+          "embedding_resid": -0.049559555799769894,
+          "embedding_depth": 0.340910588072593
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13134,
+          "n_test": 1646,
+          "depth_only": 0.4697958928379792,
+          "embedding": 0.6879688959970347,
+          "embedding_resid": 0.4398284631163504,
+          "embedding_depth": 0.7957770036123596
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13130,
+          "n_test": 1646,
+          "depth_only": -0.146971638243365,
+          "embedding": 0.293425872192992,
+          "embedding_resid": 0.2867539549802737,
+          "embedding_depth": 0.40870460281972265
+        },
+        "PEN": {
+          "n_train": 1638,
+          "n_test": 194,
+          "depth_only": 0.06352135319541508,
+          "embedding": 0.016625265571361125,
+          "embedding_resid": -0.03323182778008116,
+          "embedding_depth": 0.0915942249742846
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9461,
+          "n_test": 1444,
+          "depth_only": 0.511647921221223,
+          "embedding": 0.6616938487588726,
+          "embedding_resid": 0.10766423322506946,
+          "embedding_depth": 0.7009657664613635
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 97715,
+          "n_test": 11112,
+          "depth_only": 0.11289642220297058,
+          "embedding": 0.386445263992076,
+          "embedding_resid": 0.014841284206849381,
+          "embedding_depth": 0.5024552438230505
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2110,
+          "n_test": 333,
+          "depth_only": -0.3328153884987528,
+          "embedding": -0.32774365599112176,
+          "embedding_resid": -0.2116263089888828,
+          "embedding_depth": -0.8564890837615997
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 181204,
+          "n_test": 14407,
+          "depth_only": -0.12568852687071663,
+          "embedding": 0.5622068162997937,
+          "embedding_resid": 0.3797393745532175,
+          "embedding_depth": 0.3746311491075367
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4641,
+          "n_test": 471,
+          "depth_only": -0.11411884705740993,
+          "embedding": 0.43794689022657307,
+          "embedding_resid": 0.3575716735709844,
+          "embedding_depth": 0.4680763057928168
+        }
+      },
+      "elapsed_seconds": 302.97428250312805
+    },
+    {
+      "iteration": 21,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1073,
+          "n_test": 249,
+          "depth_only": 0.13638088368518697,
+          "embedding": -0.32565555681570757,
+          "embedding_resid": -0.0013371939957271817,
+          "embedding_depth": 0.009902497589097892
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13070,
+          "n_test": 1710,
+          "depth_only": 0.46715468659150505,
+          "embedding": 0.5817774465995866,
+          "embedding_resid": 0.422940997748933,
+          "embedding_depth": 0.7627427437298323
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13068,
+          "n_test": 1708,
+          "depth_only": -0.07334294803974695,
+          "embedding": 0.1379939690284463,
+          "embedding_resid": 0.13106009237836047,
+          "embedding_depth": 0.17127554701845127
+        },
+        "PEN": {
+          "n_train": 1540,
+          "n_test": 292,
+          "depth_only": -0.24644770968471486,
+          "embedding": 0.599189879142059,
+          "embedding_resid": 0.4054625200006202,
+          "embedding_depth": 0.5256872007835067
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9736,
+          "n_test": 1169,
+          "depth_only": 0.25521389726469434,
+          "embedding": 0.08799180314058941,
+          "embedding_resid": 0.10050951310799239,
+          "embedding_depth": 0.20539563343976097
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 100519,
+          "n_test": 8308,
+          "depth_only": 0.17690383445059776,
+          "embedding": 0.4452722953655841,
+          "embedding_resid": 0.05244193474343417,
+          "embedding_depth": 0.5864826321476269
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2272,
+          "n_test": 171,
+          "depth_only": -0.3268771153280181,
+          "embedding": 0.18706596802034403,
+          "embedding_resid": 0.042367263268666466,
+          "embedding_depth": 0.1754769957221326
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 180832,
+          "n_test": 14779,
+          "depth_only": -0.9277664930061511,
+          "embedding": 0.5112774895286242,
+          "embedding_resid": 0.4074806697644252,
+          "embedding_depth": 0.25530766484101497
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4606,
+          "n_test": 506,
+          "depth_only": 0.2568564883130394,
+          "embedding": 0.4553902960117977,
+          "embedding_resid": 0.27138697049044913,
+          "embedding_depth": 0.5343043867940834
+        }
+      },
+      "elapsed_seconds": 303.3681981563568
+    },
+    {
+      "iteration": 22,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1107,
+          "n_test": 215,
+          "depth_only": 0.0818241298092659,
+          "embedding": -0.022566337759091892,
+          "embedding_resid": 0.23380169241898396,
+          "embedding_depth": 0.09702575022609694
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12872,
+          "n_test": 1908,
+          "depth_only": 0.06344913281893583,
+          "embedding": 0.6609003129931381,
+          "embedding_resid": 0.682910245086791,
+          "embedding_depth": 0.7694478172970421
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12871,
+          "n_test": 1905,
+          "depth_only": -0.09458105874138867,
+          "embedding": 0.04468652379362548,
+          "embedding_resid": 0.043642188951157346,
+          "embedding_depth": 0.2432543226628019
+        },
+        "PEN": {
+          "n_train": 1675,
+          "n_test": 157,
+          "depth_only": -870.6017277387921,
+          "embedding": -1276.6376335170207,
+          "embedding_resid": -2.229991666090063,
+          "embedding_depth": -7970.66426283024
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 8961,
+          "n_test": 1944,
+          "depth_only": 0.37275584802849415,
+          "embedding": 0.421178471754593,
+          "embedding_resid": 0.17671848634207965,
+          "embedding_depth": 0.526625316207026
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99853,
+          "n_test": 8974,
+          "depth_only": -0.019913919180012396,
+          "embedding": 0.13402371247118838,
+          "embedding_resid": 0.13648728486552397,
+          "embedding_depth": 0.11884611300150794
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2238,
+          "n_test": 205,
+          "depth_only": -0.04091798359862309,
+          "embedding": -0.017365851107324692,
+          "embedding_resid": 0.06070046333293977,
+          "embedding_depth": 0.15579983342191817
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 175468,
+          "n_test": 20143,
+          "depth_only": -0.1471065758311354,
+          "embedding": 0.5650276743080636,
+          "embedding_resid": 0.5740719420065925,
+          "embedding_depth": 0.6254720086671945
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4400,
+          "n_test": 712,
+          "depth_only": 0.0053270528294150354,
+          "embedding": 0.2772228653810538,
+          "embedding_resid": 0.22690349508927554,
+          "embedding_depth": 0.36528120723687907
+        }
+      },
+      "elapsed_seconds": 296.80325388908386
+    },
+    {
+      "iteration": 23,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1271,
+          "n_test": 51,
+          "depth_only": -1.5894846593661485,
+          "embedding": -0.29966209789086573,
+          "embedding_resid": -0.9650161813799656,
+          "embedding_depth": -0.052027319609307066
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13760,
+          "n_test": 1020,
+          "depth_only": 0.37920257387962686,
+          "embedding": 0.48804799185488734,
+          "embedding_resid": 0.3198780115890958,
+          "embedding_depth": 0.674459858809555
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13756,
+          "n_test": 1020,
+          "depth_only": -0.38272558861991257,
+          "embedding": -0.26394721314376257,
+          "embedding_resid": -0.24808545684389305,
+          "embedding_depth": -0.2810008323331239
+        },
+        "PEN": {
+          "n_train": 1812,
+          "n_test": 20
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10441,
+          "n_test": 464,
+          "depth_only": -0.0241943828385498,
+          "embedding": 0.2672829527883245,
+          "embedding_resid": 0.45001482816256755,
+          "embedding_depth": 0.4177789601882388
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 100265,
+          "n_test": 8562,
+          "depth_only": 0.17573221352574897,
+          "embedding": 0.4356416541139274,
+          "embedding_resid": 0.1977600755815213,
+          "embedding_depth": 0.6118181761975285
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2350,
+          "n_test": 93,
+          "depth_only": -6176.685615869208,
+          "embedding": -4817.10425754415,
+          "embedding_resid": -0.5103148782268341,
+          "embedding_depth": -110.98140710042273
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 183908,
+          "n_test": 11703,
+          "depth_only": -0.8493423734666545,
+          "embedding": 0.45313440019491635,
+          "embedding_resid": 0.31808665394983215,
+          "embedding_depth": 0.07909112836432852
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4773,
+          "n_test": 339,
+          "depth_only": 0.019882746710617072,
+          "embedding": 0.46785369397318044,
+          "embedding_resid": 0.4099914344600665,
+          "embedding_depth": 0.4495410589223713
+        }
+      },
+      "elapsed_seconds": 302.38162994384766
+    },
+    {
+      "iteration": 24,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1159,
+          "n_test": 163,
+          "depth_only": 0.1882153827465094,
+          "embedding": 0.011806363494026306,
+          "embedding_resid": 0.10538260378632314,
+          "embedding_depth": 0.25430636453885647
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13665,
+          "n_test": 1115,
+          "depth_only": 0.31507517490426806,
+          "embedding": 0.43176475064328557,
+          "embedding_resid": 0.4363530022864922,
+          "embedding_depth": 0.6971257036490214
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13662,
+          "n_test": 1114,
+          "depth_only": -0.04496830976943911,
+          "embedding": 0.08743771767033215,
+          "embedding_resid": 0.10134107393433256,
+          "embedding_depth": 0.13112443256395157
+        },
+        "PEN": {
+          "n_train": 1746,
+          "n_test": 86,
+          "depth_only": -0.4868669019374261,
+          "embedding": -1.2746683762712077,
+          "embedding_resid": -0.7297334717641555,
+          "embedding_depth": -0.9863633467384745
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10123,
+          "n_test": 782,
+          "depth_only": 0.46704200971548715,
+          "embedding": 0.24668982993532695,
+          "embedding_resid": 0.16065073701270316,
+          "embedding_depth": 0.49209677869080237
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 100718,
+          "n_test": 8109,
+          "depth_only": 0.04600636737707198,
+          "embedding": 0.20077842833351978,
+          "embedding_resid": 0.1345314312657886,
+          "embedding_depth": 0.10695018720870708
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2218,
+          "n_test": 225,
+          "depth_only": -0.6070474664921539,
+          "embedding": 0.23471937421628764,
+          "embedding_resid": 0.14522705064756658,
+          "embedding_depth": 0.30404922348044594
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 175831,
+          "n_test": 19780,
+          "depth_only": 0.047354574916792735,
+          "embedding": 0.62357481476616,
+          "embedding_resid": 0.47999075442403727,
+          "embedding_depth": 0.6965691821689739
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4610,
+          "n_test": 502,
+          "depth_only": 0.15389172950539687,
+          "embedding": -0.1564419153397134,
+          "embedding_resid": -0.2380837612506308,
+          "embedding_depth": 0.31730086745532204
+        }
+      },
+      "elapsed_seconds": 295.0015482902527
+    },
+    {
+      "iteration": 25,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1240,
+          "n_test": 82,
+          "depth_only": -1.629882102385305,
+          "embedding": -0.39106452501138,
+          "embedding_resid": 0.28189632906365625,
+          "embedding_depth": -0.10741468291203304
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 12953,
+          "n_test": 1827,
+          "depth_only": 0.5520214930537743,
+          "embedding": 0.6591220762977362,
+          "embedding_resid": 0.3054479211491168,
+          "embedding_depth": 0.790159535379656
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 12949,
+          "n_test": 1827,
+          "depth_only": -0.18251282011922232,
+          "embedding": 0.22166740061727308,
+          "embedding_resid": 0.21104578461652512,
+          "embedding_depth": 0.32134887984184635
+        },
+        "PEN": {
+          "n_train": 1669,
+          "n_test": 163,
+          "depth_only": 0.00957898681673075,
+          "embedding": 0.5182203602230118,
+          "embedding_resid": 0.4800063828688873,
+          "embedding_depth": 0.5028112546586554
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9339,
+          "n_test": 1566,
+          "depth_only": 0.4373821164466418,
+          "embedding": 0.5567931023746701,
+          "embedding_resid": 0.039640117494865845,
+          "embedding_depth": 0.5848018695390427
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 98783,
+          "n_test": 10044,
+          "depth_only": 0.06837395695270665,
+          "embedding": 0.18269828426677936,
+          "embedding_resid": 0.09071012268767897,
+          "embedding_depth": 0.4129562397381885
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2337,
+          "n_test": 106,
+          "depth_only": -3396.694085568723,
+          "embedding": -12057.075462008957,
+          "embedding_resid": -3.134967584807865,
+          "embedding_depth": -4392.230260965688
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 174281,
+          "n_test": 21330,
+          "depth_only": -0.04781766609418692,
+          "embedding": 0.601738365150011,
+          "embedding_resid": 0.43087148463969893,
+          "embedding_depth": 0.608430511880762
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4444,
+          "n_test": 668,
+          "depth_only": 0.015887785498398532,
+          "embedding": 0.46687692859448626,
+          "embedding_resid": 0.33152148350337063,
+          "embedding_depth": 0.4683149972070164
+        }
+      },
+      "elapsed_seconds": 293.9853904247284
+    },
+    {
+      "iteration": 26,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1198,
+          "n_test": 124,
+          "depth_only": 0.23449256779483185,
+          "embedding": 0.20193185762671206,
+          "embedding_resid": -0.4271912490672716,
+          "embedding_depth": 0.06137275439493073
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13700,
+          "n_test": 1080,
+          "depth_only": 0.2709787161031164,
+          "embedding": 0.7269876083567481,
+          "embedding_resid": 0.5011622435491556,
+          "embedding_depth": 0.7692068016591902
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13696,
+          "n_test": 1080,
+          "depth_only": -0.16121763679408607,
+          "embedding": 0.040292727129979444,
+          "embedding_resid": 0.012558534742858396,
+          "embedding_depth": 0.12958811484398092
+        },
+        "PEN": {
+          "n_train": 1695,
+          "n_test": 137,
+          "depth_only": -10.938719992685563,
+          "embedding": -11.633762725817407,
+          "embedding_resid": -4.773857615348591,
+          "embedding_depth": -15.93110732086027
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10381,
+          "n_test": 524,
+          "depth_only": 0.05616860167859794,
+          "embedding": 0.5042522354003236,
+          "embedding_resid": 0.4896515357805302,
+          "embedding_depth": 0.578968648964137
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 97952,
+          "n_test": 10875,
+          "depth_only": 0.16002105039243297,
+          "embedding": 0.5703344770439973,
+          "embedding_resid": 0.023604925633374685,
+          "embedding_depth": 0.6636120585226503
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2260,
+          "n_test": 183,
+          "depth_only": -6.501006668612984,
+          "embedding": -55.934461987461326,
+          "embedding_resid": -6.0290222213792966,
+          "embedding_depth": -83.5928987577745
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 178957,
+          "n_test": 16654,
+          "depth_only": -0.3582249810225666,
+          "embedding": 0.1562581144973979,
+          "embedding_resid": 0.3101332801022778,
+          "embedding_depth": 0.12003858430584713
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4719,
+          "n_test": 393,
+          "depth_only": 0.07455703241340128,
+          "embedding": 0.5403583221877226,
+          "embedding_resid": 0.47245446558797555,
+          "embedding_depth": 0.5836177329695831
+        }
+      },
+      "elapsed_seconds": 302.4984622001648
+    },
+    {
+      "iteration": 27,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1219,
+          "n_test": 103,
+          "depth_only": -0.08872501678008926,
+          "embedding": 0.20980962822442573,
+          "embedding_resid": 0.010518939581924514,
+          "embedding_depth": 0.4586986625027788
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13222,
+          "n_test": 1558,
+          "depth_only": 0.47091231916823184,
+          "embedding": 0.6605166527169604,
+          "embedding_resid": 0.4704190957524452,
+          "embedding_depth": 0.7527509072689965
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13217,
+          "n_test": 1559,
+          "depth_only": -0.08464341068524583,
+          "embedding": 0.20763059212737278,
+          "embedding_resid": 0.20063706611131182,
+          "embedding_depth": 0.16724446925996905
+        },
+        "PEN": {
+          "n_train": 1796,
+          "n_test": 36,
+          "depth_only": -2.467004082024245,
+          "embedding": -9.442798677456913,
+          "embedding_resid": -3.236625096837188,
+          "embedding_depth": -4.375990974071582
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9991,
+          "n_test": 914,
+          "depth_only": 0.3559869866593851,
+          "embedding": 0.44798373688970494,
+          "embedding_resid": 0.3315736791614293,
+          "embedding_depth": 0.5829712333685055
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 96533,
+          "n_test": 12294,
+          "depth_only": 0.39142471911672205,
+          "embedding": 0.21187984161704443,
+          "embedding_resid": 0.0770175729371636,
+          "embedding_depth": 0.4688857984041642
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2359,
+          "n_test": 84,
+          "depth_only": -0.29915233672808683,
+          "embedding": 0.29801717003092953,
+          "embedding_resid": 0.24925948139368836,
+          "embedding_depth": 0.23181412158203318
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 174793,
+          "n_test": 20818,
+          "depth_only": 0.08031427803456803,
+          "embedding": 0.5081953692658292,
+          "embedding_resid": 0.48100059188813427,
+          "embedding_depth": 0.5228193679023427
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4586,
+          "n_test": 526,
+          "depth_only": 0.12520382651891993,
+          "embedding": 0.33905249094602974,
+          "embedding_resid": 0.15634755515484478,
+          "embedding_depth": 0.3538008165860148
+        }
+      },
+      "elapsed_seconds": 290.71853017807007
+    },
+    {
+      "iteration": 28,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1281,
+          "n_test": 41,
+          "depth_only": -0.2662782970983193,
+          "embedding": -0.3291311949413076,
+          "embedding_resid": -0.13840746090431888,
+          "embedding_depth": -0.1026932922986743
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13515,
+          "n_test": 1265,
+          "depth_only": 0.28932178413195375,
+          "embedding": 0.5459688413542222,
+          "embedding_resid": 0.47722248667133127,
+          "embedding_depth": 0.6610801554944059
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13511,
+          "n_test": 1265,
+          "depth_only": -0.06812747009967746,
+          "embedding": 0.20744101270369064,
+          "embedding_resid": 0.2045928760310458,
+          "embedding_depth": 0.15343910609799616
+        },
+        "PEN": {
+          "n_train": 1826,
+          "n_test": 6
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 9690,
+          "n_test": 1215,
+          "depth_only": 0.29529630608034707,
+          "embedding": 0.6148493945535274,
+          "embedding_resid": 0.5291786299822419,
+          "embedding_depth": 0.6787705895490624
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 96345,
+          "n_test": 12482,
+          "depth_only": 0.14071207845777778,
+          "embedding": 0.3607232077237016,
+          "embedding_resid": 0.38157914064047804,
+          "embedding_depth": 0.48672466753657695
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2035,
+          "n_test": 408,
+          "depth_only": -17854.71462664066,
+          "embedding": -570.9938506664446,
+          "embedding_resid": -0.17958020635288952,
+          "embedding_depth": -217.58196443806332
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 174621,
+          "n_test": 20990,
+          "depth_only": 0.06547550418390857,
+          "embedding": 0.5643461875319292,
+          "embedding_resid": 0.48630179180367394,
+          "embedding_depth": 0.6035086179065243
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4653,
+          "n_test": 459,
+          "depth_only": 0.05822220541435641,
+          "embedding": 0.24029764294061562,
+          "embedding_resid": 0.12278931080928757,
+          "embedding_depth": 0.2402080564878697
+        }
+      },
+      "elapsed_seconds": 295.5036988258362
+    },
+    {
+      "iteration": 29,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "n_train": 1152,
+          "n_test": 170,
+          "depth_only": -0.3310469649152217,
+          "embedding": -0.15257702578247123,
+          "embedding_resid": 0.06196702318729297,
+          "embedding_depth": 0.26214110555208725
+        },
+        "MAD_Porosity (vol%)": {
+          "n_train": 13400,
+          "n_test": 1380,
+          "depth_only": 0.004545317278679684,
+          "embedding": 0.7810242251426631,
+          "embedding_resid": 0.6905544217467183,
+          "embedding_depth": 0.7511342163248271
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "n_train": 13396,
+          "n_test": 1380,
+          "depth_only": -0.26188905042322963,
+          "embedding": -0.12920857501161342,
+          "embedding_resid": -0.1898522993487941,
+          "embedding_depth": -0.20233561179638904
+        },
+        "PEN": {
+          "n_train": 1519,
+          "n_test": 313,
+          "depth_only": -2.6656926962766962,
+          "embedding": 0.026846842624427936,
+          "embedding_resid": -0.11286344950832183,
+          "embedding_depth": -0.3436541592521567
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "n_train": 10353,
+          "n_test": 552,
+          "depth_only": -0.24313952380745496,
+          "embedding": 0.34674759808101085,
+          "embedding_resid": 0.46055964610935785,
+          "embedding_depth": 0.3750364069601726
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "n_train": 99809,
+          "n_test": 9018,
+          "depth_only": 0.13784233509047716,
+          "embedding": 0.18055210748614403,
+          "embedding_resid": 0.11018858538258636,
+          "embedding_depth": 0.2638696936571274
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "n_train": 2181,
+          "n_test": 262,
+          "depth_only": -0.10074865140806266,
+          "embedding": 0.3005825742679964,
+          "embedding_resid": 0.2671389690759354,
+          "embedding_depth": 0.27334478436318543
+        },
+        "SRM_Intensity raw (A/m)": {
+          "n_train": 177840,
+          "n_test": 17771,
+          "depth_only": -0.05996481844411017,
+          "embedding": 0.6312024171489095,
+          "embedding_resid": 0.5854027641570951,
+          "embedding_depth": 0.6666746201976761
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "n_train": 4525,
+          "n_test": 587,
+          "depth_only": -0.13860389574079468,
+          "embedding": 0.4996246144839641,
+          "embedding_resid": 0.43775305986758095,
+          "embedding_depth": 0.4743603919099798
+        }
+      },
+      "elapsed_seconds": 295.9127359390259
+    }
+  ],
+  "summary": {
+    "per_target": {
+      "AVS_Vane shear strength (kN/m^2)": {
+        "depth_only": {
+          "mean": -0.18186198979026463,
+          "median": -0.05684163600845338,
+          "std": 0.4652666761314266,
+          "iqr_low": -0.2662782970983193,
+          "iqr_high": 0.0818241298092659,
+          "ci_low": -1.6016038922718954,
+          "ci_high": 0.24546570072513377,
+          "n": 29
+        },
+        "embedding": {
+          "mean": 0.007653887603101931,
+          "median": 0.011806363494026306,
+          "std": 0.2825472947186278,
+          "iqr_low": -0.15257702578247123,
+          "iqr_high": 0.2565565612615528,
+          "ci_low": -0.5178055535018694,
+          "ci_high": 0.3720519448723673,
+          "n": 29
+        },
+        "embedding_resid": {
+          "mean": 0.04553282188071329,
+          "median": 0.06196702318729297,
+          "std": 0.3051099664102082,
+          "iqr_low": -0.01342849752610098,
+          "iqr_high": 0.23380169241898396,
+          "ci_low": -0.5938746104448529,
+          "ci_high": 0.4774213380346237,
+          "n": 29
+        },
+        "embedding_depth": {
+          "mean": 0.20932521192801953,
+          "median": 0.25430636453885647,
+          "std": 0.23528694234152253,
+          "iqr_low": 0.06137275439493073,
+          "iqr_high": 0.3619803011487328,
+          "ci_low": -0.21324594043797335,
+          "ci_high": 0.5790530117502363,
+          "n": 29
+        }
+      },
+      "MAD_Porosity (vol%)": {
+        "depth_only": {
+          "mean": 0.2846866560112059,
+          "median": 0.303902651953295,
+          "std": 0.16129151940737654,
+          "iqr_low": 0.1356768142870655,
+          "iqr_high": 0.38608127170704865,
+          "ci_low": 0.01920293644829696,
+          "ci_high": 0.5595280670202561,
+          "n": 30
+        },
+        "embedding": {
+          "mean": 0.5404173810135587,
+          "median": 0.5327036099194569,
+          "std": 0.1393074404773186,
+          "iqr_low": 0.4390373629245695,
+          "iqr_high": 0.6601680086121543,
+          "ci_low": 0.2894718206791786,
+          "ci_high": 0.7640814541929478,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": 0.442244990454565,
+          "median": 0.45108065755834303,
+          "std": 0.15147372273207438,
+          "iqr_low": 0.33588383218924417,
+          "iqr_high": 0.5281510291433185,
+          "ci_low": 0.16157146627157717,
+          "ci_high": 0.6958008892317329,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": 0.6924039968392479,
+          "median": 0.7056646980078893,
+          "std": 0.08673898716650046,
+          "iqr_low": 0.6604057454500514,
+          "iqr_high": 0.7605058700974135,
+          "ci_low": 0.5218834407822635,
+          "ci_high": 0.8023795418969755,
+          "n": 30
+        }
+      },
+      "MAD_Grain density (g/cm^3)": {
+        "depth_only": {
+          "mean": -0.09480533310450082,
+          "median": -0.07558568643825858,
+          "std": 0.07586478749203782,
+          "iqr_low": -0.1029354217946779,
+          "iqr_high": -0.04573178154314522,
+          "ci_low": -0.29511909842731743,
+          "ci_high": -0.019717149560525202,
+          "n": 30
+        },
+        "embedding": {
+          "mean": 0.07074552247620176,
+          "median": 0.08338347784768912,
+          "std": 0.12621889614461712,
+          "iqr_low": 0.012585378705570777,
+          "iqr_high": 0.16224671355453116,
+          "ci_low": -0.16878827351860132,
+          "ci_high": 0.2603114810719975,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": 0.06359228278892146,
+          "median": 0.08854999988859485,
+          "std": 0.13429369505474928,
+          "iqr_low": 0.0031499577989587413,
+          "iqr_high": 0.1656912190101994,
+          "ci_low": -0.222066098559874,
+          "ci_high": 0.23557535893503018,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": 0.14019935444806333,
+          "median": 0.15422204117912758,
+          "std": 0.14173535196095244,
+          "iqr_low": 0.10250654713384952,
+          "iqr_high": 0.2255602695559657,
+          "ci_low": -0.2239685474439911,
+          "ci_high": 0.3453717036607622,
+          "n": 30
+        }
+      },
+      "PEN": {
+        "depth_only": {
+          "mean": -126.39465687411234,
+          "median": -3.4815058320427266,
+          "std": 242.7943266255484,
+          "iqr_low": -86.04494777247444,
+          "iqr_high": -0.30655250774789267,
+          "ci_low": -836.0212136219271,
+          "ci_high": 0.08012100675419503,
+          "n": 26
+        },
+        "embedding": {
+          "mean": -80.7214269117874,
+          "median": -1.2314480771875955,
+          "std": 257.2625908262842,
+          "iqr_low": -25.89377925200013,
+          "iqr_high": 0.024291448361161233,
+          "ci_low": -783.2752183388599,
+          "ci_high": 0.6139509983857728,
+          "n": 26
+        },
+        "embedding_resid": {
+          "mean": -0.9618060065596921,
+          "median": -0.36561949956329154,
+          "std": 1.7905688880425896,
+          "iqr_low": -0.853450662366082,
+          "iqr_high": -0.05313973321214133,
+          "ci_low": -5.943896948614356,
+          "ci_high": 0.4334164685762204,
+          "n": 26
+        },
+        "embedding_depth": {
+          "mean": -581.2732942886671,
+          "median": -0.8569348144613005,
+          "std": 1823.3546340986302,
+          "iqr_low": -17.244350676728935,
+          "iqr_high": 0.11727155723465477,
+          "ci_low": -6457.335106340861,
+          "ci_high": 0.5905173473845976,
+          "n": 26
+        }
+      },
+      "PWC_P-wave velocity x (m/s)": {
+        "depth_only": {
+          "mean": 0.1546337680439745,
+          "median": 0.3068709862608541,
+          "std": 0.5309383202909033,
+          "iqr_low": 0.13234768513170792,
+          "iqr_high": 0.3761848041651591,
+          "ci_low": -1.0608753363565553,
+          "ci_high": 0.5139283889146611,
+          "n": 30
+        },
+        "embedding": {
+          "mean": 0.2679773689498202,
+          "median": 0.3883282024846904,
+          "std": 0.46702336781654447,
+          "iqr_low": 0.2518381106485763,
+          "iqr_high": 0.5029824992769254,
+          "ci_low": -0.7826471123696088,
+          "ci_high": 0.6277316194599972,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": 0.16158891761762414,
+          "median": 0.1686846116773914,
+          "std": 0.27067635548058566,
+          "iqr_low": -0.0827316031125977,
+          "iqr_high": 0.42267156605929224,
+          "ci_low": -0.2854925316953082,
+          "ci_high": 0.5404695677563017,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": 0.40306763255004,
+          "median": 0.4895324531245994,
+          "std": 0.3506529568341186,
+          "iqr_low": 0.35369775102877576,
+          "iqr_high": 0.5843442104964084,
+          "ci_low": -0.4887604266971336,
+          "ci_high": 0.7137073630634121,
+          "n": 30
+        }
+      },
+      "PWL_P-wave velocity xy (m/s)": {
+        "depth_only": {
+          "mean": 0.07171720387331665,
+          "median": 0.11073072688188451,
+          "std": 0.1525459018882267,
+          "iqr_low": 0.034002125189039445,
+          "iqr_high": 0.14343558578775797,
+          "ci_low": -0.3536449377611474,
+          "ci_high": 0.30755795223178056,
+          "n": 30
+        },
+        "embedding": {
+          "mean": 0.14782750819830776,
+          "median": 0.15582099834699498,
+          "std": 0.21150180371863342,
+          "iqr_low": -0.002943701035575952,
+          "iqr_high": 0.33647646307024925,
+          "ci_low": -0.20297717188742503,
+          "ci_high": 0.47966439532714755,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": 0.069306434599669,
+          "median": 0.07818854216468335,
+          "std": 0.15957007255619,
+          "iqr_low": 0.016162201932267917,
+          "iqr_high": 0.13599832146559013,
+          "ci_low": -0.29679552056893305,
+          "ci_high": 0.35439121943120955,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": 0.25140662040284956,
+          "median": 0.2112746518303646,
+          "std": 0.2172101116796906,
+          "iqr_low": 0.09192996821790869,
+          "iqr_high": 0.42815094079648186,
+          "ci_low": -0.11379774203589911,
+          "ci_high": 0.626061493836937,
+          "n": 30
+        }
+      },
+      "SRMD_Intensity raw (A/m)": {
+        "depth_only": {
+          "mean": -4494.979609694238,
+          "median": -0.5068724512563451,
+          "std": 16479.138685164315,
+          "iqr_low": -284.0460254828756,
+          "iqr_high": -0.17441100264905973,
+          "ci_low": -37901.16339485708,
+          "ci_high": 0.024369723532263292,
+          "n": 30
+        },
+        "embedding": {
+          "mean": -1962.074565055315,
+          "median": -1.0592234147757877,
+          "std": 7019.58765240918,
+          "iqr_low": -426.0922146679438,
+          "iqr_high": 0.14478368117359036,
+          "ci_low": -19109.172970107913,
+          "ci_high": 0.4256260854121356,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": -0.725613022212226,
+          "median": -0.17001689499420258,
+          "std": 1.455792003058457,
+          "iqr_low": -0.8873300605071368,
+          "iqr_high": 0.05611716331687144,
+          "ci_low": -4.986733598190534,
+          "ci_high": 0.33018060097684954,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": -1172.9387130606988,
+          "median": -0.6698509104378935,
+          "std": 4963.605061184817,
+          "iqr_low": -177.34609740867847,
+          "iqr_high": 0.170557705147079,
+          "ci_low": -10759.559655877027,
+          "ci_high": 0.3896684974457418,
+          "n": 30
+        }
+      },
+      "SRM_Intensity raw (A/m)": {
+        "depth_only": {
+          "mean": -0.0788191916708788,
+          "median": -0.019620631303657543,
+          "std": 0.28323902761896624,
+          "iqr_low": -0.11194333540149076,
+          "iqr_high": 0.028564589338923113,
+          "ci_low": -0.8709090063400161,
+          "ci_high": 0.33715772249857356,
+          "n": 30
+        },
+        "embedding": {
+          "mean": 0.4663900249164274,
+          "median": 0.5212185579773556,
+          "std": 0.20697465663045,
+          "iqr_low": 0.39898726694140024,
+          "iqr_high": 0.6096066226469523,
+          "ci_low": 0.02299538998715822,
+          "ci_high": 0.7484621654457363,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": 0.386452209941554,
+          "median": 0.43214175903948565,
+          "std": 0.18626086253409968,
+          "iqr_low": 0.3121216235641664,
+          "iqr_high": 0.484976491824789,
+          "ci_low": -0.08591243579594679,
+          "ci_high": 0.6341798936444638,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": 0.43505906289953916,
+          "median": 0.5221242027116283,
+          "std": 0.2589597311414748,
+          "iqr_low": 0.2562306980996071,
+          "iqr_high": 0.6405700893295228,
+          "ci_low": -0.055959708296617665,
+          "ci_high": 0.7535026931897423,
+          "n": 30
+        }
+      },
+      "TCON_Thermal conductivity mean (W/(m*K))": {
+        "depth_only": {
+          "mean": 0.004209482637555059,
+          "median": 0.017885266104507802,
+          "std": 0.13373513591869948,
+          "iqr_low": -0.08257048423526714,
+          "iqr_high": 0.10717440407735795,
+          "ci_low": -0.2819551052479893,
+          "ci_high": 0.21176865628858138,
+          "n": 30
+        },
+        "embedding": {
+          "mean": 0.30257891321636093,
+          "median": 0.3013640986196988,
+          "std": 0.14548374098120873,
+          "iqr_low": 0.21136417300562352,
+          "iqr_high": 0.4262030639569576,
+          "ci_low": 0.009859655966234782,
+          "ci_high": 0.5175268301828114,
+          "n": 30
+        },
+        "embedding_resid": {
+          "mean": 0.2448831301071754,
+          "median": 0.25290040707599415,
+          "std": 0.13665117457160042,
+          "iqr_low": 0.1600520911509106,
+          "iqr_high": 0.3330920287038841,
+          "ci_low": -0.011799290832103182,
+          "ci_high": 0.44729594644068943,
+          "n": 30
+        },
+        "embedding_depth": {
+          "mean": 0.3854465778527443,
+          "median": 0.4133983308127021,
+          "std": 0.11191025107099563,
+          "iqr_low": 0.31734075052112004,
+          "iqr_high": 0.46755973462693035,
+          "ci_low": 0.11867320587238259,
+          "ci_high": 0.5478655569923457,
+          "n": 30
+        }
+      }
+    },
+    "overall": {
+      "depth_only": {
+        "median_over_targets": -0.019620631303657543,
+        "mean_over_targets": -0.37789295620543334,
+        "n_targets": 9
+      },
+      "embedding": {
+        "median_over_targets": 0.15582099834699498,
+        "mean_over_targets": -0.03289402036371901,
+        "n_targets": 9
+      },
+      "embedding_resid": {
+        "median_over_targets": 0.08854999988859485,
+        "mean_over_targets": 0.1108751784482546,
+        "n_targets": 9
+      },
+      "embedding_depth": {
+        "median_over_targets": 0.25430636453885647,
+        "mean_over_targets": 0.13597077970066376,
+        "n_targets": 9
+      }
+    }
+  },
+  "elapsed_seconds": 8968.723720788956
+}

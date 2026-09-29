@@ -1,0 +1,158 @@
+{
+  "_provenance": {
+    "git_sha": "32fa0ed97950d5f93e3b7b8b354778229bca535e",
+    "git_dirty": false,
+    "created_utc": "2026-09-28T23:29:05+00:00",
+    "host": "lambda-scalar",
+    "command": "/home/mnky9800n/repos/lilyvae/.venv/bin/lilyvae-calibration",
+    "python": "3.14.4"
+  },
+  "checkpoints": {
+    "unsupervised": {
+      "n_samples": 236963,
+      "clamp": [
+        -6.0,
+        6.0
+      ],
+      "nll_heteroscedastic": -2.0394254941881913,
+      "nll_homoscedastic_same_means": -2.692319762201476,
+      "nll_gain_from_learned_variance": -0.6528942680132848,
+      "coverage": {
+        "0.50": {
+          "nominal": 0.5,
+          "empirical": 0.9896840435004621,
+          "excess": 0.48968404350046213
+        },
+        "0.68": {
+          "nominal": 0.68,
+          "empirical": 0.9980095345405542,
+          "excess": 0.31800953454055414
+        },
+        "0.90": {
+          "nominal": 0.9,
+          "empirical": 0.9994021570174809,
+          "excess": 0.0994021570174809
+        },
+        "0.95": {
+          "nominal": 0.95,
+          "empirical": 0.9996082370102787,
+          "excess": 0.04960823701027872
+        },
+        "0.99": {
+          "nominal": 0.99,
+          "empirical": 0.9998136136583912,
+          "excess": 0.009813613658391174
+        }
+      },
+      "mean_standardised_residual_sq": 0.05922246787073269,
+      "fraction_at_clamp_floor": 0.989452643098993,
+      "fraction_at_clamp_ceiling": 0.0,
+      "spearman_variance_vs_abs_error": 0.12561110139158818,
+      "per_variable": {
+        "bulk_density": {
+          "mean_standardised_residual_sq": 0.11765270507926215,
+          "fraction_at_clamp_floor": 0.9977633639006933,
+          "nll_heteroscedastic": -2.0214568794028076
+        },
+        "magnetic_susceptibility": {
+          "mean_standardised_residual_sq": 0.053917089594486434,
+          "fraction_at_clamp_floor": 0.9613019754138832,
+          "nll_heteroscedastic": -2.0034951580507525
+        },
+        "NGR": {
+          "mean_standardised_residual_sq": 0.03029397187877052,
+          "fraction_at_clamp_floor": 0.980634107434494,
+          "nll_heteroscedastic": -2.0456816473541917
+        },
+        "R": {
+          "mean_standardised_residual_sq": 0.025623756283979646,
+          "fraction_at_clamp_floor": 0.99957799318881,
+          "nll_heteroscedastic": -2.068085516850305
+        },
+        "G": {
+          "mean_standardised_residual_sq": 0.08001382406067774,
+          "fraction_at_clamp_floor": 0.999582213256922,
+          "nll_heteroscedastic": -2.0409575539080556
+        },
+        "B": {
+          "mean_standardised_residual_sq": 0.04783346032721961,
+          "fraction_at_clamp_floor": 0.9978562053991551,
+          "nll_heteroscedastic": -2.056876209563034
+        }
+      }
+    },
+    "semi_supervised": {
+      "n_samples": 236963,
+      "clamp": [
+        -6.0,
+        6.0
+      ],
+      "nll_heteroscedastic": -2.0309560711699115,
+      "nll_homoscedastic_same_means": -2.533764839711933,
+      "nll_gain_from_learned_variance": -0.5028087685420215,
+      "coverage": {
+        "0.50": {
+          "nominal": 0.5,
+          "empirical": 0.9793856706180571,
+          "excess": 0.47938567061805715
+        },
+        "0.68": {
+          "nominal": 0.68,
+          "empirical": 0.9944393569178873,
+          "excess": 0.31443935691788727
+        },
+        "0.90": {
+          "nominal": 0.9,
+          "empirical": 0.9989034856355915,
+          "excess": 0.09890348563559148
+        },
+        "0.95": {
+          "nominal": 0.95,
+          "empirical": 0.9993522195448235,
+          "excess": 0.049352219544823495
+        },
+        "0.99": {
+          "nominal": 0.99,
+          "empirical": 0.9997693029432162,
+          "excess": 0.009769302943216207
+        }
+      },
+      "mean_standardised_residual_sq": 0.07768784136512676,
+      "fraction_at_clamp_floor": 0.9873383889749314,
+      "fraction_at_clamp_ceiling": 0.0,
+      "spearman_variance_vs_abs_error": 0.126524874908641,
+      "per_variable": {
+        "bulk_density": {
+          "mean_standardised_residual_sq": 0.1909518657191419,
+          "fraction_at_clamp_floor": 0.9796845921093167,
+          "nll_heteroscedastic": -1.961215295615415
+        },
+        "magnetic_susceptibility": {
+          "mean_standardised_residual_sq": 0.04782683528385799,
+          "fraction_at_clamp_floor": 0.9814485805800905,
+          "nll_heteroscedastic": -2.040162743597841
+        },
+        "NGR": {
+          "mean_standardised_residual_sq": 0.04314452423553924,
+          "fraction_at_clamp_floor": 0.9786970961711322,
+          "nll_heteroscedastic": -2.035840530225858
+        },
+        "R": {
+          "mean_standardised_residual_sq": 0.06949276377483349,
+          "fraction_at_clamp_floor": 0.9989281026995775,
+          "nll_heteroscedastic": -2.0461487289180953
+        },
+        "G": {
+          "mean_standardised_residual_sq": 0.05230360294662282,
+          "fraction_at_clamp_floor": 0.9991728666500678,
+          "nll_heteroscedastic": -2.054760897796258
+        },
+        "B": {
+          "mean_standardised_residual_sq": 0.06240745623076503,
+          "fraction_at_clamp_floor": 0.9860990956394036,
+          "nll_heteroscedastic": -2.047608230866002
+        }
+      }
+    }
+  }
+}

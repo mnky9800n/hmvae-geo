@@ -46,6 +46,11 @@ run zeroshot_bootstrap.json zeroshot_bootstrap \
 # Then the depth results, which Section 4.5 and the Discussion both use.
 run depth_confound.json  depth_confound  lilyvae-depth-confound
 run depth_bootstrap.json depth_bootstrap lilyvae-depth-bootstrap
+# The depth-as-seventh-input ablation is a separate run behind a flag,
+# not a second file from the one above, which is why it stayed missing
+# after depth_bootstrap reported ok.
+run depth_input_ablation.json depth_input_ablation \
+    lilyvae-depth-bootstrap --ablation
 # Then the comparisons that support the table rather than a figure.
 run raw_baselines.json   raw_baselines   lilyvae-raw-baselines
 run calibration.json     calibration     lilyvae-calibration

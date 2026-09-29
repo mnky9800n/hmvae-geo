@@ -1,0 +1,490 @@
+{
+  "_provenance": {
+    "git_sha": "32fa0ed97950d5f93e3b7b8b354778229bca535e",
+    "git_dirty": false,
+    "created_utc": "2026-09-28T20:59:31+00:00",
+    "host": "lambda-scalar",
+    "command": "/home/mnky9800n/repos/lilyvae/.venv/bin/lilyvae-depth-confound",
+    "python": "3.14.4"
+  },
+  "model": "unsupervised",
+  "n_samples": 236963,
+  "depth_min_m": 0.0,
+  "depth_max_m": 1800.2000732421875,
+  "summary": {
+    "r2_depth_only": {
+      "mean": 0.1571374156711235,
+      "median": 0.10585878870070753,
+      "n": 64
+    },
+    "r2_embedding_only": {
+      "mean": 0.8164574765506931,
+      "median": 0.8450103749313,
+      "n": 64
+    },
+    "r2_embedding_depth": {
+      "mean": 0.8570481350471266,
+      "median": 0.9083156743572349,
+      "n": 64
+    },
+    "r2_embedding_resid": {
+      "mean": 0.7873802430010113,
+      "median": 0.8294712104407441,
+      "n": 64
+    }
+  },
+  "per_variable": {
+    "AVS_Vane shear strength (kN/m^2)": {
+      "r2_depth_only": 0.3077230124822573,
+      "r2_embedding_only": 0.9064982586187234,
+      "r2_embedding_depth": 0.9481021760040349,
+      "r2_embedding_resid": 0.8865607310178494,
+      "n_samples": 1322
+    },
+    "AVS_Max torque angle (deg)": {
+      "r2_depth_only": 0.19294458355739963,
+      "r2_embedding_only": 0.8581324259166283,
+      "r2_embedding_depth": 0.8768868091358348,
+      "r2_embedding_resid": 0.8291869657763735,
+      "n_samples": 1322
+    },
+    "MAD_Moisture dry (wt%)": {
+      "r2_depth_only": 0.2987649400592003,
+      "r2_embedding_only": 0.8404954776943236,
+      "r2_embedding_depth": 0.9103159907004522,
+      "r2_embedding_resid": 0.8086453821778289,
+      "n_samples": 14786
+    },
+    "MAD_Moisture wet (wt%)": {
+      "r2_depth_only": 0.36917777654714656,
+      "r2_embedding_only": 0.8303127503816496,
+      "r2_embedding_depth": 0.9063153580140177,
+      "r2_embedding_resid": 0.795319974621141,
+      "n_samples": 14786
+    },
+    "MAD_Bulk density (g/cm^3)": {
+      "r2_depth_only": 0.30687165004833006,
+      "r2_embedding_only": 0.8267973842792573,
+      "r2_embedding_depth": 0.89231171642103,
+      "r2_embedding_resid": 0.7971446855556917,
+      "n_samples": 14786
+    },
+    "MAD_Dry density (g/cm^3)": {
+      "r2_depth_only": 0.3290860214618837,
+      "r2_embedding_only": 0.8285290228424148,
+      "r2_embedding_depth": 0.8973551806442754,
+      "r2_embedding_resid": 0.802811437049805,
+      "n_samples": 14786
+    },
+    "MAD_Grain density (g/cm^3)": {
+      "r2_depth_only": 0.020222860557016942,
+      "r2_embedding_only": 0.5933292647872435,
+      "r2_embedding_depth": 0.6620126601677576,
+      "r2_embedding_resid": 0.5875544641328924,
+      "n_samples": 14786
+    },
+    "MAD_Porosity (vol%)": {
+      "r2_depth_only": 0.3586118943090716,
+      "r2_embedding_only": 0.8207646756765351,
+      "r2_embedding_depth": 0.8986213166721141,
+      "r2_embedding_resid": 0.7931941738077929,
+      "n_samples": 14785
+    },
+    "MAD_Void ratio": {
+      "r2_depth_only": 0.34159009596832124,
+      "r2_embedding_only": 0.8374751358946619,
+      "r2_embedding_depth": 0.9140743178392893,
+      "r2_embedding_resid": 0.7963118234882902,
+      "n_samples": 14786
+    },
+    "MAD_Mass wet sample (g)": {
+      "r2_depth_only": 0.09240937773668245,
+      "r2_embedding_only": 0.5763492304721549,
+      "r2_embedding_depth": 0.6705302487507616,
+      "r2_embedding_resid": 0.5595736430639754,
+      "n_samples": 14786
+    },
+    "MAD_Mass dried sample (g)": {
+      "r2_depth_only": 0.060136619694527216,
+      "r2_embedding_only": 0.708150251670463,
+      "r2_embedding_depth": 0.7613233017740916,
+      "r2_embedding_resid": 0.6841873870436949,
+      "n_samples": 14786
+    },
+    "MAD_Mass porewater (g)": {
+      "r2_depth_only": 0.3934221975417951,
+      "r2_embedding_only": 0.7232685159935278,
+      "r2_embedding_depth": 0.8297569652519041,
+      "r2_embedding_resid": 0.6530469905783018,
+      "n_samples": 14786
+    },
+    "MAD_Mass salt (g)": {
+      "r2_depth_only": 0.393466366087725,
+      "r2_embedding_only": 0.7217607736158389,
+      "r2_embedding_depth": 0.8294556515363439,
+      "r2_embedding_resid": 0.6520975750732945,
+      "n_samples": 14786
+    },
+    "MAD_Mass solids (g)": {
+      "r2_depth_only": 0.06178592820115336,
+      "r2_embedding_only": 0.7134179510418519,
+      "r2_embedding_depth": 0.7645836660552405,
+      "r2_embedding_resid": 0.6879176480811529,
+      "n_samples": 14786
+    },
+    "MAD_Vol wet sample (cm^3)": {
+      "r2_depth_only": 0.25033242011554113,
+      "r2_embedding_only": 0.5606876406053927,
+      "r2_embedding_depth": 0.6801700471262057,
+      "r2_embedding_resid": 0.4896854215174432,
+      "n_samples": 14786
+    },
+    "MAD_Vol dried sample (cm^3)": {
+      "r2_depth_only": 0.06207334118852759,
+      "r2_embedding_only": 0.6833405498364593,
+      "r2_embedding_depth": 0.7405052603413033,
+      "r2_embedding_resid": 0.6549761048052248,
+      "n_samples": 14786
+    },
+    "MAD_Vol porewater (cm^3)": {
+      "r2_depth_only": 0.393420330086208,
+      "r2_embedding_only": 0.7227153334325405,
+      "r2_embedding_depth": 0.8300548281553958,
+      "r2_embedding_resid": 0.6524945711814059,
+      "n_samples": 14786
+    },
+    "MAD_Vol salt (cm^3)": {
+      "r2_depth_only": 0.39341992957449834,
+      "r2_embedding_only": 0.7226674260988211,
+      "r2_embedding_depth": 0.8294205194480636,
+      "r2_embedding_resid": 0.6533985227457519,
+      "n_samples": 14786
+    },
+    "MAD_Vol solids (cm^3)": {
+      "r2_depth_only": 0.06442287364327293,
+      "r2_embedding_only": 0.6883796456426159,
+      "r2_embedding_depth": 0.745281106847747,
+      "r2_embedding_resid": 0.6598732219733137,
+      "n_samples": 14786
+    },
+    "MSP": {
+      "r2_depth_only": 0.2993855105368296,
+      "r2_embedding_only": 0.9632961578037674,
+      "r2_embedding_depth": 0.9703137038360697,
+      "r2_embedding_resid": 0.8297554551051147,
+      "n_samples": 228428
+    },
+    "PEN": {
+      "r2_depth_only": 0.1963993304749757,
+      "r2_embedding_only": 0.995288641842114,
+      "r2_embedding_depth": 0.9969813951745695,
+      "r2_embedding_resid": 0.9569868633569196,
+      "n_samples": 1832
+    },
+    "PWB_P-wave velocity y (m/s)": {
+      "r2_depth_only": 0.4880838684767398,
+      "r2_embedding_only": 0.9878026749325242,
+      "r2_embedding_depth": 0.9922694694576937,
+      "r2_embedding_resid": 0.9767618558524971,
+      "n_samples": 394
+    },
+    "PWB_P-wave velocity z (m/s)": {
+      "r2_depth_only": 0.10501948360880164,
+      "r2_embedding_only": 0.9739082488732772,
+      "r2_embedding_depth": 0.9807445307540462,
+      "r2_embedding_resid": 0.9489642937035672,
+      "n_samples": 1730
+    },
+    "PWB_Caliper separation (mm)": {
+      "r2_depth_only": 0.1145233457553888,
+      "r2_embedding_only": 0.9869249311545306,
+      "r2_embedding_depth": 0.9879715835127449,
+      "r2_embedding_resid": 0.9659562918979208,
+      "n_samples": 1969
+    },
+    "PWB_P-wave velocity y [manual] (m/s)": {
+      "r2_depth_only": 0.4785617002066058,
+      "r2_embedding_only": 0.9902713925640374,
+      "r2_embedding_depth": 0.9936518275134244,
+      "r2_embedding_resid": 0.9815733431454562,
+      "n_samples": 363
+    },
+    "PWB_P-wave velocity z [manual] (m/s)": {
+      "r2_depth_only": 0.18395463131197842,
+      "r2_embedding_only": 0.9561474538845114,
+      "r2_embedding_depth": 0.9624443048426222,
+      "r2_embedding_resid": 0.9279723008497914,
+      "n_samples": 1361
+    },
+    "PWC_P-wave velocity x (m/s)": {
+      "r2_depth_only": 0.022981876066407114,
+      "r2_embedding_only": 0.9968002966611769,
+      "r2_embedding_depth": 0.9969181321389236,
+      "r2_embedding_resid": 0.983632362682129,
+      "n_samples": 11036
+    },
+    "PWC_P-wave velocity x [manual] (m/s)": {
+      "r2_depth_only": 0.045437566851058264,
+      "r2_embedding_only": 0.9900871611139335,
+      "r2_embedding_depth": 0.9950817888819908,
+      "r2_embedding_resid": 0.9814668659699506,
+      "n_samples": 7214
+    },
+    "PWL_P-wave velocity xy (m/s)": {
+      "r2_depth_only": 0.013401124192091718,
+      "r2_embedding_only": 0.6090137902711352,
+      "r2_embedding_depth": 0.7191540469703859,
+      "r2_embedding_resid": 0.594588466273578,
+      "n_samples": 111326
+    },
+    "PWL_Caliper separation (mm)": {
+      "r2_depth_only": 0.007924288412426206,
+      "r2_embedding_only": 0.9838897812430671,
+      "r2_embedding_depth": 0.9897976091815269,
+      "r2_embedding_resid": 0.9790841417251622,
+      "n_samples": 111326
+    },
+    "PWL_Sonic traveltime (microsecond)": {
+      "r2_depth_only": 0.14499990794535567,
+      "r2_embedding_only": 0.6483982686800831,
+      "r2_embedding_depth": 0.7368429494242005,
+      "r2_embedding_resid": 0.59996884664575,
+      "n_samples": 111326
+    },
+    "RSC_Reflectance L*": {
+      "r2_depth_only": 0.06901600595367907,
+      "r2_embedding_only": 0.9147070702190134,
+      "r2_embedding_depth": 0.9310924600574645,
+      "r2_embedding_resid": 0.895983375066053,
+      "n_samples": 233424
+    },
+    "RSC_Reflectance a*": {
+      "r2_depth_only": 0.019320608086707658,
+      "r2_embedding_only": 0.8418028850284941,
+      "r2_embedding_depth": 0.8726507504801236,
+      "r2_embedding_resid": 0.8321717587061093,
+      "n_samples": 233424
+    },
+    "RSC_Reflectance b*": {
+      "r2_depth_only": 0.059596498043832935,
+      "r2_embedding_only": 0.8344857291777711,
+      "r2_embedding_depth": 0.8592159131452762,
+      "r2_embedding_resid": 0.803046877823938,
+      "n_samples": 233424
+    },
+    "RSC_Tristimulus X": {
+      "r2_depth_only": 0.05314439382519642,
+      "r2_embedding_only": 0.937813335869108,
+      "r2_embedding_depth": 0.9530492425293036,
+      "r2_embedding_resid": 0.9203352042650589,
+      "n_samples": 233424
+    },
+    "RSC_Tristimulus Y": {
+      "r2_depth_only": 0.05391430243974671,
+      "r2_embedding_only": 0.9374319261045376,
+      "r2_embedding_depth": 0.9527080120586423,
+      "r2_embedding_resid": 0.9195131727208061,
+      "n_samples": 233424
+    },
+    "RSC_Tristimulus Z": {
+      "r2_depth_only": 0.047753679841894825,
+      "r2_embedding_only": 0.9305487928742183,
+      "r2_embedding_depth": 0.9471791488820875,
+      "r2_embedding_resid": 0.9154341616776582,
+      "n_samples": 233424
+    },
+    "RSC_Normalized spectral data link": {
+      "r2_depth_only": 0.023185553471332665,
+      "r2_embedding_only": 0.8489852428516197,
+      "r2_embedding_depth": 0.8829194260208534,
+      "r2_embedding_resid": 0.8424026270057118,
+      "n_samples": 39246
+    },
+    "RSC_Unnormalized spectral data link": {
+      "r2_depth_only": 0.02299658313382591,
+      "r2_embedding_only": 0.8482178648341059,
+      "r2_embedding_depth": 0.8836211571759531,
+      "r2_embedding_resid": 0.8405255764400912,
+      "n_samples": 39236
+    },
+    "SRMD_Demag level (mT)": {
+      "r2_depth_only": 0.4804006376453023,
+      "r2_embedding_only": 0.9600664990104766,
+      "r2_embedding_depth": 0.9759456516012441,
+      "r2_embedding_resid": 0.9234105386544145,
+      "n_samples": 1171
+    },
+    "SRMD_Magnetic moment x (Am^2)": {
+      "r2_depth_only": 0.10669809379261341,
+      "r2_embedding_only": 0.9773762494212692,
+      "r2_embedding_depth": 0.9829638946968114,
+      "r2_embedding_resid": 0.936045972645982,
+      "n_samples": 2443
+    },
+    "SRMD_Magnetic moment y (Am^2)": {
+      "r2_depth_only": 0.1602541880001136,
+      "r2_embedding_only": 0.9842682563247365,
+      "r2_embedding_depth": 0.9859900901278905,
+      "r2_embedding_resid": 0.924027385642445,
+      "n_samples": 2443
+    },
+    "SRMD_Magnetic moment z (Am^2)": {
+      "r2_depth_only": 0.19643549175430342,
+      "r2_embedding_only": 0.9789035151453779,
+      "r2_embedding_depth": 0.985216567174501,
+      "r2_embedding_resid": 0.9179568401103869,
+      "n_samples": 2443
+    },
+    "SRMD_Inclination raw (deg)": {
+      "r2_depth_only": 0.1040403452976364,
+      "r2_embedding_only": 0.7708041343821985,
+      "r2_embedding_depth": 0.7999002236656945,
+      "r2_embedding_resid": 0.761928000022979,
+      "n_samples": 2443
+    },
+    "SRMD_Declination raw (deg)": {
+      "r2_depth_only": 0.10711098542366793,
+      "r2_embedding_only": 0.6963986156529398,
+      "r2_embedding_depth": 0.7219444205359202,
+      "r2_embedding_resid": 0.6804165444261552,
+      "n_samples": 2443
+    },
+    "SRMD_Intensity raw (A/m)": {
+      "r2_depth_only": 0.235273808016625,
+      "r2_embedding_only": 0.9797912340843942,
+      "r2_embedding_depth": 0.9850126552972658,
+      "r2_embedding_resid": 0.9131596188360651,
+      "n_samples": 2443
+    },
+    "SRMD_Inclination background & drift corrected (deg)": {
+      "r2_depth_only": 0.12398855132603814,
+      "r2_embedding_only": 0.7536717870519353,
+      "r2_embedding_depth": 0.7842206764200315,
+      "r2_embedding_resid": 0.7248701194761388,
+      "n_samples": 2443
+    },
+    "SRMD_Declination background & drift corrected (deg)": {
+      "r2_depth_only": 0.11018924969855859,
+      "r2_embedding_only": 0.6768366106767638,
+      "r2_embedding_depth": 0.6941295547446996,
+      "r2_embedding_resid": 0.6623070699558165,
+      "n_samples": 2443
+    },
+    "SRMD_Intensity background & drift corrected (A/m)": {
+      "r2_depth_only": 0.2336043970046866,
+      "r2_embedding_only": 0.9785387066895205,
+      "r2_embedding_depth": 0.9847136746763515,
+      "r2_embedding_resid": 0.9145606033838131,
+      "n_samples": 2443
+    },
+    "SRMD_Raw data": {
+      "r2_depth_only": 0.15749016372279012,
+      "r2_embedding_only": 0.968137916999205,
+      "r2_embedding_depth": 0.9837455406961513,
+      "r2_embedding_resid": 0.9431098929313795,
+      "n_samples": 2443
+    },
+    "SRM_Demag level (mT)": {
+      "r2_depth_only": 0.04282819631389845,
+      "r2_embedding_only": 0.6414694818546898,
+      "r2_embedding_depth": 0.6959257217559025,
+      "r2_embedding_resid": 0.6109336703321737,
+      "n_samples": 195611
+    },
+    "SRM_Magnetic moment x (Am^2)": {
+      "r2_depth_only": 0.006241878191776795,
+      "r2_embedding_only": 0.7401730028236977,
+      "r2_embedding_depth": 0.8647551142352761,
+      "r2_embedding_resid": 0.7069739797313401,
+      "n_samples": 195611
+    },
+    "SRM_Magnetic moment y (Am^2)": {
+      "r2_depth_only": 0.0012639293972532828,
+      "r2_embedding_only": 0.999899935142961,
+      "r2_embedding_depth": 0.9998100305342158,
+      "r2_embedding_resid": 0.998418434523691,
+      "n_samples": 195611
+    },
+    "SRM_Magnetic moment z (Am^2)": {
+      "r2_depth_only": 0.01609511975794442,
+      "r2_embedding_only": 0.7532609958632501,
+      "r2_embedding_depth": 0.9284359041744937,
+      "r2_embedding_resid": 0.716429036937025,
+      "n_samples": 195611
+    },
+    "SRM_Inclination raw (deg)": {
+      "r2_depth_only": 0.04512595093273197,
+      "r2_embedding_only": 0.454027582794137,
+      "r2_embedding_depth": 0.5362559354473686,
+      "r2_embedding_resid": 0.43723336972216076,
+      "n_samples": 195611
+    },
+    "SRM_Declination raw (deg)": {
+      "r2_depth_only": 0.0070633144518543745,
+      "r2_embedding_only": 0.08238254851299642,
+      "r2_embedding_depth": 0.11564675749399955,
+      "r2_embedding_resid": 0.08039118838820036,
+      "n_samples": 195611
+    },
+    "SRM_Intensity raw (A/m)": {
+      "r2_depth_only": 0.0012639293972304122,
+      "r2_embedding_only": 0.9998999351429567,
+      "r2_embedding_depth": 0.9998100305342197,
+      "r2_embedding_resid": 0.9984184339235921,
+      "n_samples": 195611
+    },
+    "SRM_Inclination background & drift corrected (deg)": {
+      "r2_depth_only": 0.0445031445536489,
+      "r2_embedding_only": 0.4613755264346029,
+      "r2_embedding_depth": 0.5420018997465006,
+      "r2_embedding_resid": 0.4432587655099638,
+      "n_samples": 195611
+    },
+    "SRM_Declination background & drift corrected (deg)": {
+      "r2_depth_only": 0.006788578884502683,
+      "r2_embedding_only": 0.07671827878811466,
+      "r2_embedding_depth": 0.10967291916252253,
+      "r2_embedding_resid": 0.07552791421868221,
+      "n_samples": 195611
+    },
+    "SRM_Intensity background & drift corrected (A/m)": {
+      "error": "catboost/libs/model/model.cpp:699: Invalid bias[0] : inf",
+      "n_samples": 195611
+    },
+    "TCON_Thermal conductivity mean (W/(m*K))": {
+      "r2_depth_only": 0.04895063659802479,
+      "r2_embedding_only": 0.9903755327414214,
+      "r2_embedding_depth": 0.9922590663850552,
+      "r2_embedding_resid": 0.9612291935706174,
+      "n_samples": 5121
+    },
+    "TCON_Conductivity std dev (W/(m*K))": {
+      "r2_depth_only": 0.050020783735234886,
+      "r2_embedding_only": 0.9927618045395236,
+      "r2_embedding_depth": 0.9930211932095568,
+      "r2_embedding_resid": 0.9611407342362284,
+      "n_samples": 5088
+    },
+    "TCON_Thermal conductivity observations (W/(m*K))": {
+      "r2_depth_only": 0.05159779865935754,
+      "r2_embedding_only": 0.9981319407073399,
+      "r2_embedding_depth": 0.9986709110531926,
+      "r2_embedding_resid": 0.9703219461775516,
+      "n_samples": 5064
+    },
+    "TCON_Calculated TCON value (W/(m*K))": {
+      "r2_depth_only": 0.11066530476616532,
+      "r2_embedding_only": 0.9999751435873852,
+      "r2_embedding_depth": 0.9999860582813637,
+      "r2_embedding_resid": 0.9962559503909711,
+      "n_samples": 1995
+    },
+    "TOR": {
+      "r2_depth_only": 0.46941764813451203,
+      "r2_embedding_only": 0.9991399043883414,
+      "r2_embedding_depth": 0.9993615784421083,
+      "r2_embedding_resid": 0.9939057837124657,
+      "n_samples": 606
+    }
+  }
+}
