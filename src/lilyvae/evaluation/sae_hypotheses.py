@@ -84,6 +84,10 @@ HYPOTHESES: tuple[Hypothesis, ...] = (
 )
 
 
+#: Training epochs for the sparse fit, observed and null alike.
+SAE_EPOCHS = 120
+
+
 def _prepare(name: str, targets: dict) -> tuple[np.ndarray, np.ndarray]:
     from lilyvae.evaluation.targets import TARGET_REGISTRY
 
@@ -197,7 +201,8 @@ def run_hypothesis_test(
         )
         z = trained.embeddings
 
-        cfg = SAETrainConfig(d_hidden=d_hidden, num_epochs=120, device=device)
+        cfg = SAETrainConfig(d_hidden=d_hidden, num_epochs=SAE_EPOCHS,
+                             device=device)
         sae, _ = train_sae(z[fold.train_mask], cfg)
         with torch.no_grad():
             acts = sae.encode(z).cpu().numpy()
@@ -220,8 +225,13 @@ def run_hypothesis_test(
         for _ in range(max(1, n_null // n_folds)):
             q, _ = np.linalg.qr(rng.normal(size=(z.shape[1], z.shape[1])))
             zr = torch.tensor(z.numpy() @ q, dtype=torch.float32)
+            # The same budget as the observed fit above. A null trained
+            # for a third as long is a different decomposition, and the
+            # comparison has to be between like and like even though the
+            # shorter budget happened to favour the reported result.
             sae_r, _ = train_sae(zr[fold.train_mask],
-                                 SAETrainConfig(d_hidden=d_hidden, num_epochs=40,
+                                 SAETrainConfig(d_hidden=d_hidden,
+                                                num_epochs=SAE_EPOCHS,
                                                 device=device))
             with torch.no_grad():
                 acts_r = sae_r.encode(zr).cpu().numpy()

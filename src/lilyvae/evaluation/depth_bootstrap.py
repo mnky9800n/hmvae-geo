@@ -121,14 +121,18 @@ def evaluate_depth_arms(
 
     y_train = values[fit_rows].copy()
     y_test = values[score_rows].copy()
+    n_clipped = 0
     if winsorize:
-        _, _ = winsorize_values(y_train)
+        # Thresholds from the training rows only, so the held-out side
+        # leaks nothing. The count is reported rather than discarded.
+        _, n_clipped = winsorize_values(y_train)
         lo, hi = np.percentile(y_train, [1.0, 99.0])
         y_train, y_test = np.clip(y_train, lo, hi), np.clip(y_test, lo, hi)
     if np.ptp(y_test) == 0:
         return {"n_train": n_train, "n_test": n_test}
 
-    out = {"n_train": n_train, "n_test": n_test}
+    out = {"n_train": n_train, "n_test": n_test,
+           "n_winsorized": n_clipped}
     for arm in FEATURE_SETS:
         x = _arm_features(arm, embeddings, depths)
         if arm == "embedding_resid":
