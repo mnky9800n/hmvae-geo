@@ -49,7 +49,10 @@ def run_provenance() -> dict:
         return out.stdout.strip() if out.returncode == 0 else None
 
     sha = git("rev-parse", "HEAD")
-    status = git("status", "--porcelain")
+    # Results are tracked, so writing one dirties the tree and the next
+    # run would stamp itself dirty because of its predecessor's output.
+    # Dirty here means the code differs from the commit.
+    status = git("status", "--porcelain", "--", ":!data/results")
     deployed = root / ".deployed_sha"
 
     # A deployed copy carries no .git, so a run on the GPU box would
