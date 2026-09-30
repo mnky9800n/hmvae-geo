@@ -313,6 +313,12 @@ def run_depth_input_ablation(
     prepared = _prepare(targets, names)
 
     results = {"six_variable": {}, "seven_variable_with_depth": {}}
+    # How much of depth each latent stores, measured the same way as any
+    # other target: fitted on training boreholes and scored on held-out
+    # ones. The manuscript reports this pair and nothing computed it.
+    depth_recovered: dict[str, list[float]] = {
+        "six_variable": [], "seven_variable_with_depth": []
+    }
     print(f"Depth-as-input ablation: {n_iterations} folds, {len(names)} targets")
 
     for fold in borehole_splits(borehole_ids, n_iterations, test_fraction, seed=SEED):
@@ -346,6 +352,14 @@ def run_depth_input_ablation(
             with torch.no_grad():
                 z = vae.get_embeddings(x.to(dev)).cpu().numpy().astype(np.float64)
 
+            everywhere = np.ones(len(depths), dtype=bool)
+            d_res = evaluate_depth_arms(
+                z, depths, depths, everywhere, fold.train_mask, fold.test_mask,
+            )
+            d_r2 = d_res.get("embedding")
+            if d_r2 is not None and np.isfinite(d_r2):
+                depth_recovered[variant].append(float(d_r2))
+
             scores = []
             for name, (values, valid, wins) in prepared.items():
                 res = evaluate_depth_arms(
@@ -366,9 +380,14 @@ def run_depth_input_ablation(
             vals = np.array([v for v in vals if v is not None and np.isfinite(v)])
             if vals.size:
                 medians.append(float(np.median(vals)))
+        recovered = depth_recovered[variant]
         summary[variant] = {
             "median_over_targets": float(np.median(medians)) if medians else float("nan"),
             "n_targets": len(medians),
+            "depth_recovered_from_latent": (
+                float(np.median(recovered)) if recovered else float("nan")
+            ),
+            "n_folds_depth_recovered": len(recovered),
         }
 
     print(f"\n{'='*70}")
@@ -377,6 +396,9 @@ def run_depth_input_ablation(
     delta = (summary["seven_variable_with_depth"]["median_over_targets"]
              - summary["six_variable"]["median_over_targets"])
     print(f"  adding depth as an input changes transfer by {delta:+.4f}")
+    for variant, s in summary.items():
+        print(f"  {variant:<30} depth recovered from the latent "
+              f"{s['depth_recovered_from_latent']:.4f}")
 
     return {
         "config": {"n_iterations": n_iterations, "tiers": list(tiers),
