@@ -52,10 +52,21 @@ def expected_files() -> dict[str, list[str]]:
     for base in (ROOT / "src", ROOT / "scripts"):
         for py in sorted(base.rglob("*.py")):
             text = py.read_text()
-            for name in re.findall(r'RESULTS_DIR\s*/\s*"([^"]+\.json)"', text):
-                rel = py.relative_to(ROOT / "src" / "lilyvae") if base.name == "src" \
-                    else py.relative_to(ROOT)
-                wanted.setdefault(name, []).append(str(rel))
+            for line in text.splitlines():
+                for name in re.findall(
+                    r'RESULTS_DIR\s*/\s*"([^"]+\.json)"', line
+                ):
+                    rel = py.relative_to(ROOT / "src" / "lilyvae") \
+                        if base.name == "src" else py.relative_to(ROOT)
+                    # A line that assigns an output path or calls the
+                    # writer is producing the file, not depending on it.
+                    # Without this, the optional output of a
+                    # parameterised tool is reported as a missing input.
+                    writes = bool(re.search(r"\bout(put)?\w*\s*=", line)) \
+                        or "write_result" in line
+                    wanted.setdefault(name, {"reads": [], "writes": []})[
+                        "writes" if writes else "reads"
+                    ].append(str(rel))
     return wanted
 
 
@@ -69,7 +80,8 @@ def code_for(name: str, readers: dict[str, list[str]]) -> list[str]:
     package pairs a script with the code it drives.
     """
     paths = set()
-    for rel in readers.get(name, []):
+    for rel in readers.get(name, {}).get("reads", []) + \
+            readers.get(name, {}).get("writes", []):
         # A figure module reads a result; it cannot invalidate one. Only
         # the code that writes the file counts here.
         if rel.startswith("plotting/"):
@@ -95,11 +107,16 @@ def main() -> int:
 
     rows = []
     for name in sorted(set(readers) | on_disk):
-        who = ", ".join(sorted(set(readers.get(name, [])))) or "not read by any module"
+        entry = readers.get(name, {"reads": [], "writes": []})
+        reads, writes = sorted(set(entry["reads"])), sorted(set(entry["writes"]))
+        who = ", ".join(reads) or ("written by " + ", ".join(writes)
+                                   if writes else "not referenced")
         path = RESULTS / name
         if not path.exists():
-            rows.append(("MISSING", name, who, ""))
-            missing += 1
+            # Only a file something reads can break a figure or a table.
+            # One that is merely written is an output nobody is waiting on.
+            rows.append(("MISSING" if reads else "not produced", name, who, ""))
+            missing += 1 if reads else 0
             continue
         try:
             prov = json.loads(path.read_text()).get("_provenance")
