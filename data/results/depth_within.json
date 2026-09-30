@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "git_sha": "34b5f37a643063d4a7df658ac03665584e92b232",
-    "git_dirty": true,
-    "created_utc": "2026-09-29T11:21:50+00:00",
+    "git_sha": "7f4920ac08b7b05dba1d939f0019ca48dee4541b",
+    "git_dirty": false,
+    "created_utc": "2026-09-30T14:01:10+00:00",
     "host": "Mac.home",
     "command": "/Users/mnky9800n/repos/jenniferprojects/lilyvae/.venv/bin/lilyvae-depth-within",
     "python": "3.14.3"
@@ -83,5 +83,5 @@
     "pooled_median": 0.235273808016625,
     "n_targets": 9
   },
-  "elapsed_seconds": 46.73667931556702
+  "elapsed_seconds": 46.56472206115723
 }
