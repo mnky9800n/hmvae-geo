@@ -16,7 +16,9 @@ This reports, for every result file the code expects:
                   written by code that did not go through write_result
     no commit     stamped, but the commit was not recorded
     dirty         produced from a working tree with uncommitted changes
-    stale         src/ has changed since the commit that produced it
+    stale         the code that writes it has changed since
+    producer unknown
+                  nothing here writes this name (usually --output)
 
 Exit code is 1 if any expected file is missing, which is the only state
 that makes a figure unbuildable. Everything else is reported and does
@@ -44,13 +46,45 @@ def git(*args: str) -> str:
 def expected_files() -> dict[str, list[str]]:
     """Result files the code reads, and which modules read them."""
     wanted: dict[str, list[str]] = {}
-    for py in sorted((ROOT / "src").rglob("*.py")):
-        text = py.read_text()
-        for name in re.findall(r'RESULTS_DIR\s*/\s*"([^"]+\.json)"', text):
-            wanted.setdefault(name, []).append(
-                str(py.relative_to(ROOT / "src" / "lilyvae"))
-            )
+    # Both trees: the package, and the loose scripts beside it. Walking
+    # only src/ hid scripts/paired_comparisons.py, so the file it writes
+    # looked like it had no producer at all.
+    for base in (ROOT / "src", ROOT / "scripts"):
+        for py in sorted(base.rglob("*.py")):
+            text = py.read_text()
+            for name in re.findall(r'RESULTS_DIR\s*/\s*"([^"]+\.json)"', text):
+                rel = py.relative_to(ROOT / "src" / "lilyvae") if base.name == "src" \
+                    else py.relative_to(ROOT)
+                wanted.setdefault(name, []).append(str(rel))
     return wanted
+
+
+def code_for(name: str, readers: dict[str, list[str]]) -> list[str]:
+    """The paths whose history can make this result stale.
+
+    Counting every commit to src/ marked a file stale because an
+    unrelated module changed, which trains the reader to ignore the
+    column. This counts the modules that name the file, plus the
+    evaluation module each of them shares a name with, which is how this
+    package pairs a script with the code it drives.
+    """
+    paths = set()
+    for rel in readers.get(name, []):
+        # A figure module reads a result; it cannot invalidate one. Only
+        # the code that writes the file counts here.
+        if rel.startswith("plotting/"):
+            continue
+        if rel.startswith("scripts/"):
+            paths.add(rel)
+            continue
+        paths.add(f"src/lilyvae/{rel}")
+        sibling = Path("src/lilyvae/evaluation") / Path(rel).name
+        if (ROOT / sibling).exists():
+            paths.add(str(sibling))
+    # Empty means nothing here writes this name, usually because it was
+    # produced with --output. Saying so beats counting every commit to
+    # src/ and calling the result stale.
+    return sorted(paths)
 
 
 def main() -> int:
@@ -79,12 +113,16 @@ def main() -> int:
         if not sha:
             rows.append(("no commit", name, who, when))
             continue
-        behind = git("rev-list", "--count", f"{sha}..{head}", "--", "src")
+        producers = code_for(name, readers)
         flags = []
         if dirty:
             flags.append("dirty")
-        if behind and behind != "0":
-            flags.append(f"stale, src changed {behind}x since")
+        if not producers:
+            flags.append("producer unknown")
+        else:
+            behind = git("rev-list", "--count", f"{sha}..{head}", "--", *producers)
+            if behind and behind != "0":
+                flags.append(f"stale, writer changed {behind}x since")
         rows.append((", ".join(flags) or "ok", name, who, when))
 
     width = max(len(r[1]) for r in rows) if rows else 20
