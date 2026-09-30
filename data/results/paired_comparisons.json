@@ -1,12 +1,15 @@
 {
   "_provenance": {
-    "git_sha": null,
-    "git_dirty": null,
-    "created_utc": "2026-09-23T11:56:53+00:00",
-    "note": "Predates provenance tracking. The timestamp is the file's mtime, and the commit that produced it is not recorded."
+    "git_sha": "b2e5730d7f3da0214b7d51639210badbb2e41623",
+    "git_dirty": true,
+    "created_utc": "2026-09-30T10:00:40+00:00",
+    "host": "Mac.home",
+    "command": "scripts/paired_comparisons.py",
+    "python": "3.14.3"
   },
   "reference": "unsupervised_vae",
   "alpha": 0.05,
+  "source": "bootstrap_results.json",
   "comparisons": [
     {
       "model": "ablation_fixed_beta",

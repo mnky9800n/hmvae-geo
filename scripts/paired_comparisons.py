@@ -26,6 +26,7 @@ import numpy as np
 from scipy.stats import wilcoxon
 
 from lilyvae.config import RESULTS_DIR
+from lilyvae.scripts import write_result
 
 REFERENCE = "unsupervised_vae"
 METRICS = ("ari", "auc_macro", "r2_avg")
@@ -55,8 +56,10 @@ def compare(a: list[float], b: list[float]) -> tuple[float, float, int]:
 
 
 def main() -> int:
+    # The bootstrap writes bootstrap_results.json, whatever its --models
+    # were. The old default named a file nothing produces.
     path = Path(sys.argv[1]) if len(sys.argv) > 1 else (
-        RESULTS_DIR / "bootstrap_all_models.json")
+        RESULTS_DIR / "bootstrap_results.json")
     folds = per_fold(json.loads(path.read_text()))
     if REFERENCE not in folds:
         print(f"{REFERENCE} not in {path}")
@@ -79,10 +82,11 @@ def main() -> int:
                          "p_value": p, "n_folds": n, "resolvable": bool(resolvable)})
             print(f"{name:<26} {metric:<10} {diff:>+12.4f} {p:>9.4f}  {verdict}")
 
-    out = RESULTS_DIR / "paired_comparisons.json"
-    out.write_text(json.dumps(
-        {"reference": REFERENCE, "alpha": ALPHA, "comparisons": rows},
-        indent=2, default=float))
+    out = write_result(
+        RESULTS_DIR / "paired_comparisons.json",
+        {"reference": REFERENCE, "alpha": ALPHA, "source": path.name,
+         "comparisons": rows},
+    )
     print(f"\nWritten to {out}")
     return 0
 
