@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "git_sha": "67a2c56399b7058671473c756d5f62409c457281",
+    "git_sha": "f49afa99d306de18c3ee6aaedfabc53de3e8c2f8",
     "git_dirty": false,
-    "created_utc": "2026-09-30T19:27:24+00:00",
+    "created_utc": "2026-10-01T00:39:41+00:00",
     "host": "lambda-scalar",
     "command": "/home/mnky9800n/repos/lilyvae/.venv/bin/lilyvae-depth-bootstrap --ablation --iterations 30 --device cuda --output data/results/depth_input_ablation.json",
     "python": "3.14.4"
@@ -610,11 +610,15 @@
   "summary": {
     "six_variable": {
       "median_over_targets": 0.15582099834699498,
-      "n_targets": 9
+      "n_targets": 9,
+      "depth_recovered_from_latent": 0.31457437613412426,
+      "n_folds_depth_recovered": 30
     },
     "seven_variable_with_depth": {
       "median_over_targets": 0.20508734890297375,
-      "n_targets": 9
+      "n_targets": 9,
+      "depth_recovered_from_latent": 0.9952753382954279,
+      "n_folds_depth_recovered": 30
     }
   }
 }
