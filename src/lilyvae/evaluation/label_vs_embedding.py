@@ -16,6 +16,10 @@ same held-out boreholes:
                      embedding lacks.
 ``raw6``             the six measurements, as the ceiling the label is
                      a compression of.
+``label_raw6``       the six measurements with the label beside them.
+                     The title says the label adds nothing beyond the
+                     measurements that produce it, and this pair with
+                     ``raw6`` is the direct test of that sentence.
 
 A label is a partition of the same core the instruments logged, so the
 comparison is not whether geologists are right. It is how much of a
@@ -49,7 +53,7 @@ from lilyvae.evaluation.zeroshot_bootstrap import (
 )
 from sklearn.metrics import r2_score
 
-ARMS = ("label", "embedding", "label_embedding", "raw6")
+ARMS = ("label", "embedding", "label_embedding", "raw6", "label_raw6")
 
 
 def _one_hot(labels: np.ndarray, classes: np.ndarray) -> np.ndarray:
@@ -109,6 +113,10 @@ def run_label_vs_embedding(
             "embedding": embeddings,
             "label_embedding": np.column_stack([onehot, embeddings]),
             "raw6": features,
+            # The title claims labels add nothing beyond the measurements
+            # that produce them, so this is the arm that tests it: the six
+            # measurements with and without the label beside them.
+            "label_raw6": np.column_stack([onehot, features]),
         }
         entry = {"iteration": fold.iteration, "n_classes": int(len(classes)),
                  "per_variable": {}}
