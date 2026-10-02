@@ -1,0 +1,2172 @@
+{
+  "_provenance": {
+    "git_sha": "da33a039ed22c82fe43a897200378146435785b7",
+    "git_dirty": false,
+    "created_utc": "2026-10-02T15:11:09+00:00",
+    "host": "lambda-scalar",
+    "command": "/home/mnky9800n/repos/lilyvae/.venv/bin/lilyvae-label-vs-embedding --iterations 30",
+    "python": "3.14.4"
+  },
+  "config": {
+    "n_iterations": 30,
+    "test_fraction": 0.1,
+    "tiers": [
+      "independent"
+    ],
+    "seed": 42
+  },
+  "per_iteration": [
+    {
+      "iteration": 0,
+      "n_classes": 129,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.5334910132771409,
+          "embedding": -0.359179504547152,
+          "label_embedding": -0.3434406583752776,
+          "raw6": -0.14022256774909758,
+          "label_raw6": -0.3471104813079331
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.593813543389754,
+          "embedding": 0.7659232171527213,
+          "label_embedding": 0.7668114818161922,
+          "raw6": 0.7286102111768911,
+          "label_raw6": 0.715168148298272
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.40194720165580233,
+          "embedding": 0.13240612485996506,
+          "label_embedding": 0.3338858250097493,
+          "raw6": 0.032341130146430586,
+          "label_raw6": 0.2506807530605135
+        },
+        "PEN": {
+          "label": -128.7305000685643,
+          "embedding": -18.72908262918597,
+          "label_embedding": -10.494032299987172,
+          "raw6": -61.534705466413435,
+          "label_raw6": -28.803873861811603
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": -0.18749445513095342,
+          "embedding": -0.26535390170187245,
+          "label_embedding": -0.042173407982767364,
+          "raw6": -0.07733663700923654,
+          "label_raw6": 0.13719156403352428
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.0360444112845002,
+          "embedding": 0.07854331392691705,
+          "label_embedding": 0.05094801754659528,
+          "raw6": 0.15450322575825337,
+          "label_raw6": 0.12285992617247121
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -15.139932444884046,
+          "embedding": -3101.8174653846545,
+          "label_embedding": -412.8594551191113,
+          "raw6": -2346.203832023237,
+          "label_raw6": -397.06460175568424
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -0.06633346363972437,
+          "embedding": 0.6013419769182211,
+          "label_embedding": 0.560272814855264,
+          "raw6": 0.5855021884147076,
+          "label_raw6": 0.4299349552115068
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": -0.053073443153470734,
+          "embedding": 0.5147986540330012,
+          "label_embedding": 0.5896082975679158,
+          "raw6": 0.5000050314337765,
+          "label_raw6": 0.4927627518272033
+        }
+      }
+    },
+    {
+      "iteration": 1,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.04568089390956076,
+          "embedding": 0.0985438853930839,
+          "label_embedding": 0.10173148855386638,
+          "raw6": 0.12200380148614742,
+          "label_raw6": 0.11654564091393604
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.1528289338208193,
+          "embedding": 0.48354570744838987,
+          "label_embedding": 0.5635531864881904,
+          "raw6": 0.44636174619712554,
+          "label_raw6": 0.5304260515914383
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.021582408052498447,
+          "embedding": -0.0012043356801576532,
+          "label_embedding": 0.2507391386627552,
+          "raw6": 0.07903486345133759,
+          "label_raw6": 0.33211143609148674
+        },
+        "PEN": {
+          "label": -0.0894676974796742,
+          "embedding": 0.060522377478458234,
+          "label_embedding": 0.1500165570878399,
+          "raw6": -0.10689868435826555,
+          "label_raw6": 0.06658949311233286
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.27390201702351047,
+          "embedding": 0.22515385243225372,
+          "label_embedding": 0.5138495507281928,
+          "raw6": 0.21867301887513468,
+          "label_raw6": 0.5326547689289083
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.029533141602778867,
+          "embedding": -0.05959865070923698,
+          "label_embedding": -0.07683447027997103,
+          "raw6": -0.09459377136940228,
+          "label_raw6": 0.062338541200532394
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.1504364971787424,
+          "embedding": -0.17425502264396742,
+          "label_embedding": -0.15753302409939574,
+          "raw6": -0.20279273343560145,
+          "label_raw6": -0.13164481336303524
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -0.08173158107217371,
+          "embedding": 0.6038755159569855,
+          "label_embedding": 0.6625879283738785,
+          "raw6": 0.6424021391529662,
+          "label_raw6": 0.6662007286464017
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.13771898151199635,
+          "embedding": 0.1874672873203208,
+          "label_embedding": 0.3110111800310462,
+          "raw6": 0.18754952657773283,
+          "label_raw6": 0.29040833459218485
+        }
+      }
+    },
+    {
+      "iteration": 2,
+      "n_classes": 138,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.16475439194879715,
+          "embedding": 0.4050715977981795,
+          "label_embedding": 0.4136478353645664,
+          "raw6": 0.4663797779913189,
+          "label_raw6": 0.43787295763376766
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.3047347671858526,
+          "embedding": 0.48569666822182567,
+          "label_embedding": 0.6516389861873939,
+          "raw6": 0.46330597462277423,
+          "label_raw6": 0.6615987138739978
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": -0.10319264057026523,
+          "embedding": 0.0015297912375437095,
+          "label_embedding": 0.03972945882683976,
+          "raw6": 0.019143945039870602,
+          "label_raw6": 0.15559619402485947
+        },
+        "PEN": {
+          "label": -1.718179291354331,
+          "embedding": -0.6649067382469125,
+          "label_embedding": -0.30579004844082935,
+          "raw6": -1.2670551941301595,
+          "label_raw6": -0.32924966884733253
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.6073262097921719,
+          "embedding": 0.4867577093865427,
+          "label_embedding": 0.6553147593575933,
+          "raw6": 0.42623246538015314,
+          "label_raw6": 0.6716329638863283
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.057076102850599275,
+          "embedding": -0.0152036209756794,
+          "label_embedding": 0.018022759207252936,
+          "raw6": -0.01742807110753608,
+          "label_raw6": 0.05779268721992614
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -208.0452163529799,
+          "embedding": -205.6482515464305,
+          "label_embedding": -52.04580697502943,
+          "raw6": -571.0953172507462,
+          "label_raw6": -388.55506571617434
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.3425952007057559,
+          "embedding": 0.057780957886769846,
+          "label_embedding": 0.34797067156855255,
+          "raw6": 0.1247199200744683,
+          "label_raw6": 0.3626354265723414
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.1786927808121136,
+          "embedding": 0.2900488609124874,
+          "label_embedding": 0.3813938001572059,
+          "raw6": 0.3351923201551099,
+          "label_raw6": 0.37912867628475944
+        }
+      }
+    },
+    {
+      "iteration": 3,
+      "n_classes": 134,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.7003190406535456,
+          "embedding": -0.5397399727316479,
+          "label_embedding": -0.7084256590714584,
+          "raw6": -0.612859992962115,
+          "label_raw6": -0.6178699378056998
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.3982487802815884,
+          "embedding": 0.49712789123430257,
+          "label_embedding": 0.6954067870943359,
+          "raw6": 0.49076871053663496,
+          "label_raw6": 0.6824877379136514
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": -0.10455576674117673,
+          "embedding": -0.07732419584171657,
+          "label_embedding": 0.017681576514615105,
+          "raw6": -0.00750209932471968,
+          "label_raw6": 0.1387205490745762
+        },
+        "PEN": {
+          "label": -61.34802284228997,
+          "embedding": -1.4858022590327682,
+          "label_embedding": -1.5477096406341007,
+          "raw6": -2.581027488877264,
+          "label_raw6": -5.023012251667508
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": -0.2248308800079637,
+          "embedding": 0.27430155373664034,
+          "label_embedding": -0.015639741380266914,
+          "raw6": 0.2836212440767786,
+          "label_raw6": 0.0034857531016768695
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.031204882516275845,
+          "embedding": -0.1389903099223171,
+          "label_embedding": 0.0786961925791756,
+          "raw6": -0.2632854945164784,
+          "label_raw6": 0.10391920405577981
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -10.279805057301534,
+          "embedding": -13.142135799116966,
+          "label_embedding": -9.066682268957992,
+          "raw6": -8.703621563950792,
+          "label_raw6": -5.451533343897167
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.35247226118810226,
+          "embedding": 0.40842814682113515,
+          "label_embedding": 0.5728974084107477,
+          "raw6": 0.3915980617334761,
+          "label_raw6": 0.5643118306856401
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.34138528491644937,
+          "embedding": 0.292706510243982,
+          "label_embedding": 0.5215259073810077,
+          "raw6": 0.155948710938296,
+          "label_raw6": 0.5672722893890101
+        }
+      }
+    },
+    {
+      "iteration": 4,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.47615270779128904,
+          "embedding": -0.20870360509701658,
+          "label_embedding": -0.23600761741202003,
+          "raw6": -0.005446594533237592,
+          "label_raw6": -0.07218628568385754
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.36101086992541986,
+          "embedding": 0.5844643099212823,
+          "label_embedding": 0.6744101439007243,
+          "raw6": 0.5662067876418513,
+          "label_raw6": 0.6592912277845441
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.11512916606629287,
+          "embedding": 0.21265680393699848,
+          "label_embedding": 0.2483437569826744,
+          "raw6": 0.25654633985862985,
+          "label_raw6": 0.27410411605201956
+        },
+        "PEN": {
+          "label": -128.7305000685643,
+          "embedding": -18.72908262918597,
+          "label_embedding": -10.494032299987172,
+          "raw6": -61.534705466413435,
+          "label_raw6": -28.803873861811603
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.15985845687856426,
+          "embedding": 0.3456586986246719,
+          "label_embedding": 0.490981563066888,
+          "raw6": 0.4712109642547244,
+          "label_raw6": 0.5407263387874663
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.2732121730912762,
+          "embedding": 0.0016340679919745194,
+          "label_embedding": -0.04730589057080237,
+          "raw6": 0.009091930342084553,
+          "label_raw6": -0.0188036479301128
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -18.84046050997177,
+          "embedding": -620.3353128032121,
+          "label_embedding": -192.73919774125514,
+          "raw6": -559.6515628741415,
+          "label_raw6": -106.5743996862237
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.17112047479203707,
+          "embedding": 0.7753510032519444,
+          "label_embedding": 0.7575054830377317,
+          "raw6": 0.7221502338892214,
+          "label_raw6": 0.7190111847176036
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": -0.07749694899949278,
+          "embedding": 0.1309440917288176,
+          "label_embedding": 0.25449586113772515,
+          "raw6": 0.13170460211000157,
+          "label_raw6": 0.24129639100277378
+        }
+      }
+    },
+    {
+      "iteration": 5,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.3363251563571834,
+          "embedding": -0.12991457574422527,
+          "label_embedding": -0.04350832037529706,
+          "raw6": -0.19640874033019307,
+          "label_raw6": -0.08319027879520435
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.11240297883042893,
+          "embedding": 0.2453097396790772,
+          "label_embedding": 0.44804680584582224,
+          "raw6": 0.29398429524322045,
+          "label_raw6": 0.5147670170637844
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.2145555084620029,
+          "embedding": -0.2331041442602193,
+          "label_embedding": 0.16213765063691976,
+          "raw6": -0.002316734232469697,
+          "label_raw6": 0.23683460605983242
+        },
+        "PEN": {
+          "label": NaN,
+          "embedding": NaN,
+          "label_embedding": NaN,
+          "raw6": NaN,
+          "label_raw6": NaN
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.1906514688486216,
+          "embedding": -0.17722678624618915,
+          "label_embedding": 0.2217847209537278,
+          "raw6": -0.08339584609771467,
+          "label_raw6": 0.33169946325800626
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.0033661356720033897,
+          "embedding": 0.11197354319527952,
+          "label_embedding": 0.046923197900067604,
+          "raw6": 0.11558126116087031,
+          "label_raw6": -0.010454759361803179
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -2.787935289754549,
+          "embedding": -906.7390179965764,
+          "label_embedding": -127.64303275571947,
+          "raw6": -1217.6257741651593,
+          "label_raw6": -124.88860660586019
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -1.357016197827408,
+          "embedding": 0.070215540509724,
+          "label_embedding": -0.2884194513480045,
+          "raw6": -0.02257636079245806,
+          "label_raw6": 0.17042614233807196
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.0924603796395631,
+          "embedding": 0.26383608470406006,
+          "label_embedding": 0.32947198215480933,
+          "raw6": 0.23370329644751264,
+          "label_raw6": 0.356121163012181
+        }
+      }
+    },
+    {
+      "iteration": 6,
+      "n_classes": 135,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.15280599812188989,
+          "embedding": 0.06425937362438328,
+          "label_embedding": -0.024482847890028303,
+          "raw6": 0.22233441453675817,
+          "label_raw6": 0.07575803557105842
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.3028896548617753,
+          "embedding": 0.518458426712616,
+          "label_embedding": 0.6329847465795129,
+          "raw6": 0.46253693842950305,
+          "label_raw6": 0.6044243726482994
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.037728927775958376,
+          "embedding": 0.1488171028273918,
+          "label_embedding": 0.20539863489208965,
+          "raw6": 0.12941352875572132,
+          "label_raw6": 0.23547523503243895
+        },
+        "PEN": {
+          "label": -272.6891691232201,
+          "embedding": -0.7463471590104018,
+          "label_embedding": -5.394782850043506,
+          "raw6": -7.026815353093868,
+          "label_raw6": -9.187068780934048
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.319536969330975,
+          "embedding": 0.05937815886571152,
+          "label_embedding": 0.49004665578765294,
+          "raw6": 0.13909512942715507,
+          "label_raw6": 0.48144838364977793
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.04739330541924447,
+          "embedding": 0.03004591066567619,
+          "label_embedding": 0.08554877286479468,
+          "raw6": 0.06685758592958346,
+          "label_raw6": 0.12464486597810098
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.8515171295147721,
+          "embedding": 0.6852111059513957,
+          "label_embedding": 0.7582910120692264,
+          "raw6": 0.6524849772838881,
+          "label_raw6": 0.7669772295166034
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.5177477235353918,
+          "embedding": 0.12354254557875943,
+          "label_embedding": 0.5020665166750303,
+          "raw6": 0.22609791402426704,
+          "label_raw6": 0.5356809962497397
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": -0.10007873929633293,
+          "embedding": 0.4060740887446095,
+          "label_embedding": 0.43976127905175477,
+          "raw6": 0.3790618305614788,
+          "label_raw6": 0.4715120868871935
+        }
+      }
+    },
+    {
+      "iteration": 7,
+      "n_classes": 138,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.12345422145831808,
+          "embedding": 0.4240192751068398,
+          "label_embedding": 0.5473334313434309,
+          "raw6": 0.42230006387751096,
+          "label_raw6": 0.4540501806881144
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.2885679669235097,
+          "embedding": 0.4254623782867154,
+          "label_embedding": 0.574747510702994,
+          "raw6": 0.4156011826617476,
+          "label_raw6": 0.554951131079757
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": -0.24997769891052313,
+          "embedding": -0.005414531206678674,
+          "label_embedding": 0.07741306474455434,
+          "raw6": 0.025743943201189223,
+          "label_raw6": 0.15951225998046803
+        },
+        "PEN": {
+          "label": -724.0082179700509,
+          "embedding": -554.9682443408849,
+          "label_embedding": -707.8195460134903,
+          "raw6": -1606.307286238602,
+          "label_raw6": -452.93531074503426
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5921149379113619,
+          "embedding": 0.4646833445242836,
+          "label_embedding": 0.5962280374201931,
+          "raw6": 0.45534306584867035,
+          "label_raw6": 0.6058787427980159
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.0031677064415207568,
+          "embedding": 0.0035509470451954295,
+          "label_embedding": 0.04241844937384054,
+          "raw6": -0.007784447587837695,
+          "label_raw6": 0.06898999225111102
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.222998523360454,
+          "embedding": 0.07392036240563982,
+          "label_embedding": 0.20676154106600075,
+          "raw6": 0.15462359437612827,
+          "label_raw6": 0.17836660400381932
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.6316036956937642,
+          "embedding": 0.23803205146047113,
+          "label_embedding": 0.5133919938458344,
+          "raw6": 0.15404747460993118,
+          "label_raw6": 0.49290618924448804
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.1590933705119233,
+          "embedding": 0.37764430154821826,
+          "label_embedding": 0.4398097401145915,
+          "raw6": 0.3866852578494643,
+          "label_raw6": 0.46453324339960655
+        }
+      }
+    },
+    {
+      "iteration": 8,
+      "n_classes": 137,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.0570346229902986,
+          "embedding": 0.24748043454804713,
+          "label_embedding": 0.26341917158907746,
+          "raw6": 0.29742067106933334,
+          "label_raw6": 0.3066999780255967
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.37764240346142086,
+          "embedding": 0.45718066037468064,
+          "label_embedding": 0.6209981909432485,
+          "raw6": 0.4856328766791469,
+          "label_raw6": 0.6651691269900357
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.1989974185148744,
+          "embedding": 0.10982581887323828,
+          "label_embedding": 0.2857022454331649,
+          "raw6": 0.16078443669035314,
+          "label_raw6": 0.29472766160622976
+        },
+        "PEN": {
+          "label": -11.113508015158674,
+          "embedding": -1.8825011193620629,
+          "label_embedding": -1.5269095529247974,
+          "raw6": -1.7822395268941498,
+          "label_raw6": -1.4807293915630484
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5613374503149939,
+          "embedding": 0.4564119611862574,
+          "label_embedding": 0.5847426842457644,
+          "raw6": 0.463790834198163,
+          "label_raw6": 0.5959392489278048
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.09995130934709051,
+          "embedding": -0.03847325982044647,
+          "label_embedding": -0.2457102637312758,
+          "raw6": -0.033555256899563624,
+          "label_raw6": -0.279865347584799
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.8537796198057686,
+          "embedding": 0.6802689330551493,
+          "label_embedding": 0.8301691308624946,
+          "raw6": 0.6425713600203184,
+          "label_raw6": 0.7044754742205985
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.23713547108667643,
+          "embedding": 0.7522722161452495,
+          "label_embedding": 0.7909464155089564,
+          "raw6": 0.7384189276257045,
+          "label_raw6": 0.7904331102993991
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.25443670671522556,
+          "embedding": 0.27702844677954064,
+          "label_embedding": 0.30508010882782033,
+          "raw6": 0.2396494583791885,
+          "label_raw6": 0.3386723679795808
+        }
+      }
+    },
+    {
+      "iteration": 9,
+      "n_classes": 137,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.5506705855557019,
+          "embedding": 0.005741600671031577,
+          "label_embedding": -0.10881626083873508,
+          "raw6": -0.021421215871577637,
+          "label_raw6": 0.08118829607639555
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.06798728598523263,
+          "embedding": 0.35711816237732363,
+          "label_embedding": 0.5145663103957504,
+          "raw6": 0.3482442875989227,
+          "label_raw6": 0.4831119551213249
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": -0.05773775905758938,
+          "embedding": 0.0765003763418145,
+          "label_embedding": 0.09640169767495854,
+          "raw6": 0.07598421115311993,
+          "label_raw6": 0.09747742714642293
+        },
+        "PEN": {
+          "label": 0.3592878699037273,
+          "embedding": 0.4409232899532154,
+          "label_embedding": 0.6024386034480738,
+          "raw6": 0.4685206612798951,
+          "label_raw6": 0.6333860065958838
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5677453474816028,
+          "embedding": 0.44552896600159864,
+          "label_embedding": 0.5448188128836995,
+          "raw6": 0.4629856637052505,
+          "label_raw6": 0.6016517290108987
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.1401465299336382,
+          "embedding": 0.16656444944863635,
+          "label_embedding": 0.12255233827903278,
+          "raw6": 0.17641234165457342,
+          "label_raw6": 0.11763693648849238
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.018469528076243358,
+          "embedding": -0.1282187606117966,
+          "label_embedding": -0.2930843939052743,
+          "raw6": -0.05211163250099693,
+          "label_raw6": -0.19493412839903046
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.3869928868091147,
+          "embedding": 0.08219940999595854,
+          "label_embedding": 0.32369987306247106,
+          "raw6": 0.11022117919373675,
+          "label_raw6": 0.3734604188511317
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.045043169443527264,
+          "embedding": 0.24728528162061603,
+          "label_embedding": 0.2449518563620181,
+          "raw6": 0.23990615115538738,
+          "label_raw6": 0.2521043649596181
+        }
+      }
+    },
+    {
+      "iteration": 10,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.02452203629865246,
+          "embedding": 0.18533226970873384,
+          "label_embedding": 0.25680340122942735,
+          "raw6": 0.32095856438150416,
+          "label_raw6": 0.327587025472484
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.42855303406654455,
+          "embedding": 0.6004128600245019,
+          "label_embedding": 0.7431171729501878,
+          "raw6": 0.5923370177672378,
+          "label_raw6": 0.7408658289813579
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.13562376010728538,
+          "embedding": 0.15204873073855507,
+          "label_embedding": 0.30488862106682446,
+          "raw6": 0.1639291255890255,
+          "label_raw6": 0.3169153802748864
+        },
+        "PEN": {
+          "label": 0.8860712430274865,
+          "embedding": -0.644552522391785,
+          "label_embedding": 0.16015390468562873,
+          "raw6": 0.6826061860391325,
+          "label_raw6": 0.3820236393161883
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.3640090807194908,
+          "embedding": 0.4660738170749724,
+          "label_embedding": 0.5920356521291876,
+          "raw6": 0.33692018924412626,
+          "label_raw6": 0.5053741057177817
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.054404297524824896,
+          "embedding": -0.2874020266967592,
+          "label_embedding": -0.24994256777805157,
+          "raw6": -0.38393570547626665,
+          "label_raw6": -0.0495844059540711
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -1.9086579619693018,
+          "embedding": -468.69688290667744,
+          "label_embedding": -27.583933957124376,
+          "raw6": -207.9768040593553,
+          "label_raw6": -44.89560648678172
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.31208237365396796,
+          "embedding": 0.5744556380193495,
+          "label_embedding": 0.6632219470055503,
+          "raw6": 0.5637807069199818,
+          "label_raw6": 0.6794941716912017
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.23766548113388286,
+          "embedding": 0.1017944255440909,
+          "label_embedding": 0.4332317174048136,
+          "raw6": 0.18087240874714106,
+          "label_raw6": 0.5036332824002128
+        }
+      }
+    },
+    {
+      "iteration": 11,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.1514717568042887,
+          "embedding": 0.31212807369142737,
+          "label_embedding": 0.3080913145121361,
+          "raw6": 0.2552494730780819,
+          "label_raw6": 0.30544815275552084
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.5725051081099322,
+          "embedding": 0.5340115045326639,
+          "label_embedding": 0.7421765105296478,
+          "raw6": 0.43193614520955614,
+          "label_raw6": 0.7181814661336727
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.01486984591403162,
+          "embedding": -0.12207070920242757,
+          "label_embedding": -0.016149218358570305,
+          "raw6": -0.07245654046813854,
+          "label_raw6": 0.007337109650839224
+        },
+        "PEN": {
+          "label": -0.8146226009291964,
+          "embedding": -7.641017789424053,
+          "label_embedding": -0.7811056357370874,
+          "raw6": -0.3536318067246189,
+          "label_raw6": -0.6722696859096511
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": -0.01807018284813533,
+          "embedding": 0.36738285290912975,
+          "label_embedding": 0.30826717681699545,
+          "raw6": 0.3015593899186343,
+          "label_raw6": 0.28896778086342556
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.21636470325921653,
+          "embedding": 0.5349054906965187,
+          "label_embedding": 0.5393199759771303,
+          "raw6": 0.19015693305608639,
+          "label_raw6": 0.5067827322794134
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.04701635494999601,
+          "embedding": -2.5187972134444694,
+          "label_embedding": -1.370840086632208,
+          "raw6": -2.2318783521237755,
+          "label_raw6": -0.452575771079625
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.3761852514990125,
+          "embedding": 0.5291972090286816,
+          "label_embedding": 0.6237141144043037,
+          "raw6": 0.5485873306954833,
+          "label_raw6": 0.6687648549132417
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.381387502018124,
+          "embedding": 0.47461278234433013,
+          "label_embedding": 0.5406970726543383,
+          "raw6": 0.3355006568227803,
+          "label_raw6": 0.5091069862583758
+        }
+      }
+    },
+    {
+      "iteration": 12,
+      "n_classes": 138,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.1408917595710697,
+          "embedding": -0.2923637035275286,
+          "label_embedding": -0.36093513399314103,
+          "raw6": -0.1740064695996506,
+          "label_raw6": -0.20697781017953965
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.38640021066194175,
+          "embedding": 0.34290589827177,
+          "label_embedding": 0.6039928531113902,
+          "raw6": 0.332985980285636,
+          "label_raw6": 0.6411211385516192
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.02091235272291725,
+          "embedding": -0.011876092768420499,
+          "label_embedding": 0.15934465979458634,
+          "raw6": 0.04910024300674265,
+          "label_raw6": 0.16495327896087153
+        },
+        "PEN": {
+          "label": 0.4592836468780386,
+          "embedding": 0.7798982027958447,
+          "label_embedding": 0.6482784768187904,
+          "raw6": 0.6053674055148004,
+          "label_raw6": 0.6496508397742708
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.700112320040061,
+          "embedding": 0.45852699290942855,
+          "label_embedding": 0.6432525051345983,
+          "raw6": 0.5221378545037434,
+          "label_raw6": 0.6467730029902565
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.30323608669245317,
+          "embedding": 0.3871730335355178,
+          "label_embedding": 0.40673527942015664,
+          "raw6": 0.3165818593934949,
+          "label_raw6": 0.41806392166185824
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.27669063538031446,
+          "embedding": -5.020797271442336,
+          "label_embedding": -0.8280653433991092,
+          "raw6": -3.693793147369319,
+          "label_raw6": -0.5314070311829979
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -1.3289875709505337,
+          "embedding": 0.34549792140387625,
+          "label_embedding": 0.15388324543304843,
+          "raw6": 0.37328993321169046,
+          "label_raw6": 0.3415066020353247
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.04610547693641165,
+          "embedding": -0.2979214299171633,
+          "label_embedding": 0.3543182683651225,
+          "raw6": 0.20855082221426202,
+          "label_raw6": 0.42219993508076303
+        }
+      }
+    },
+    {
+      "iteration": 13,
+      "n_classes": 132,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.1766160687353946,
+          "embedding": 0.21714054521988768,
+          "label_embedding": 0.2598143698149208,
+          "raw6": 0.23574964106414786,
+          "label_raw6": 0.29492068661207504
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.38723171584090166,
+          "embedding": 0.6488581462675964,
+          "label_embedding": 0.7708781943663184,
+          "raw6": 0.6418289113474183,
+          "label_raw6": 0.7726095541704593
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.2012017213193933,
+          "embedding": 0.15394653485914234,
+          "label_embedding": 0.2900574394487102,
+          "raw6": 0.16364351260617405,
+          "label_raw6": 0.2880000524187718
+        },
+        "PEN": {
+          "label": -6.592058096141519,
+          "embedding": -35.056238759865174,
+          "label_embedding": -34.38995633990501,
+          "raw6": -705.1276805663032,
+          "label_raw6": -497.8221681783509
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5209078622718164,
+          "embedding": 0.5536262915775318,
+          "label_embedding": 0.6681170857267494,
+          "raw6": 0.5401647390241597,
+          "label_raw6": 0.7157365482808112
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.10676252531090591,
+          "embedding": -0.19320631444817238,
+          "label_embedding": 0.02252593338660336,
+          "raw6": -0.47540740203291354,
+          "label_raw6": -0.060492595226825596
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.8283483467868629,
+          "embedding": -1.0995994611717292,
+          "label_embedding": -0.5755242114825523,
+          "raw6": -0.16480303206413005,
+          "label_raw6": -0.9060933223469188
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.3108575710727647,
+          "embedding": 0.6956620487078178,
+          "label_embedding": 0.7009292265603775,
+          "raw6": 0.6722133290479061,
+          "label_raw6": 0.6812188675314306
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.08241773995458201,
+          "embedding": 0.19687968862796845,
+          "label_embedding": 0.5643987600096931,
+          "raw6": 0.24654547727647258,
+          "label_raw6": 0.5394765670001048
+        }
+      }
+    },
+    {
+      "iteration": 14,
+      "n_classes": 138,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.03632001709663346,
+          "embedding": -0.4578038256705934,
+          "label_embedding": -0.40073552803028156,
+          "raw6": -0.06311836061849263,
+          "label_raw6": -0.017213478268683913
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.36554460854269344,
+          "embedding": 0.5017490545247933,
+          "label_embedding": 0.6268555005783627,
+          "raw6": 0.43677872504838944,
+          "label_raw6": 0.6189842020902343
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.1164207238454914,
+          "embedding": 0.055698864251218394,
+          "label_embedding": 0.2259171918787808,
+          "raw6": 0.08930534149398406,
+          "label_raw6": 0.2468619753306146
+        },
+        "PEN": {
+          "label": -1.4690844556716969,
+          "embedding": -0.7594969894592836,
+          "label_embedding": -0.46282819734700276,
+          "raw6": -2.263567773134213,
+          "label_raw6": -1.2549965603360955
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5253209136622035,
+          "embedding": 0.5347803745941846,
+          "label_embedding": 0.6712069097838271,
+          "raw6": 0.47574697617211836,
+          "label_raw6": 0.6010936936871839
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.4916012688267749,
+          "embedding": 0.44634490511761804,
+          "label_embedding": 0.5507699179382095,
+          "raw6": 0.32263965035174913,
+          "label_raw6": 0.5061069763910381
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.04600543416874103,
+          "embedding": 0.3103139326715071,
+          "label_embedding": -0.019011864795894118,
+          "raw6": 0.15904008480889165,
+          "label_raw6": 0.01990789929100789
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -1.3270533509536873,
+          "embedding": 0.5741535629821642,
+          "label_embedding": 0.44917835984403875,
+          "raw6": 0.5640021820753336,
+          "label_raw6": 0.5334536746174632
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.13610134783377514,
+          "embedding": 0.32638396153722105,
+          "label_embedding": 0.36631913897356183,
+          "raw6": 0.2561395612843361,
+          "label_raw6": 0.3149943872413091
+        }
+      }
+    },
+    {
+      "iteration": 15,
+      "n_classes": 138,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.15047959561049562,
+          "embedding": 0.04043722805654004,
+          "label_embedding": -0.09279580169283497,
+          "raw6": -0.024946917892091802,
+          "label_raw6": -0.19169183637882092
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.5717102428784113,
+          "embedding": 0.7206617687752408,
+          "label_embedding": 0.8194347947406755,
+          "raw6": 0.6853456098335365,
+          "label_raw6": 0.7941308879738802
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.1875089350362925,
+          "embedding": 0.16313371337881122,
+          "label_embedding": 0.3070531676195797,
+          "raw6": 0.11820415500464498,
+          "label_raw6": 0.26232501014905385
+        },
+        "PEN": {
+          "label": 0.21585393579771495,
+          "embedding": 0.41673454403006027,
+          "label_embedding": 0.5488549563501142,
+          "raw6": 0.46017191611875774,
+          "label_raw6": 0.6086713604519954
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": -0.046590304733029386,
+          "embedding": 0.403270726057657,
+          "label_embedding": 0.4154271791650571,
+          "raw6": 0.3457482275210668,
+          "label_raw6": 0.448212083063108
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.24665681188752653,
+          "embedding": -0.04577191513191248,
+          "label_embedding": 0.02126940514608422,
+          "raw6": -0.03163306531752408,
+          "label_raw6": 0.015902728782609454
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.05725548827792504,
+          "embedding": 0.05617029117888128,
+          "label_embedding": -0.019331210094658546,
+          "raw6": 0.009416440360197953,
+          "label_raw6": 0.006434204419366152
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.4811647469138658,
+          "embedding": 0.5064297963255133,
+          "label_embedding": 0.6157327906091905,
+          "raw6": 0.43670144599543015,
+          "label_raw6": 0.6319897800833716
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.1653946348851013,
+          "embedding": 0.08979454910007856,
+          "label_embedding": 0.25045980836991244,
+          "raw6": 0.19516835667151522,
+          "label_raw6": 0.3787692110659271
+        }
+      }
+    },
+    {
+      "iteration": 16,
+      "n_classes": 135,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.22061021419148807,
+          "embedding": -0.07978364166649077,
+          "label_embedding": -0.20691061891157014,
+          "raw6": -0.20416543209487803,
+          "label_raw6": -0.22249466318038547
+        },
+        "MAD_Porosity (vol%)": {
+          "label": -0.02027914999367919,
+          "embedding": 0.28390847372113104,
+          "label_embedding": 0.5311281587943089,
+          "raw6": 0.3772074359562436,
+          "label_raw6": 0.5975453682974783
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.16044940540482922,
+          "embedding": 0.07791688903708349,
+          "label_embedding": 0.26365903649528344,
+          "raw6": 0.10310050157051776,
+          "label_raw6": 0.22237736326248947
+        },
+        "PEN": {
+          "label": 0.20493969592757255,
+          "embedding": -0.46434004287561415,
+          "label_embedding": -0.1714288688407104,
+          "raw6": -0.32396891622065627,
+          "label_raw6": -0.07846863344488919
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": -1.880153034480902,
+          "embedding": -1.991590006538114,
+          "label_embedding": -1.0501003548740058,
+          "raw6": -1.5841465169269018,
+          "label_raw6": -0.8577375769792519
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.34968944370142885,
+          "embedding": -0.17555021805954008,
+          "label_embedding": -0.4043324012402294,
+          "raw6": -0.10260201183455875,
+          "label_raw6": -0.05993763203446112
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.8283337742833528,
+          "embedding": -1.3825199151982157,
+          "label_embedding": -0.29034010403746935,
+          "raw6": -0.3896865699664833,
+          "label_raw6": -0.5948148866403258
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.5490422126169128,
+          "embedding": 0.5250766647891463,
+          "label_embedding": 0.719369618386189,
+          "raw6": 0.5775316537424204,
+          "label_raw6": 0.7166916053219519
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": -0.4193117775891131,
+          "embedding": 0.18348986620746388,
+          "label_embedding": 0.1770556462097489,
+          "raw6": 0.21620887746250106,
+          "label_raw6": 0.20974308884553816
+        }
+      }
+    },
+    {
+      "iteration": 17,
+      "n_classes": 133,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.11984524799869967,
+          "embedding": 0.2980498785413297,
+          "label_embedding": 0.35355415152527603,
+          "raw6": 0.24168128667875532,
+          "label_raw6": 0.28400658192653905
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.6148317673011995,
+          "embedding": 0.6636500885906984,
+          "label_embedding": 0.7601542427494348,
+          "raw6": 0.6655964530344485,
+          "label_raw6": 0.7146749172636704
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.3601585215864025,
+          "embedding": 0.09385392601550291,
+          "label_embedding": 0.379755995463838,
+          "raw6": 0.06351348455170236,
+          "label_raw6": 0.2825462158708181
+        },
+        "PEN": {
+          "label": -34.70155618563825,
+          "embedding": -52.64664459668658,
+          "label_embedding": -57.79736192366169,
+          "raw6": -62.64592789189976,
+          "label_raw6": -36.54725585407808
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.06293935197915834,
+          "embedding": 0.36985374878630917,
+          "label_embedding": 0.5137550889619958,
+          "raw6": 0.35998969503232436,
+          "label_raw6": 0.4554388528261375
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.09496764424857318,
+          "embedding": 0.3887926560274084,
+          "label_embedding": 0.27729154699486414,
+          "raw6": 0.2602006455335293,
+          "label_raw6": 0.39265350090899054
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.8247238772379226,
+          "embedding": -0.40939528095156175,
+          "label_embedding": -0.3143155579898529,
+          "raw6": 0.14217171084058355,
+          "label_raw6": -0.7698742619198753
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.18285285376814298,
+          "embedding": 0.5962733314144132,
+          "label_embedding": 0.6254216857390233,
+          "raw6": 0.5724090486071439,
+          "label_raw6": 0.6029048575281082
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.05056731214259913,
+          "embedding": 0.3843250074096307,
+          "label_embedding": 0.3909922130932604,
+          "raw6": 0.2951698395583219,
+          "label_raw6": 0.3662454932070548
+        }
+      }
+    },
+    {
+      "iteration": 18,
+      "n_classes": 133,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.13646616996630567,
+          "embedding": 0.2996852342108972,
+          "label_embedding": 0.2269759703481936,
+          "raw6": 0.269843807104606,
+          "label_raw6": 0.19464124110703873
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.3647187357328239,
+          "embedding": 0.4933172317835747,
+          "label_embedding": 0.5971026613829965,
+          "raw6": 0.44051690050472103,
+          "label_raw6": 0.5719727571899165
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.06440873777542344,
+          "embedding": 0.16483988849548414,
+          "label_embedding": 0.16875954340202137,
+          "raw6": 0.15914733335053544,
+          "label_raw6": 0.20953933913566847
+        },
+        "PEN": {
+          "label": -564.7178681699551,
+          "embedding": -1006.5670240363587,
+          "label_embedding": -520.8954279409891,
+          "raw6": -627.3726747992,
+          "label_raw6": -444.5966238018618
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.04797263500178761,
+          "embedding": -0.2490513126164613,
+          "label_embedding": 0.09646052024811658,
+          "raw6": -0.17067880418574188,
+          "label_raw6": 0.17848301396964883
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.03666785554010543,
+          "embedding": -0.2280515647974859,
+          "label_embedding": -0.2057366219571184,
+          "raw6": -0.4053252629324806,
+          "label_raw6": -0.2459385678554098
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.1785554473287876,
+          "embedding": -0.13053226145211783,
+          "label_embedding": 0.1590915079588172,
+          "raw6": -0.1099759628407384,
+          "label_raw6": 0.201912803967792
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.3540434219402624,
+          "embedding": 0.5797420046314636,
+          "label_embedding": 0.7551190459357799,
+          "raw6": 0.5891935399463462,
+          "label_raw6": 0.7576504392457444
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.20894805296800179,
+          "embedding": 0.3719166104612037,
+          "label_embedding": 0.41492344528655334,
+          "raw6": 0.2497961755058743,
+          "label_raw6": 0.42435221048342275
+        }
+      }
+    },
+    {
+      "iteration": 19,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": NaN,
+          "embedding": NaN,
+          "label_embedding": NaN,
+          "raw6": NaN,
+          "label_raw6": NaN
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.17827342761832998,
+          "embedding": 0.3843705243131834,
+          "label_embedding": 0.5948590882713762,
+          "raw6": 0.46916083062704306,
+          "label_raw6": 0.661723783574782
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.020992803558160356,
+          "embedding": -0.08734115314903668,
+          "label_embedding": 0.06264941715480843,
+          "raw6": -0.016340216073168934,
+          "label_raw6": 0.17232785762020064
+        },
+        "PEN": {
+          "label": NaN,
+          "embedding": NaN,
+          "label_embedding": NaN,
+          "raw6": NaN,
+          "label_raw6": NaN
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5627455922198229,
+          "embedding": 0.2608111579141509,
+          "label_embedding": 0.46376672287888765,
+          "raw6": 0.33358273459980925,
+          "label_raw6": 0.5080260182678383
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.07784835668554302,
+          "embedding": 0.31455772478217003,
+          "label_embedding": 0.30977290354645515,
+          "raw6": 0.3312382987288678,
+          "label_raw6": 0.3189374135237397
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -8390.538501368592,
+          "embedding": -156473.16343418238,
+          "label_embedding": -2814.2567852776615,
+          "raw6": -13541.888894084106,
+          "label_raw6": -16872.76872982764
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.19296162813725426,
+          "embedding": 0.5829427798997959,
+          "label_embedding": 0.45796803048066304,
+          "raw6": 0.6182572339737347,
+          "label_raw6": 0.5317788607536968
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.09403311751928689,
+          "embedding": 0.25496280888737866,
+          "label_embedding": 0.3979857613191541,
+          "raw6": 0.3089766225406343,
+          "label_raw6": 0.4459437879142286
+        }
+      }
+    },
+    {
+      "iteration": 20,
+      "n_classes": 134,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.019150788171618194,
+          "embedding": 0.12515987460259015,
+          "label_embedding": 0.17666620832487712,
+          "raw6": 0.23705346564587249,
+          "label_raw6": 0.23104533081654255
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.2831976031396256,
+          "embedding": 0.6882526592819843,
+          "label_embedding": 0.7324537020778962,
+          "raw6": 0.6417048850786038,
+          "label_raw6": 0.7488413016023262
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.27349239940169656,
+          "embedding": 0.29848460854637804,
+          "label_embedding": 0.4236846732845412,
+          "raw6": 0.2801263699814942,
+          "label_raw6": 0.394371149924011
+        },
+        "PEN": {
+          "label": -0.0785992456300777,
+          "embedding": 0.10718057138678994,
+          "label_embedding": 0.03675472389092671,
+          "raw6": -0.09315246656089027,
+          "label_raw6": -0.11796403439169656
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.7247164653426286,
+          "embedding": 0.6071815272308321,
+          "label_embedding": 0.6758110684385428,
+          "raw6": 0.5330050411253574,
+          "label_raw6": 0.7265549676928755
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.0622144556636125,
+          "embedding": 0.37122917075962203,
+          "label_embedding": 0.43617425001188503,
+          "raw6": 0.4026378159414371,
+          "label_raw6": 0.46671788616172616
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.1498895789745247,
+          "embedding": -0.4443016003353657,
+          "label_embedding": 0.08506708246326655,
+          "raw6": -0.08659237321665292,
+          "label_raw6": 0.017704409434984192
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.46421691529685427,
+          "embedding": 0.5836174634317469,
+          "label_embedding": 0.5739414783934758,
+          "raw6": 0.5488099539010158,
+          "label_raw6": 0.5862009512279973
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": -0.010868798928170609,
+          "embedding": 0.4153938349513917,
+          "label_embedding": 0.38216435397197246,
+          "raw6": 0.3952427051972782,
+          "label_raw6": 0.44920487403639187
+        }
+      }
+    },
+    {
+      "iteration": 21,
+      "n_classes": 134,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.39717267130658684,
+          "embedding": -0.39905423661097417,
+          "label_embedding": -0.40738362311545506,
+          "raw6": -0.27000057347107576,
+          "label_raw6": -0.6544389139172506
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.2536167661561808,
+          "embedding": 0.5359084654470533,
+          "label_embedding": 0.7133693663085996,
+          "raw6": 0.5405919092305169,
+          "label_raw6": 0.6997278822343544
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.235224278496029,
+          "embedding": 0.1227092920321341,
+          "label_embedding": 0.2660115203384179,
+          "raw6": 0.16965553235973085,
+          "label_raw6": 0.2684881055498185
+        },
+        "PEN": {
+          "label": 0.18094026190786416,
+          "embedding": 0.6333716897148132,
+          "label_embedding": 0.6257519167947951,
+          "raw6": 0.5130360054579164,
+          "label_raw6": 0.5873216302753502
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": -0.0350283197638126,
+          "embedding": 0.013136253048193547,
+          "label_embedding": 0.2263473736523045,
+          "raw6": 0.12070351643517152,
+          "label_raw6": 0.24278814578909735
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.0035988329971711197,
+          "embedding": 0.43596262734230085,
+          "label_embedding": 0.43573988817934706,
+          "raw6": 0.47782551444624277,
+          "label_raw6": 0.4936341495993114
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.14554544451995766,
+          "embedding": -0.02489997680329159,
+          "label_embedding": 0.01166297949570183,
+          "raw6": 0.0547374134070987,
+          "label_raw6": 0.0641664181762912
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.0832476468404969,
+          "embedding": 0.4945596271695617,
+          "label_embedding": 0.542596234294412,
+          "raw6": 0.48918720542934246,
+          "label_raw6": 0.5341663429078798
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.02914653119428734,
+          "embedding": 0.4189137096747252,
+          "label_embedding": 0.28915764585102666,
+          "raw6": 0.343735501722339,
+          "label_raw6": 0.37248258541282253
+        }
+      }
+    },
+    {
+      "iteration": 22,
+      "n_classes": 133,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.025110068358123017,
+          "embedding": -0.04614483889933174,
+          "label_embedding": -0.07201606223571377,
+          "raw6": 0.026409532820292902,
+          "label_raw6": -0.14998368278715746
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.5513561128517871,
+          "embedding": 0.6542184673147351,
+          "label_embedding": 0.7025395675469551,
+          "raw6": 0.6348375682015673,
+          "label_raw6": 0.6471207495160849
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.2736966288969813,
+          "embedding": 0.021048747743488416,
+          "label_embedding": 0.23147537055366096,
+          "raw6": -0.06130423084999648,
+          "label_raw6": 0.04335110815189491
+        },
+        "PEN": {
+          "label": -590.4168396773118,
+          "embedding": -2145.24083217559,
+          "label_embedding": -1638.1524350703087,
+          "raw6": -1790.2381777322605,
+          "label_raw6": -1038.3472725666245
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.3226116019238505,
+          "embedding": 0.40491833088399853,
+          "label_embedding": 0.4589964417288789,
+          "raw6": 0.436302098082209,
+          "label_raw6": 0.45575719338712384
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.04264271495041694,
+          "embedding": 0.14516306146631763,
+          "label_embedding": 0.09451039886031631,
+          "raw6": 0.1113053364390425,
+          "label_raw6": 0.07359858137796293
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.12633076244882746,
+          "embedding": 0.19139425739393334,
+          "label_embedding": -0.11311859451573225,
+          "raw6": 0.032006095746825336,
+          "label_raw6": -0.059953293230984084
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.09711295020994393,
+          "embedding": 0.5750420965299587,
+          "label_embedding": 0.5999575653415123,
+          "raw6": 0.5301951026437233,
+          "label_raw6": 0.5023328391130872
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.025296886019384623,
+          "embedding": 0.0710829323645994,
+          "label_embedding": 0.32685067876841123,
+          "raw6": 0.2108484638900442,
+          "label_raw6": 0.3773770933114773
+        }
+      }
+    },
+    {
+      "iteration": 23,
+      "n_classes": 135,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.23651635694780704,
+          "embedding": 0.23800449134716883,
+          "label_embedding": 0.06482522796917545,
+          "raw6": 0.25270229823199286,
+          "label_raw6": 0.32453125786608783
+        },
+        "MAD_Porosity (vol%)": {
+          "label": -0.007032026884683518,
+          "embedding": 0.5382850141228415,
+          "label_embedding": 0.6597954513727016,
+          "raw6": 0.508835576359244,
+          "label_raw6": 0.656364109329979
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": -0.00274778812140819,
+          "embedding": -0.12598171245466872,
+          "label_embedding": 0.04803443717797262,
+          "raw6": -0.09263179818281109,
+          "label_raw6": 0.08036392082393773
+        },
+        "PEN": {
+          "label": NaN,
+          "embedding": NaN,
+          "label_embedding": NaN,
+          "raw6": NaN,
+          "label_raw6": NaN
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.4053786987104987,
+          "embedding": 0.5981124700044995,
+          "label_embedding": 0.6555372768516963,
+          "raw6": 0.47526158427459875,
+          "label_raw6": 0.6258297401255333
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.061469176645873036,
+          "embedding": 0.5432036545112693,
+          "label_embedding": 0.5478128316391482,
+          "raw6": 0.48462672518233585,
+          "label_raw6": 0.5487641051855062
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -47.576146746263376,
+          "embedding": -7632.306803532817,
+          "label_embedding": -770.3305500857114,
+          "raw6": -1326.1084437364575,
+          "label_raw6": -450.1578100939715
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.47443522933032745,
+          "embedding": 0.4428627955425073,
+          "label_embedding": 0.6170726558175266,
+          "raw6": 0.3896091417426355,
+          "label_raw6": 0.5351725062733672
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.2635261692952827,
+          "embedding": 0.5472361306862981,
+          "label_embedding": 0.5480507008737829,
+          "raw6": 0.5109404009705151,
+          "label_raw6": 0.6147816983726359
+        }
+      }
+    },
+    {
+      "iteration": 24,
+      "n_classes": 137,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.022614723316052077,
+          "embedding": -0.07194732346279142,
+          "label_embedding": -0.036961861034095156,
+          "raw6": 0.00026799106514741045,
+          "label_raw6": -0.039928398224220896
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.1237581273439261,
+          "embedding": 0.4300553211601268,
+          "label_embedding": 0.6059459870759814,
+          "raw6": 0.4476308181957478,
+          "label_raw6": 0.6453893697120898
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.07346293139312743,
+          "embedding": 0.00947674490468109,
+          "label_embedding": 0.1673684173842278,
+          "raw6": 0.11517875894422591,
+          "label_raw6": 0.2055014984363489
+        },
+        "PEN": {
+          "label": -0.46490084445298496,
+          "embedding": -1.0620738587066003,
+          "label_embedding": -1.2395224248306387,
+          "raw6": -2.630954828020138,
+          "label_raw6": -2.074338580247578
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.23262059177719618,
+          "embedding": 0.26125978138525197,
+          "label_embedding": 0.3502253978714005,
+          "raw6": 0.33628108381635624,
+          "label_raw6": 0.39552537215031147
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.040549799545568144,
+          "embedding": 0.20313877482130305,
+          "label_embedding": 0.16936449795692343,
+          "raw6": 0.18647485437245614,
+          "label_raw6": 0.13789399643067257
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.8195681759106695,
+          "embedding": 0.31088534707918913,
+          "label_embedding": 0.6362157144392808,
+          "raw6": 0.5684588747842227,
+          "label_raw6": 0.7877945149959248
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.3255636566532446,
+          "embedding": 0.6363101412833507,
+          "label_embedding": 0.650330974602004,
+          "raw6": 0.6173911974614489,
+          "label_raw6": 0.649744519268189
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.13106370029072545,
+          "embedding": -0.2403404964762128,
+          "label_embedding": 0.16825332253158864,
+          "raw6": 0.11093136148914062,
+          "label_raw6": 0.3636458703187615
+        }
+      }
+    },
+    {
+      "iteration": 25,
+      "n_classes": 133,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.534352852772781,
+          "embedding": -0.32414900162312876,
+          "label_embedding": -0.2098808622014865,
+          "raw6": 0.11443208227268742,
+          "label_raw6": 0.19375337017204086
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.2633467358697894,
+          "embedding": 0.6721226745218234,
+          "label_embedding": 0.7432463044252833,
+          "raw6": 0.6360593586623474,
+          "label_raw6": 0.7273401254751117
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.10449205486595203,
+          "embedding": 0.22490574834332366,
+          "label_embedding": 0.352649113402832,
+          "raw6": 0.18424075006511031,
+          "label_raw6": 0.4117661660221502
+        },
+        "PEN": {
+          "label": 0.14177702898850097,
+          "embedding": 0.5940442383273536,
+          "label_embedding": 0.6150334235536198,
+          "raw6": 0.444790080157637,
+          "label_raw6": 0.5275808416989389
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.5040549081812337,
+          "embedding": 0.5789321753850459,
+          "label_embedding": 0.696210860459595,
+          "raw6": 0.5270536622834359,
+          "label_raw6": 0.6622661618061925
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.013426910555753069,
+          "embedding": 0.33926098555263795,
+          "label_embedding": 0.34017840340724714,
+          "raw6": 0.23427118971596095,
+          "label_raw6": 0.36119558491565884
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -82.67907641533522,
+          "embedding": -17199.019614518267,
+          "label_embedding": -589.8340929790716,
+          "raw6": -17196.548989910534,
+          "label_raw6": -622.5421006403668
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.49754634257489716,
+          "embedding": 0.6472055838405035,
+          "label_embedding": 0.7165329145064063,
+          "raw6": 0.5831207261864233,
+          "label_raw6": 0.729900549120853
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.07300504492612647,
+          "embedding": 0.4791696551971669,
+          "label_embedding": 0.4855065983740535,
+          "raw6": 0.45711039459144653,
+          "label_raw6": 0.5048829293708135
+        }
+      }
+    },
+    {
+      "iteration": 26,
+      "n_classes": 135,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.003620217404098125,
+          "embedding": 0.13561627713432667,
+          "label_embedding": 0.114607812659821,
+          "raw6": 0.20359539944842886,
+          "label_raw6": 0.215982057655293
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.06241040921690055,
+          "embedding": 0.7001983844427571,
+          "label_embedding": 0.6894182359052548,
+          "raw6": 0.6807311765742867,
+          "label_raw6": 0.7018314897910984
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.05086112696971756,
+          "embedding": -0.0656769205844212,
+          "label_embedding": 0.22321044166643733,
+          "raw6": 0.13776642872538136,
+          "label_raw6": 0.27644114596804314
+        },
+        "PEN": {
+          "label": -77.28547283147334,
+          "embedding": -4.71330273140021,
+          "label_embedding": -7.460401230389612,
+          "raw6": -27.067143452245087,
+          "label_raw6": -11.097524077007511
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.26856269575818115,
+          "embedding": 0.47174584451617363,
+          "label_embedding": 0.5064407434760689,
+          "raw6": 0.4887316975146919,
+          "label_raw6": 0.5304681706512411
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.007174516612910797,
+          "embedding": 0.4739452885005109,
+          "label_embedding": 0.5024891309942574,
+          "raw6": 0.5223032045025101,
+          "label_raw6": 0.5487611509595616
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -43.31287529679885,
+          "embedding": -91.35549369371779,
+          "label_embedding": -36.94111499472034,
+          "raw6": -51.77891477095391,
+          "label_raw6": -33.490243173286295
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.39327920846117614,
+          "embedding": 0.32962486511597067,
+          "label_embedding": 0.5368203386955501,
+          "raw6": 0.22790150090268857,
+          "label_raw6": 0.5298935937624517
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": -0.0683426783801957,
+          "embedding": 0.47388785552684454,
+          "label_embedding": 0.48152020323369993,
+          "raw6": 0.5037156855860219,
+          "label_raw6": 0.4787020422631343
+        }
+      }
+    },
+    {
+      "iteration": 27,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": 0.26457877010471176,
+          "embedding": 0.28515266784706594,
+          "label_embedding": 0.15019940528733366,
+          "raw6": 0.36792660445973013,
+          "label_raw6": 0.31918764138326594
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.32427657439379365,
+          "embedding": 0.6506040643726145,
+          "label_embedding": 0.7089160362055712,
+          "raw6": 0.565534916568706,
+          "label_raw6": 0.6723922371437121
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.09554146382733031,
+          "embedding": 0.20162928342034214,
+          "label_embedding": 0.28362535450974713,
+          "raw6": 0.21541615571383688,
+          "label_raw6": 0.27662947042421604
+        },
+        "PEN": {
+          "label": -6.72302847230871,
+          "embedding": -16.429736003563836,
+          "label_embedding": -2.2964783946175005,
+          "raw6": -0.9412371196009979,
+          "label_raw6": -3.299503137939232
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.2558266763342588,
+          "embedding": 0.4851298490624256,
+          "label_embedding": 0.6195135461848165,
+          "raw6": 0.3759321231914712,
+          "label_raw6": 0.5078759274061895
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.08158188132342714,
+          "embedding": 0.2050909542806847,
+          "label_embedding": 0.21523234809682146,
+          "raw6": 0.2203280843575015,
+          "label_raw6": 0.19301777418232502
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": 0.8500889843340107,
+          "embedding": 0.8292666851225245,
+          "label_embedding": 0.682079854965828,
+          "raw6": 0.6840974974215607,
+          "label_raw6": 0.7574040568307094
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": 0.6416476463942508,
+          "embedding": 0.5112735364998218,
+          "label_embedding": 0.7083785537346999,
+          "raw6": 0.5712647661908161,
+          "label_raw6": 0.7382205961879458
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.20990064032242406,
+          "embedding": 0.3049708537648702,
+          "label_embedding": 0.40123455973745425,
+          "raw6": 0.2609886612256842,
+          "label_raw6": 0.36722812159878804
+        }
+      }
+    },
+    {
+      "iteration": 28,
+      "n_classes": 136,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.5500639721707203,
+          "embedding": -0.17320017813587296,
+          "label_embedding": -0.16708562723689524,
+          "raw6": -0.31007696828069986,
+          "label_raw6": -0.14590894699040735
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.4488198362092911,
+          "embedding": 0.5289351112446719,
+          "label_embedding": 0.6652010084096018,
+          "raw6": 0.45612447572976444,
+          "label_raw6": 0.5866596840034639
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.21361171725533457,
+          "embedding": 0.15125708456615028,
+          "label_embedding": 0.2954666103421757,
+          "raw6": 0.14995714330676246,
+          "label_raw6": 0.29591698837266167
+        },
+        "PEN": {
+          "label": NaN,
+          "embedding": NaN,
+          "label_embedding": NaN,
+          "raw6": NaN,
+          "label_raw6": NaN
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.49341784140436973,
+          "embedding": 0.6167358909472043,
+          "label_embedding": 0.6325870237354609,
+          "raw6": 0.5698071385505548,
+          "label_raw6": 0.5937448542086328
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": 0.3550229687006853,
+          "embedding": 0.468843154223475,
+          "label_embedding": 0.4143142629868277,
+          "raw6": 0.39020910258327446,
+          "label_raw6": 0.451865536265147
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -824.4221677823209,
+          "embedding": -1817.9625259351515,
+          "label_embedding": -298.99696113560435,
+          "raw6": -1677.248329684141,
+          "label_raw6": -240.61421191467173
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -0.23466490310325083,
+          "embedding": 0.5619379808691025,
+          "label_embedding": 0.4168717386614058,
+          "raw6": 0.5593643451130308,
+          "label_raw6": 0.6048348090140401
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.112149422660894,
+          "embedding": 0.2697054452418479,
+          "label_embedding": 0.2966871142896479,
+          "raw6": 0.09424027366271603,
+          "label_raw6": 0.24546305411852265
+        }
+      }
+    },
+    {
+      "iteration": 29,
+      "n_classes": 131,
+      "per_variable": {
+        "AVS_Vane shear strength (kN/m^2)": {
+          "label": -0.4105619885335017,
+          "embedding": -0.17705976595534056,
+          "label_embedding": -0.07649292797182783,
+          "raw6": -0.1255652191942085,
+          "label_raw6": -0.34202036841297834
+        },
+        "MAD_Porosity (vol%)": {
+          "label": 0.7251800308296179,
+          "embedding": 0.8045410462062861,
+          "label_embedding": 0.8151713405189436,
+          "raw6": 0.7556568892919103,
+          "label_raw6": 0.7095254896553925
+        },
+        "MAD_Grain density (g/cm^3)": {
+          "label": 0.48827907952572525,
+          "embedding": -0.025644794182615227,
+          "label_embedding": 0.36101693222824527,
+          "raw6": -0.31667054262358274,
+          "label_raw6": 0.025650273877957153
+        },
+        "PEN": {
+          "label": 0.1343150662462157,
+          "embedding": 0.11147046309033182,
+          "label_embedding": 0.09111211743320857,
+          "raw6": 0.25042613315932705,
+          "label_raw6": 0.2404049633339429
+        },
+        "PWC_P-wave velocity x (m/s)": {
+          "label": 0.16736698869440958,
+          "embedding": 0.3647144599930012,
+          "label_embedding": 0.3928698518096918,
+          "raw6": 0.22154928828611375,
+          "label_raw6": 0.21694233327957457
+        },
+        "PWL_P-wave velocity xy (m/s)": {
+          "label": -0.07308934675897105,
+          "embedding": 0.18419819823497718,
+          "label_embedding": 0.22432726945702364,
+          "raw6": 0.16717453163379992,
+          "label_raw6": 0.24858149545488506
+        },
+        "SRMD_Intensity raw (A/m)": {
+          "label": -0.10379950016586803,
+          "embedding": 0.22363710191022335,
+          "label_embedding": -0.0822220710436381,
+          "raw6": -0.026922224286565655,
+          "label_raw6": -0.06347220900499195
+        },
+        "SRM_Intensity raw (A/m)": {
+          "label": -0.10065983892304353,
+          "embedding": 0.5985667719540797,
+          "label_embedding": 0.6017316611703303,
+          "raw6": 0.6081524447412191,
+          "label_raw6": 0.461865378244556
+        },
+        "TCON_Thermal conductivity mean (W/(m*K))": {
+          "label": 0.008607822088462225,
+          "embedding": 0.5305655439242154,
+          "label_embedding": 0.41448230225926386,
+          "raw6": 0.39840305578504764,
+          "label_raw6": 0.2611777508526941
+        }
+      }
+    }
+  ],
+  "summary": {
+    "AVS_Vane shear strength (kN/m^2)": {
+      "label_name": "Vane shear strength",
+      "label": -0.04568089390956076,
+      "embedding": 0.04043722805654004,
+      "label_embedding": -0.036961861034095156,
+      "raw6": 0.11443208227268742,
+      "label_raw6": 0.08118829607639555
+    },
+    "MAD_Porosity (vol%)": {
+      "label_name": "Porosity",
+      "label": 0.34264372215960676,
+      "embedding": 0.5314733078886679,
+      "label_embedding": 0.6698055761551631,
+      "raw6": 0.4882007936078909,
+      "label_raw6": 0.6616612487243899
+    },
+    "MAD_Grain density (g/cm^3)": {
+      "label_name": "Grain density",
+      "label": 0.10981061046612245,
+      "embedding": 0.077208632689449,
+      "label_embedding": 0.2399095637681677,
+      "raw6": 0.0962029215322509,
+      "label_raw6": 0.2418482906952235
+    },
+    "PEN": {
+      "label_name": "Penetration resistance",
+      "label": -1.593631873513014,
+      "embedding": -0.9107854240829419,
+      "label_embedding": -1.0103140302838631,
+      "raw6": -1.5246473605121547,
+      "label_raw6": -1.367862975949572
+    },
+    "PWC_P-wave velocity x (m/s)": {
+      "label_name": "P-wave velocity (discrete)",
+      "label": 0.2967194931772427,
+      "embedding": 0.4040945284708278,
+      "label_embedding": 0.5100979162190324,
+      "raw6": 0.36796090911189777,
+      "label_raw6": 0.507950972837014
+    },
+    "PWL_P-wave velocity xy (m/s)": {
+      "label_name": "P-wave velocity (whole core)",
+      "label": -9.921461524131647e-05,
+      "embedding": 0.155863755457477,
+      "label_embedding": 0.10853136856967455,
+      "raw6": 0.16083887869602664,
+      "label_raw6": 0.1237523960752861
+    },
+    "SRMD_Intensity raw (A/m)": {
+      "label_name": "Magnetisation (discrete)",
+      "label": -0.21356356627952844,
+      "embedding": -0.7719505307535475,
+      "label_embedding": -0.3036999759475636,
+      "raw6": -0.18379788274986575,
+      "label_raw6": -0.49199140113131146
+    },
+    "SRM_Intensity raw (A/m)": {
+      "label_name": "Magnetisation (whole core)",
+      "label": 0.3188230151536063,
+      "embedding": 0.5680457719256333,
+      "label_embedding": 0.6008446132559213,
+      "raw6": 0.5615725260165063,
+      "label_raw6": 0.5752563909568187
+    },
+    "TCON_Thermal conductivity mean (W/(m*K))": {
+      "label_name": "Thermal conductivity",
+      "label": 0.093246748579425,
+      "embedding": 0.2913776855782347,
+      "label_embedding": 0.3865782835326164,
+      "raw6": 0.2529678683951052,
+      "label_raw6": 0.37894894367534326
+    }
+  },
+  "overall": {
+    "label": 0.093246748579425,
+    "embedding": 0.155863755457477,
+    "label_embedding": 0.2399095637681677,
+    "raw6": 0.16083887869602664,
+    "label_raw6": 0.2418482906952235
+  },
+  "elapsed_seconds": 1262.4982261657715
+}
