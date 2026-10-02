@@ -45,6 +45,17 @@ def main():
     parser.add_argument("--test-fraction", type=float, default=0.1)
     parser.add_argument("--device", default="auto")
     parser.add_argument(
+        "--latent-dim",
+        type=int,
+        default=None,
+        help=(
+            "Run every model at this latent dimension instead of the "
+            "configured one. The reviewer's point is that ten dimensions "
+            "for six inputs cannot test whether labels help, because "
+            "nothing has to be discarded."
+        ),
+    )
+    parser.add_argument(
         "--models",
         nargs="+",
         default=None,
@@ -68,6 +79,11 @@ def main():
         help="Output JSON path (default: data/results/bootstrap_results.json).",
     )
     args = parser.parse_args()
+
+    if args.latent_dim is not None:
+        from lilyvae.evaluation import bootstrap as _bootstrap
+        _bootstrap.LATENT_DIM_OVERRIDE = args.latent_dim
+        print(f"latent dimension overridden to {args.latent_dim}")
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     output_path = (

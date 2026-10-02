@@ -64,7 +64,7 @@ KNN_K = 10
 
 #: Feature sets compared. "embedding" is resolved per fold by training a
 #: VAE; the others are closed-form functions of the raw inputs.
-DEFAULT_ARMS = ("raw6", "pca", "embedding")
+DEFAULT_ARMS = ("raw6", "pca", "embedding", "embedding_semi")
 
 
 def _build_arm(
@@ -93,8 +93,15 @@ def _build_arm(
         pca.fit(raw[train_mask])
         return pca.transform(raw)
 
-    if arm == "embedding":
-        trainer = dict(ALL_TRAINERS)["unsupervised_vae"]
+    # "embedding" is the unsupervised VAE; "embedding_semi" is the
+    # semi-supervised one. The pair answers the question the label claim
+    # rests on, which the held-out probe in Table 1 cannot: a probe refit
+    # on held-out embeddings is where a training-time classification head
+    # is least able to show up, so the two models look alike there
+    # whether or not the head did anything.
+    if arm in ("embedding", "embedding_semi"):
+        name = "unsupervised_vae" if arm == "embedding" else "semi_supervised_vae"
+        trainer = dict(ALL_TRAINERS)[name]
         trained = trainer(
             features[train_mask], labels[train_mask], features, device
         )

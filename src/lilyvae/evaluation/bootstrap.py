@@ -162,11 +162,24 @@ def _run_vae(
     return TrainedModel(name=name, embeddings=embeddings, reconstruction=reconstruction)
 
 
+#: Set by `lilyvae-bootstrap --latent-dim` to run the whole comparison
+#: at a narrower bottleneck. At ten dimensions for six inputs the latent
+#: is close to an invertible transform of them, so a label that is a
+#: function of the inputs is already present and supervision can only
+#: change the geometry. Two or three dimensions force the model to
+#: choose what to keep, which is where labels could steer it.
+LATENT_DIM_OVERRIDE: int | None = None
+
+
+def _latent() -> int:
+    return LATENT_DIM_OVERRIDE or LATENT_DIM
+
+
 def _trainer_unsupervised_vae(train_f, train_l, test_f, device):
     return _run_vae(
         train_f, train_l, test_f, device,
         name="unsupervised_vae",
-        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        vae_factory=lambda: LilyVAE(INPUT_DIM, _latent(), list(HIDDEN_DIMS)),
         masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
         decoder_type="heteroscedastic",
         beta_type="annealing",
@@ -178,7 +191,7 @@ def _trainer_semi_supervised_vae(train_f, train_l, test_f, device):
     return _run_vae(
         train_f, train_l, test_f, device,
         name="semi_supervised_vae",
-        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        vae_factory=lambda: LilyVAE(INPUT_DIM, _latent(), list(HIDDEN_DIMS)),
         masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
         decoder_type="heteroscedastic",
         beta_type="annealing",
@@ -190,7 +203,7 @@ def _trainer_ablation_fixed_variance(train_f, train_l, test_f, device):
     return _run_vae(
         train_f, train_l, test_f, device,
         name="ablation_fixed_variance",
-        vae_factory=lambda: FixedVarianceVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        vae_factory=lambda: FixedVarianceVAE(INPUT_DIM, _latent(), list(HIDDEN_DIMS)),
         masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
         decoder_type="fixed_variance",
         beta_type="annealing",
@@ -202,7 +215,7 @@ def _trainer_ablation_zero_masking(train_f, train_l, test_f, device):
     return _run_vae(
         train_f, train_l, test_f, device,
         name="ablation_zero_masking",
-        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        vae_factory=lambda: LilyVAE(INPUT_DIM, _latent(), list(HIDDEN_DIMS)),
         masking_factory=lambda: ZeroMasking(MASK_FRACTION),
         decoder_type="heteroscedastic",
         beta_type="annealing",
@@ -214,7 +227,7 @@ def _trainer_ablation_no_masking(train_f, train_l, test_f, device):
     return _run_vae(
         train_f, train_l, test_f, device,
         name="ablation_no_masking",
-        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        vae_factory=lambda: LilyVAE(INPUT_DIM, _latent(), list(HIDDEN_DIMS)),
         masking_factory=lambda: NoMasking(),
         decoder_type="heteroscedastic",
         beta_type="annealing",
@@ -226,7 +239,7 @@ def _trainer_ablation_fixed_beta(train_f, train_l, test_f, device):
     return _run_vae(
         train_f, train_l, test_f, device,
         name="ablation_fixed_beta",
-        vae_factory=lambda: LilyVAE(INPUT_DIM, LATENT_DIM, list(HIDDEN_DIMS)),
+        vae_factory=lambda: LilyVAE(INPUT_DIM, _latent(), list(HIDDEN_DIMS)),
         masking_factory=lambda: LearnableMasking(INPUT_DIM, MASK_FRACTION),
         decoder_type="heteroscedastic",
         beta_type="fixed",
